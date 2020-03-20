@@ -89,7 +89,9 @@ spmd(this.NumSatellites)
 			
 			% Start flying on orbital loop.
 			currentOrbitSection = this.OrbitSections(this.IDX);
+      %send(DQ,'bef');
 			sat.fly(currentOrbitSection, this.OrbitSectionSize);
+      %send(DQ,'after');
 			
 			% Update time vector for plotting.
 			timestep = this.OrbitSectionSize / orbit.MeanMotionDeg;

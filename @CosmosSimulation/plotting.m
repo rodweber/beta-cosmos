@@ -1,5 +1,5 @@
 function plotting(angles,sst,refPosChange,time,ns,meanMotion,u,e)
-  if 1
+  if 0
     figure
       for i=1:3
         subplot(3,1,i)
@@ -12,7 +12,7 @@ function plotting(angles,sst,refPosChange,time,ns,meanMotion,u,e)
     hold off;
   end
  
-  if 1 %% reference position change
+  if 0 %% reference position change
 	  refPosChange = squeeze(refPosChange);
     figure
       plot(time(:,1),refPosChange(1,:),time(:,1),refPosChange(2,:),time(:,1),refPosChange(3,:));
@@ -20,7 +20,44 @@ function plotting(angles,sst,refPosChange,time,ns,meanMotion,u,e)
     hold off;  
   end
   
-  if 1 %% plot general variables
+  if 1 %% plot general variables option short
+    figure
+      subplot(2,3,1)%% roll
+        for i=1:ns
+          plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(angles(i,1,:)));hold on
+          names(i)=[{strcat('sat',int2str(i))}];
+        end
+      ylabel('roll angle [deg]');xlabel('no. of orbits');grid on;hold off;
+      legend(names);
+      subplot(2,3,2)%% pitch
+      for i=1:ns
+         plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(angles(i,2,:)));hold on
+      end
+      ylabel('pitch angle [deg]');xlabel('no. of orbits');grid on;hold off;
+      subplot(2,3,3)%%yaw
+      for i=1:ns
+        plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(angles(i,3,:)));hold on
+      end
+      ylabel('yaw angle [deg]');xlabel('no. of orbits');grid on;hold off
+      subplot(2,3,4)%%x
+      for i=1:ns
+         plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(sst(i,1,:)));hold on
+      end
+      ylabel('x [m]');xlabel('no. of orbits');grid on;hold off
+      subplot(2,3,5)%%y
+      for i=1:ns
+         plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(sst(i,2,:)));hold on
+      end
+      ylabel('y [m]');xlabel('no. of orbits');grid on;hold off
+      subplot(2,3,6)%%z
+      for i=1:ns
+        plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(sst(i,3,:)));hold on
+      end
+      ylabel('z [m]');xlabel('no. of orbits');grid on;hold off
+  end
+  
+  
+  if 0 %% plot general variables option long
     figure
       subplot(4,3,1)%% roll
         for i=1:ns

@@ -257,13 +257,13 @@ parametersISMission = struct( ...
 
 %% this.SolarFactor,this.WindFactor, this.SatelliteMass ,this.Panels,this.SurfacePanel,this.SurfaceRef can be found in FlightControl
 %% desired values are in FlightControl
-%% initial conditions are in Initialize
+%% initial conditions are in Satellite.Initialize
 %% parameters for riccati equation can be found in riccatiequation
 
 %% Instantiate a simulation object with the selected parameters.
-sim = CosmosSimulation(parametersIvanov);
+%sim = CosmosSimulation(parametersIvanov);
 %sim = CosmosSimulation(parametersCluxter);
-%sim = CosmosSimulation(parametersISMission);
+sim = CosmosSimulation(parametersISMission);
 
 %% Initiate and run simulation.
 sim.start();
