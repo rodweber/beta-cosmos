@@ -1,4 +1,4 @@
-function updStateold(this, P, IR, A, B, deltaTime)
+function updStateold3(this, P, IR, A, B, deltaTime)
 %% Summary here.
 %_____________________________________________________________________
 %
