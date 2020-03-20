@@ -1,8 +1,4 @@
-<<<<<<< HEAD:@FlightControl/updState_OLD2.m
 function updState_OLD2(this, P, IR, A, B, deltaTime)
-=======
-function updStateold(this, P, IR, A, B, deltaTime)
->>>>>>> secondTestWhyUpdstateOld:@FlightControl/updStateold.m
 %% Summary here.
 %_____________________________________________________________________
 %
