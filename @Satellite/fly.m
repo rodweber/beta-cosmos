@@ -39,9 +39,8 @@ time = currentOrbitSection / this.Orbit.MeanMotionDeg;
 % Update desired state.
 this.FlightControl.updateStateDesired(time, this.Orbit.MeanMotionRad);
 
-
 % apply noise
-maxRandPos=0.1;
+maxRandPos=0;
 maxRandVel=0.;
 this.FlightControl.State(1)=this.FlightControl.State(1)+maxRandPos*(rand-0.5);
 this.FlightControl.State(2)=this.FlightControl.State(2)+maxRandPos*(rand-0.5);
@@ -59,8 +58,6 @@ receivedStateErrors = this.broadcastReceive();
 
 % Update information on state errors from other satellites.
 this.FlightControl.updateStateErrors(receivedStateErrors);
-
-
 
 %{
 NOT USEFUL ANYMORE SINCE WORKING WITH FORCEVECTOR AVERAGES/SHIFTS
@@ -110,7 +107,6 @@ for i=1:this.FlightControl.NumSatellites
 end
 
 %%
-
     %% shift and average control force
     controlVectorMin         = min(controlVector(1,:));
     for i=1:this.FlightControl.NumSatellites %% transform error for each satellite
@@ -124,10 +120,6 @@ end
       controlVector(2:3,i) = controlVector(2:3,i)-averagecontrolVector(2:3);
     end
 %%
-
-
-
-
 
 % Sunlight rotation will be important for non dusk-dawn orbits.
 rotatedSolarPressureVector = this.FlightControl.SolarPressureVector;
@@ -182,10 +174,6 @@ this.FlightControl.State(7:9) = [alphaOpt betaOpt gammaOpt]';
 
 %------------------------------------------------
 %JT: end----
-
-
-
-
 
 
 % Update duration of the current orbit.

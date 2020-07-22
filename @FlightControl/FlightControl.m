@@ -29,8 +29,9 @@ classdef FlightControl < handle
 		WindFactor % Multiplication factor for wind pressure.
 		WindPressure % Pressure from wind.
 		WindPressureVector % Wind pressure for all satellite attitudes.
-		
-	end
+		ffp % formation flight parameters
+	
+  end
 	
 	properties (GetAccess = public, SetAccess = private)
 		
@@ -58,9 +59,9 @@ classdef FlightControl < handle
 % - Object of class FlightControl.
 %_____________________________________________________________________
 			
-			this.NumSatellites = ns;
-			this.FormationMode = mode;
-			this.State          = zeros(9, 1);
+			this.NumSatellites  = ns;
+			this.FormationMode  = mode;
+			this.State          =[-950 0 0 0 0 0 0 0 0]';% zeros(9, 1);
 			this.StateDesired   = zeros(6, 1);
 			this.StateErrors    = zeros(6, ns);
 			this.StateErrorsAvg = zeros(6, ns);
@@ -114,12 +115,12 @@ classdef FlightControl < handle
 		updateStateDesired(this, time, meanMotion)
 		
 		% Testing git/uml with method updState
-		%updStateold3(this, P, IR, A, B, deltaTime)
+		updStateold2(this, P, IR, A, B, deltaTime)
 		
 		function shiftState(this, shift)
 			this.State(1:3) = this.State(1:3) + shift;
-		end
-		
+    end  
+    
 %JT: remove
 %		function shiftError(this)
 %			this.StateErrors(1,this.SatID) = this.StateErrors(1,this.SatID) - max(this.StateErrors(1,:));

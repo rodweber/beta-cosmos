@@ -1,4 +1,4 @@
-function initialize(this, id, commChannel)
+function initialize(this, id, commChannel, iniConditions)
 %% Initialize satellite.
 %_____________________________________________________________________
 %
@@ -7,12 +7,6 @@ function initialize(this, id, commChannel)
 
 % Update satellite ID in the formation flight.
 this.FlightControl.updateSatelliteID(id);
-
-if this.FlightControl.SatID ==2
-  this.FlightControl.State          = [-950 0 0 0 0 0 0 0 0]';
-else
-  this.FlightControl.State          = zeros(9, 1);
-end
 
 % Set satellite name.
 this.Name = ['sat ',num2str(id)];
@@ -30,5 +24,8 @@ battery_status = 1;
 if battery_status
 	% Switch on the GPS.
 end
+
+% set initial conditions
+this.FlightControl.State          = iniConditions';
 
 end % Function Satellite.initialize.

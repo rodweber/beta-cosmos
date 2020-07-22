@@ -17,7 +17,6 @@ classdef Satellite < handle
 		GPSModule % Object of class GPS.
 		Name % Unique name for identification of the satellite.
 		Orbit % Object of class Orbit.
-		
 	end
 	
 	properties (GetAccess = public, SetAccess = private)
@@ -46,8 +45,7 @@ classdef Satellite < handle
 %
 % Output:
 % - Object of class Satellite.
-%_____________________________________________________________________
-			
+%_____________________________________________________________________			
 			this.AutoResponse = autoResponse;
 			this.FlightControl = FlightControl(numSats, mode, deltaAngle);
 			this.Orbit = Orbit(altitude, gpsAvailability, tleAvailability);
@@ -63,7 +61,7 @@ classdef Satellite < handle
 	
 	methods (Access = public)
 		
-		initialize(this, id, commChannel)
+		initialize(this, id, commChannel,iniConditinos)
 		comm(this, msg)
 		fly(this, currentOrbitSection, sizeOrbitSection)
 		broadcastSend(this, msg)

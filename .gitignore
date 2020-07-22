@@ -6,3 +6,11 @@
 *.asv
 workspace.mat
 tempUML*
+sat1LLR.csv
+sat2LLR.csv
+FFP.json
+FFPsat1.json
+FFPsat2.json
+FFPsat3.json
+sat3LLR.csv
+sat4LLR.csv

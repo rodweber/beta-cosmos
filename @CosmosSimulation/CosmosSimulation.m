@@ -28,7 +28,8 @@ classdef CosmosSimulation < handle
 		%Status % Simulation status.
 		TimeVector % Time vector for plotting.
 		TimeVectorLengths % Length of the time vector for each satellite.
-		
+		FFPS %% formation flight parameters
+    iniConditions %% initial conditions
 	end
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -37,7 +38,7 @@ classdef CosmosSimulation < handle
 	
 	methods % Constructor.
 		
-		function this = CosmosSimulation(param)
+		function this = CosmosSimulation(param,iniConditions)
 %% Constructor for class CosmosSimulation.
 %_____________________________________________________________________
 %
@@ -65,6 +66,8 @@ classdef CosmosSimulation < handle
 			
 			this.TimeVector = zeros(this.NumSatellites,1);
 			this.TimeVectorLengths = ones(this.NumSatellites,1);
+      
+      this.FFPS=param.FFPS;
 			
 			% Create array with objects of class Satellite.
 			this.Satellites = Satellite.empty(this.NumSatellites,0);
@@ -95,10 +98,9 @@ classdef CosmosSimulation < handle
 			this.GPSModules = GPS.empty(this.NumSatellites,0);
 			for i = 1 : this.NumSatellites
 				this.GPSModules(i) = this.Satellites(i).GPSModule;
-			end
-			
-		end
-		
+      end	
+      this.iniConditions=iniConditions;
+    end		
 	end % Constructor.
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -149,7 +151,8 @@ classdef CosmosSimulation < handle
 		
 		plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e)
 		createListCustomClasses(filepath, workspaceFileName)
-		
-	end % Static methods.
+		visualizationLONLATALT(ns,ttime,sstx,ssty,sstz,anglesGE,altitude)
+
+  end % Static methods.
 	
 end % Class CosmosSimulation.
