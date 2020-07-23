@@ -74,13 +74,13 @@ end
     B=(2-5*SSC^2)/2/SSC;
     D=sqrt(3*SSC^2-2); %% if SSC==1 then D=1
  
-    sstDesired(1,:)= this.ffp.ffp2   + B*meanMotion*this.ffp.ffp6*time +    this.ffp.ffp1*cos(sqrt(2*SSC/A)*meanMotion*time+this.ffp.ffp7+MAO)                          - this.ffp.ffp5*sqrt(2*SSC*A)*sin(sqrt(2*SSC/A)*meanMotion*time+this.ffp.ffp7+MAO);
-    sstDesired(2,:)=                                                        this.ffp.ffp3*cos(D*meanMotion*time+this.ffp.ffp8+MAO)                                      + this.ffp.ffp4/D/meanMotion*         sin(D*meanMotion*time+this.ffp.ffp8+MAO);
-    sstDesired(3,:)= this.ffp.ffp6                                     +    this.ffp.ffp5*cos(sqrt(2*SSC/A)*meanMotion*time+this.ffp.ffp7+MAO)                          + this.ffp.ffp1/sqrt(2*SSC*A)*sin(sqrt(2*SSC/A)*meanMotion*time+this.ffp.ffp7+MAO);
+    sstDesired(1,:)= this.FFPS.ffp2   + B*meanMotion*this.FFPS.ffp6*time +    this.FFPS.ffp1*cos(sqrt(2*SSC/A)*meanMotion*time+this.FFPS.ffp7+MAO)                          - this.FFPS.ffp5*sqrt(2*SSC*A)*sin(sqrt(2*SSC/A)*meanMotion*time+this.FFPS.ffp7+MAO);
+    sstDesired(2,:)=                                                        this.FFPS.ffp3*cos(D*meanMotion*time+this.FFPS.ffp8+MAO)                                      + this.FFPS.ffp4/D/meanMotion*         sin(D*meanMotion*time+this.FFPS.ffp8+MAO);
+    sstDesired(3,:)= this.FFPS.ffp6                                     +    this.FFPS.ffp5*cos(sqrt(2*SSC/A)*meanMotion*time+this.FFPS.ffp7+MAO)                          + this.FFPS.ffp1/sqrt(2*SSC*A)*sin(sqrt(2*SSC/A)*meanMotion*time+this.FFPS.ffp7+MAO);
 
-    sstDesired(4,:)=                   B*meanMotion*this.ffp.ffp6      -    this.ffp.ffp1*sin(sqrt(2*SSC/A)*meanMotion*time+this.ffp.ffp7+MAO)*sqrt(2*SSC/A)*meanMotion - this.ffp.ffp5*sqrt(2*SSC*A)*cos(sqrt(2*SSC/A)*meanMotion*time+this.ffp.ffp7+MAO)*sqrt(2*SSC/A)*meanMotion;
-    sstDesired(5,:)=                                                   -    this.ffp.ffp3*sin(D*meanMotion*time+this.ffp.ffp8+MAO)*D*meanMotion                         + this.ffp.ffp4/D/meanMotion*         cos(D*meanMotion*time+this.ffp.ffp8+MAO)*D*meanMotion;
-    sstDesired(6,:)=                                                   -    this.ffp.ffp5*sin(sqrt(2*SSC/A)*meanMotion*time+this.ffp.ffp7+MAO)*sqrt(2*SSC/A)*meanMotion + this.ffp.ffp1/sqrt(2*SSC*A)*cos(sqrt(2*SSC/A)*meanMotion*time+this.ffp.ffp7+MAO)*sqrt(2*SSC/A)*meanMotion;
+    sstDesired(4,:)=                   B*meanMotion*this.FFPS.ffp6      -    this.FFPS.ffp1*sin(sqrt(2*SSC/A)*meanMotion*time+this.FFPS.ffp7+MAO)*sqrt(2*SSC/A)*meanMotion - this.FFPS.ffp5*sqrt(2*SSC*A)*cos(sqrt(2*SSC/A)*meanMotion*time+this.FFPS.ffp7+MAO)*sqrt(2*SSC/A)*meanMotion;
+    sstDesired(5,:)=                                                   -    this.FFPS.ffp3*sin(D*meanMotion*time+this.FFPS.ffp8+MAO)*D*meanMotion                         + this.FFPS.ffp4/D/meanMotion*         cos(D*meanMotion*time+this.FFPS.ffp8+MAO)*D*meanMotion;
+    sstDesired(6,:)=                                                   -    this.FFPS.ffp5*sin(sqrt(2*SSC/A)*meanMotion*time+this.FFPS.ffp7+MAO)*sqrt(2*SSC/A)*meanMotion + this.FFPS.ffp1/sqrt(2*SSC*A)*cos(sqrt(2*SSC/A)*meanMotion*time+this.FFPS.ffp7+MAO)*sqrt(2*SSC/A)*meanMotion;
 
 
 this.StateDesired = sstDesired;

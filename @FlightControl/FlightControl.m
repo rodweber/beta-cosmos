@@ -10,6 +10,7 @@ classdef FlightControl < handle
 	
 	properties (GetAccess = public, SetAccess = public)
 		
+        FFPS % Formation flight parameters.
 		FormationMode % Mode for the satellites formation flight.
 		NumSatellites % Total number of satellites in the formation.
 		Panels % Satellite panels.
@@ -29,8 +30,7 @@ classdef FlightControl < handle
 		WindFactor % Multiplication factor for wind pressure.
 		WindPressure % Pressure from wind.
 		WindPressureVector % Wind pressure for all satellite attitudes.
-		ffp % formation flight parameters
-	
+        
   end
 	
 	properties (GetAccess = public, SetAccess = private)
@@ -47,7 +47,7 @@ classdef FlightControl < handle
 	
 	methods % Constructor.
 		
-		function this = FlightControl(ns, mode, deltaAngle)
+		function this = FlightControl(ns, mode, deltaAngle, ffpsFilePath)
 %% Constructor for class FlightControl.
 %_____________________________________________________________________
 %
@@ -59,7 +59,12 @@ classdef FlightControl < handle
 % - Object of class FlightControl.
 %_____________________________________________________________________
 			
-			this.NumSatellites  = ns;
+            % Read formation flight parameters from JSON file.
+            fid = fopen(ffpsFilePath,'r');
+            this.FFPS = jsondecode(fscanf(fid,'%s'));
+            fclose(fid);
+            
+            this.NumSatellites  = ns;
 			this.FormationMode  = mode;
 			this.State          =[-950 0 0 0 0 0 0 0 0]';% zeros(9, 1);
 			this.StateDesired   = zeros(6, 1);

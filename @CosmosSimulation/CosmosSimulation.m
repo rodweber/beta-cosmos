@@ -30,7 +30,6 @@ classdef CosmosSimulation < handle
 		%Status % Simulation status.
 		TimeVector % Time vector for plotting.
 		TimeVectorLengths % Length of the time vector for each satellite.
-		FFPS %% formation flight parameters
     iniConditions %% initial conditions
 	end
 	
@@ -68,13 +67,26 @@ classdef CosmosSimulation < handle
 			
 			this.TimeVector = zeros(this.NumSatellites,1);
 			this.TimeVectorLengths = ones(this.NumSatellites,1);
-      
-      this.FFPS=param.FFPS;
-			
+      		
 			% Create array with objects of class Satellite.
 			this.Satellites = Satellite.empty(this.NumSatellites,0);
-      
-      for i = 1 : this.NumSatellites
+            
+            % Get location in which to save file with FFPS for the satellites.
+            ffpsFolder = param.FolderFFPS;
+            [~,~,~] = mkdir(ffpsFolder); % [status,msg,msgID]
+            
+            % Set common part of the name for FFPS files.
+            ffpsFileName = 'fc_FFP_sat';
+            
+            for i = 1 : this.NumSatellites
+                % Create a JSON file for each satellite with the specific formation flight parameters.
+                ffpsFilePath = strcat(ffpsFolder,filesep,ffpsFileName,num2str(i),'.json');
+                fid = fopen(ffpsFilePath,'w');
+                fprintf(fid,'%s',jsonencode( param.FFPS(i) ) );
+                fclose(fid);
+                
+                % Bring each satellite to life.
+                % Inform the location of the FFPS file to each satellite.
 				this.Satellites(i) = Satellite( ...
 					param.Altitude, ...
 					param.DeltaAngle, ...
@@ -82,8 +94,10 @@ classdef CosmosSimulation < handle
 					param.AvailableGPS, ...
 					param.AvailableTLE, ...
 					param.NumSatellites, ...
-					param.FormationMode);
-			end
+					param.FormationMode,...
+                    ffpsFilePath);
+            end
+            
 			% Create aliases for satellite orbits.
 			this.Orbits = Orbit.empty(this.NumSatellites,0);
 			for i = 1 : this.NumSatellites
@@ -99,10 +113,10 @@ classdef CosmosSimulation < handle
 			
 			% Create aliases for GPS modules.
 			this.GPSModules = GPS.empty(this.NumSatellites,0);
-			for i = 1 : this.NumSatellites
+            for i = 1 : this.NumSatellites
 				this.GPSModules(i) = this.Satellites(i).GPSModule;
-      end	
-      this.iniConditions=iniConditions;
+            end
+            this.iniConditions=iniConditions;
 
     end		
 	end % Constructor.

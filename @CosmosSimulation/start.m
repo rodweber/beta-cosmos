@@ -6,13 +6,6 @@ function start(this)
 % lines of code marked with   %% for sim  apply only for the simulation framework, not fsw
 %_____________________________________________________________________
 
-%% write satellite specific data to json file, one for each MATLAB-worker (satellite)
-for i=1:this.NumSatellites
-  fid=fopen(strcat('fc_FFPsat',num2str(i),'.json'),'w');
-  fprintf( fid,'%s',jsonencode( this.FFPS(i) ) );
-  fclose(fid);
-end
-
 % Create data queue for parallel pool.
 dq = parallel.pool.DataQueue;
 
@@ -26,27 +19,23 @@ parpool(this.NumSatellites);
 timeStartPool = posixtime(datetime('now')); % Posixtime [seconds].
 
 % Execute parallel code on workers of parallel pool.
+% For better debugging, comment spmd command and its end line.
+% Set id = 1 (instead of labindex).
 spmd(this.NumSatellites)
-	
- 
-	% Get unique IDs for each of the satellites, from 1 to N. %! JT: do we need id? isnt labindex enough?
-	% for the fsw, the sat needs to find its own id in a different way, for instance from the file that read later
-  id = labindex;
-	
-	% Create local aliases for the class objects.
-	sat   = this.Satellites(id);
-  orbit = this.Orbits(id);
-	fc    = this.FlightControlModules(id);
-	gps   = this.GPSModules(id);
-
-  %% read the formation flight parameters from file, one per MATLAB-worker (satellite), 
-  fid2=fopen(strcat('fc_FFPsat',num2str(id),'.json'),'r');
-  fc.ffp=jsondecode(fscanf(fid2,'%s'));
-  fclose(fid2);
-  
-  % Set satellite communication channel as the parpool data queue.
-	commChannel = dq;
-	
+    
+    % Get unique IDs for each of the satellites, from 1 to N. %! JT: do we need id? isnt labindex enough?
+    % for the fsw, the sat needs to find its own id in a different way, for instance from the file that read later
+    id = labindex;
+    
+    % Create local aliases for the class objects.
+    sat   = this.Satellites(id);
+    orbit = this.Orbits(id);
+    fc    = this.FlightControlModules(id);
+    gps   = this.GPSModules(id);
+    
+    % Set satellite communication channel as the parpool data queue.
+    commChannel = dq;
+    
   %% set up some parameters, such as battery status, sat status, initial conditions 
 	sat.initialize(id, commChannel,this.iniConditions(id,:));
  

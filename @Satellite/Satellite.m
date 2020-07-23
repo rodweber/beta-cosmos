@@ -29,7 +29,7 @@ classdef Satellite < handle
 	methods % Constructor.
 		
 		function this = Satellite(altitude, deltaAngle, autoResponse, ...
-			gpsAvailability, tleAvailability, numSats, mode)
+			gpsAvailability, tleAvailability, numSats, mode, ffpsFilePath)
       %% Constructor for class Satellite.
       %_____________________________________________________________________
       %
@@ -46,7 +46,7 @@ classdef Satellite < handle
       % - Object of class Satellite.
       %_____________________________________________________________________			
 			this.AutoResponse = autoResponse;
-			this.FlightControl = FlightControl(numSats, mode, deltaAngle);
+			this.FlightControl = FlightControl(numSats, mode, deltaAngle, ffpsFilePath);
 			this.Orbit = Orbit(altitude, gpsAvailability, tleAvailability);
 			this.GPSModule = GPS();	
 		end
