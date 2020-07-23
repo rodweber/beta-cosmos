@@ -31,26 +31,25 @@ classdef Satellite < handle
 		
 		function this = Satellite(altitude, deltaAngle, autoResponse, ...
 			gpsAvailability, tleAvailability, numSats, mode)
-%% Constructor for class Satellite.
-%_____________________________________________________________________
-%
-% Input:
-% - Altitude [meters].
-% - Roll, pitch, yaw angles resolution [deg].
-% - Auto response activation [boolean].
-% - GPS availability [boolean].
-% - TLE availability [boolean].
-% - Total number of satellites in the formation.
-% - Mode for the satellites formation flight.
-%
-% Output:
-% - Object of class Satellite.
-%_____________________________________________________________________			
+      %% Constructor for class Satellite.
+      %_____________________________________________________________________
+      %
+      % Input:
+      % - Altitude [meters].
+      % - Roll, pitch, yaw angles resolution [deg].
+      % - Auto response activation [boolean].
+      % - GPS availability [boolean].
+      % - TLE availability [boolean].
+      % - Total number of satellites in the formation.
+      % - Mode for the satellites formation flight.
+      %
+      % Output:
+      % - Object of class Satellite.
+      %_____________________________________________________________________			
 			this.AutoResponse = autoResponse;
 			this.FlightControl = FlightControl(numSats, mode, deltaAngle);
 			this.Orbit = Orbit(altitude, gpsAvailability, tleAvailability);
-			this.GPSModule = GPS();
-			
+			this.GPSModule = GPS();	
 		end
 		
 	end % Constructor.
@@ -59,15 +58,12 @@ classdef Satellite < handle
 %%%%%%%%%%%%%%%%%%%%%%%%%%% Public Methods %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	
-	methods (Access = public)
-		
+	methods (Access = public)	
 		initialize(this, id, commChannel,iniConditinos)
 		comm(this, msg)
 		fly(this, currentOrbitSection, sizeOrbitSection)
 		broadcastSend(this, msg)
 		msg = broadcastReceive(this)
-		turnOff(this)
-		
 	end % Public methods.
 	
 end % Class Satellite.

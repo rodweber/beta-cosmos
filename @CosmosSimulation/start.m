@@ -3,6 +3,7 @@ function start(this)
 %_____________________________________________________________________
 %
 % Details here.
+% lines of code marked with   %% for sim  apply only for the simulation framework, not fsw
 %_____________________________________________________________________
 
 %% write satellite specific data to json file, one for each MATLAB-worker (satellite)
@@ -28,7 +29,8 @@ timeStartPool = posixtime(datetime('now')); % Posixtime [seconds].
 spmd(this.NumSatellites)
 	
 	% Get unique IDs for each of the satellites, from 1 to N. %! JT: do we need id? isnt labindex enough?
-	id = labindex;
+	% for the fsw, the sat needs to find its own id in a different way, for instance from the file that read later
+  id = labindex;
 	
 	% Create local aliases for the class objects.
 	sat   = this.Satellites(id);
@@ -41,23 +43,21 @@ spmd(this.NumSatellites)
   fc.ffp=jsondecode(fscanf(fid2,'%s'));
   fclose(fid2);
 
-	% Set satellite communication channel as the parpool data queue.
+  %% for sim 
+  % Set satellite communication channel as the parpool data queue.
 	commChannel = dq;
 	
+  %% set up some parameters, such as battery status, sat status, initial conditions 
 	sat.initialize(id, commChannel,this.iniConditions(id,:));
  
+  %% for sim
+  % for simulation output, set initial conditions
 	this.updSatStatesIni(id, fc.State);
 	
 	while sat.Alive % Satellites turned on, but still doing nothing.
 		
       % Update orbit counter.
       gps.incrementOrbitCounter();
-
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      %%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
       % Calculate endOfSectionsCycle.
       endOfSectionsCycle = (this.IDX - 1) / this.NumOrbitSections;
@@ -69,15 +69,9 @@ spmd(this.NumSatellites)
         gps.MeanAnomalyFromAN = 120; % when starting a simulation, the s/c might be an arbitrary mean anomaly, e.g. 120
       end
 
-      % Update mean anomaly from ascending node.
+      %? Update mean anomaly from ascending node.
       % For now, simulation updates this value.
       % Later, this value will be obtained from GPS/TLE.
-
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      %%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
       this.updateIDX(gps.MeanAnomalyFromAN);
 
@@ -85,12 +79,6 @@ spmd(this.NumSatellites)
       % Wait until end of orbit sections.
       pause( (this.OrbitSections(this.IDX) - gps.MeanAnomalyFromAN) /...
         orbit.MeanMotionDeg / this.AccelFactor);
-
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      %%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
       % The orbit is divided into sections of few degrees size.
       % Start orbit sections loop.
@@ -106,6 +94,7 @@ spmd(this.NumSatellites)
           sat.fly(currentOrbitSection, this.OrbitSectionSize);
           %send(DQ,'after');
 
+          %% for sim
           % Update time vector for plotting.
           timestep = this.OrbitSectionSize / orbit.MeanMotionDeg;
           this.updTimeVector(id, timestep);
@@ -126,38 +115,29 @@ spmd(this.NumSatellites)
             refPosChange = labReceive(1, tag);
           end
 
+          %% for sim
           % Update vector with satellite positions for plotting.
           this.updSatPositions(id, refPosChange);
-          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-          %%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
           % Move coordinate system.
           % Should the old state be shifted as well?
           shift = -refPosChange(1:3);
           fc.shiftState(shift);
 
-          % Increment section counter.
+          %? Increment section counter.
           this.incrementIDX();
-
-          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-          %%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
           % Pause #2:
           % Add pause after subtracting this section's computing time.
           pause(this.OrbitSectionSize / orbit.MeanMotionDeg /this.AccelFactor - (now() - timeStartSection));
 
+          %% for sim
           % Update vector with satellite states for plotting.
           this.updSatStates(id, fc.State);
 
       end % While orbit sections loop.
 
-      % Check if orbit counter identifiers do not match.
+      %? Check if orbit counter identifiers do not match.
       if (orbit.OrbitCounter ~= orbit.TimeOrbitDuration(1))
         msg = ['Orbit identifiers in orbit.OrbitCounter and ',...
           'orbit.TimeOrbitDuration do not match.'];
@@ -171,14 +151,17 @@ spmd(this.NumSatellites)
       % If maximum number of orbits for the simulation has been reached,
       % turn off the satellite.
       if orbit.OrbitCounter >= this.MaxNumOrbits
-        pause(2);
+
+        %% for sim
         send(dq,['[sim] Maximum number of orbits reached! ','Killing [',sat.Name,']']);
-        sat.turnOff();
+        
+        sat.Alive = false;
       end
 		
 	end % While alive (main orbital loop).
 	
-	% Globally concatenate all output variables on lab index 1.
+  %% for sim
+  % Globally concatenate all output variables on lab index 1.
 	% Must be the last lines of code of the parallel pool.
 	satellites = gcat(sat,1,1);
 	orbits = gcat(orbit,1,1);
