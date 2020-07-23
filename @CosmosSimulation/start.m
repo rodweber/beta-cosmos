@@ -8,11 +8,8 @@ function start(this)
 
 %% write satellite specific data to json file, one for each MATLAB-worker (satellite)
 for i=1:this.NumSatellites
-  fid=fopen(strcat('FFPsat',num2str(i),'.json'),'w');
+  fid=fopen(strcat('fc_FFPsat',num2str(i),'.json'),'w');
   fprintf( fid,'%s',jsonencode( this.FFPS(i) ) );
-  fclose(fid);
-  fid=fopen(strcat('parametersSat',num2str(i),'.json'),'w');
-  fprintf( fid,'%s',jsonencode( this.param ) );
   fclose(fid);
 end
 
@@ -43,13 +40,10 @@ spmd(this.NumSatellites)
 	gps   = this.GPSModules(id);
 
   %% read the formation flight parameters from file, one per MATLAB-worker (satellite), 
-  fid2=fopen(strcat('FFPsat',num2str(id),'.json'),'r');
+  fid2=fopen(strcat('fc_FFPsat',num2str(id),'.json'),'r');
   fc.ffp=jsondecode(fscanf(fid2,'%s'));
   fclose(fid2);
-  %fid2=fopen(strcat('parametersSat',num2str(id),'.json'),'r');
-  %fc.ffp=jsondecode(fscanf(fid2,'%s'));
-  %fclose(fid2);
-
+  
   % Set satellite communication channel as the parpool data queue.
 	commChannel = dq;
 	
