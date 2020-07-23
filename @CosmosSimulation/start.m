@@ -11,6 +11,9 @@ for i=1:this.NumSatellites
   fid=fopen(strcat('FFPsat',num2str(i),'.json'),'w');
   fprintf( fid,'%s',jsonencode( this.FFPS(i) ) );
   fclose(fid);
+  fid=fopen(strcat('parametersSat',num2str(i),'.json'),'w');
+  fprintf( fid,'%s',jsonencode( this.param ) );
+  fclose(fid);
 end
 
 % Create data queue for parallel pool.
@@ -28,6 +31,7 @@ timeStartPool = posixtime(datetime('now')); % Posixtime [seconds].
 % Execute parallel code on workers of parallel pool.
 spmd(this.NumSatellites)
 	
+ 
 	% Get unique IDs for each of the satellites, from 1 to N. %! JT: do we need id? isnt labindex enough?
 	% for the fsw, the sat needs to find its own id in a different way, for instance from the file that read later
   id = labindex;
@@ -42,8 +46,10 @@ spmd(this.NumSatellites)
   fid2=fopen(strcat('FFPsat',num2str(id),'.json'),'r');
   fc.ffp=jsondecode(fscanf(fid2,'%s'));
   fclose(fid2);
+  %fid2=fopen(strcat('parametersSat',num2str(id),'.json'),'r');
+  %fc.ffp=jsondecode(fscanf(fid2,'%s'));
+  %fclose(fid2);
 
-  %% for sim 
   % Set satellite communication channel as the parpool data queue.
 	commChannel = dq;
 	
@@ -54,8 +60,8 @@ spmd(this.NumSatellites)
   % for simulation output, set initial conditions
 	this.updSatStatesIni(id, fc.State);
 	
-	while sat.Alive % Satellites turned on, but still doing nothing.
-		
+	while sat.Alive % Satellites turned on, but still doing nothing.     
+    
       % Update orbit counter.
       gps.incrementOrbitCounter();
 
@@ -148,8 +154,7 @@ spmd(this.NumSatellites)
         sat.comm(msg);
       end
 
-      % If maximum number of orbits for the simulation has been reached,
-      % turn off the satellite.
+      % If maximum number of orbits for the simulation has been reached, turn off the satellite.
       if orbit.OrbitCounter >= this.MaxNumOrbits
 
         %% for sim

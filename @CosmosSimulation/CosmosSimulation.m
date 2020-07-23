@@ -9,18 +9,20 @@
 classdef CosmosSimulation < handle
 	
 	properties (GetAccess = public, SetAccess = private)
-		
+    param 
 		AccelFactor % Acceleration factor for the simulation.
 		FlightControlModules % Array of FlightControl objects.
 		GPSModules % Array of GPS objects.
-		IDX % Change this ????????????????????????????????????????????????
-		MaxNumOrbits % Maximum number of orbits to run.
-		NumOrbitSections % Total number of orbit sections.
-		NumSatellites % Total number of satellites in the formation.
 		Orbits % Array of Orbit objects.
+
+		NumSatellites % Total number of satellites in the formation.
+    IDX % Change this ????????????????????????????????????????????????
+    MaxNumOrbits % Maximum number of orbits to run.
+		NumOrbitSections % Total number of orbit sections.
 		OrbitSectionSize % Size of each orbit section [deg].
 		OrbitSections % Orbital sections for the simulation.
-		Satellites % Array of Satellite objects.
+
+    Satellites % Array of Satellite objects.
 		SatPositions % Satellite positions in relation to the reference.
 		SatPositionsLengths % Length of the satellite positions vectors.
 		SatStates % Satellites states for plotting.
@@ -48,7 +50,7 @@ classdef CosmosSimulation < handle
 % Output:
 % - Object of class Simulation.
 %_____________________________________________________________________
-			
+			this.param=param;
 			this.MaxNumOrbits = param.MaxNumOrbits;
 			this.AccelFactor = param.AccelFactor;
 			this.IDX = param.InitIDX;
@@ -71,7 +73,8 @@ classdef CosmosSimulation < handle
 			
 			% Create array with objects of class Satellite.
 			this.Satellites = Satellite.empty(this.NumSatellites,0);
-			for i = 1 : this.NumSatellites
+      
+      for i = 1 : this.NumSatellites
 				this.Satellites(i) = Satellite( ...
 					param.Altitude, ...
 					param.DeltaAngle, ...
@@ -81,7 +84,6 @@ classdef CosmosSimulation < handle
 					param.NumSatellites, ...
 					param.FormationMode);
 			end
-			
 			% Create aliases for satellite orbits.
 			this.Orbits = Orbit.empty(this.NumSatellites,0);
 			for i = 1 : this.NumSatellites
@@ -92,6 +94,7 @@ classdef CosmosSimulation < handle
 			this.FlightControlModules = FlightControl.empty(this.NumSatellites,0);
 			for i = 1 : this.NumSatellites
 				this.FlightControlModules(i) = this.Satellites(i).FlightControl;
+        
 			end
 			
 			% Create aliases for GPS modules.
@@ -100,6 +103,7 @@ classdef CosmosSimulation < handle
 				this.GPSModules(i) = this.Satellites(i).GPSModule;
       end	
       this.iniConditions=iniConditions;
+
     end		
 	end % Constructor.
 	

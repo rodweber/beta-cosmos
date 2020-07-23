@@ -8,8 +8,7 @@
 
 classdef Satellite < handle
 	
-	properties (GetAccess = public, SetAccess = public)
-		
+	properties (GetAccess = public, SetAccess = public)		
 		Alive % If satellite is alive or not [true/false].
 		AutoResponse % If satellite should send responses [true/false].
 		CommChannel % Communication channel.
