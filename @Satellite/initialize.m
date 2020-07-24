@@ -8,6 +8,11 @@ function initialize(this, id, commChannel, iniConditions)
 % Update satellite ID in the formation flight.
 this.FlightControl.updateSatelliteID(id);
 
+% Read formation flight parameters from JSON file.
+fid = fopen(this.FlightControl.FFPSFilePath,'r');
+this.FlightControl.FFPS = jsondecode(fscanf(fid,'%s'));
+fclose(fid);
+
 % Set satellite name.
 this.Name = ['sat ',num2str(id)];
 

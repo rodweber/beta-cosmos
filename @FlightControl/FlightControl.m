@@ -10,7 +10,9 @@ classdef FlightControl < handle
 	
 	properties (GetAccess = public, SetAccess = public)
 		
+        DeltaAngle % Angular granularity for force vector determination.
         FFPS % Formation flight parameters.
+        FFPSFilePath % Location of the file with the FFPS.
 		FormationMode % Mode for the satellites formation flight.
 		NumSatellites % Total number of satellites in the formation.
 		Panels % Satellite panels.
@@ -59,11 +61,7 @@ classdef FlightControl < handle
 % - Object of class FlightControl.
 %_____________________________________________________________________
 			
-            % Read formation flight parameters from JSON file.
-            fid = fopen(ffpsFilePath,'r');
-            this.FFPS = jsondecode(fscanf(fid,'%s'));
-            fclose(fid);
-            
+            this.FFPSFilePath = ffpsFilePath;
             this.NumSatellites  = ns;
 			this.FormationMode  = mode;
 			this.State          =[-950 0 0 0 0 0 0 0 0]';% zeros(9, 1);
@@ -74,6 +72,7 @@ classdef FlightControl < handle
 			this.SSCoeff = 1;
 			
 			% Force vector determination and angular granularity.
+            this.DeltaAngle = deltaAngle; % Angular granularity.
 			this.Alphas = 0:deltaAngle:360; % Roll.
 			this.Betas  = 0:deltaAngle:180; % Pitch.
 			this.Gammas = 0:deltaAngle:360; % Yaw.
