@@ -310,19 +310,13 @@ fc = sim.FlightControlModules; % Aliases: fc(1) to fc(n).
 gps = sim.GPSModules; % Aliases: gps(1) to gps(n).
 
 %% Plot results
-angles = sim.SatStates(:,7:9,:);
-sst = sim.SatStates(:,1:6,:);
-refPosChange = sim.SatPositions(1,:,:);
-
-meanMotion = orbit.MeanMotionRad;
+%! empty place holders for now
 u = zeros(sim.NumSatellites, 3, size(sim.SatStates,3));
 e = zeros(sim.NumSatellites, 6, size(sim.SatStates,3));
 
-sim.plotting(angles, sst, refPosChange, sim.TimeVector', sim.NumSatellites, meanMotion, u, e);
-sim.visualizationLONLATALT(sim.NumSatellites,sim.TimeVector',squeeze(sim.SatStates(:,1,:)),...
-squeeze(sim.SatStates(:,2,:)),sim.SatStates(:,3,:),angles,500000)
-
-
+sim.plotting(sim.SatStates(:,7:9,:), sim.SatStates(:,1:6,:), sim.SatPositions(1,:,:), sim.TimeVector', sim.NumSatellites, orbit(1).MeanMotionRad, u, e);
+sim.visualizationLONLATALT(sim.NumSatellites,sim.TimeVector',squeeze(sim.SatStates(:,1,:)),squeeze(sim.SatStates(:,2,:)),sim.SatStates(:,3,:),squeeze(sim.SatStates(:,7,:)),squeeze(sim.SatStates(:,8,:)),squeeze(sim.SatStates(:,9,:)),orbit(1).Altitude)
+%n visualizationLONLATALT(ns                ,  cosmostime   ,sstx                         ,ssty                         ,sstz                ,pitch                        ,yaw                          ,roll                         ,altitude)
 %% save data for documentation generation
 % Save current MATLAB workspace variables.
 warning off parallel:lang:spmd:CompositeSave;

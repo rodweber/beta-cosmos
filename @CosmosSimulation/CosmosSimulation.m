@@ -169,7 +169,7 @@ classdef CosmosSimulation < handle
 		
 		plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e)
 		createListCustomClasses(filepath, workspaceFileName)
-		visualizationLONLATALT(ns,ttime,sstx,ssty,sstz,anglesGE,altitude)
+		visualizationLONLATALT(ns,ttime,sstx,ssty,sstz,pitch,yaw,roll,altitude)
 
   end % Static methods.
 	

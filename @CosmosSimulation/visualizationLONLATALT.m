@@ -1,4 +1,4 @@
-function visualizationLONLATALT(ns,cosmostime,sstx,ssty,sstz,angles,altitude)
+function visualizationLONLATALT(ns,cosmostime,sstx,ssty,sstz,pitch,yaw,roll,altitude)
 %function visualizationLONLATALT(ns,ttime,sstx,ssty,sstz,altitude,anglesGE,...
 %  modelfilename,masterfilename,radiusOfEarth,mu,vis_step,accelerationfactor,footprintyn,USyn)
   %% this function adds the global movement of the satellite based on Kepler's laws
@@ -17,10 +17,11 @@ function visualizationLONLATALT(ns,cosmostime,sstx,ssty,sstz,angles,altitude)
 
   
   %% ORBIT INPUT
+  inclination=89.999999;%i       = input(' Inclination                          [-90, 90]    i      [deg] = ');
+  inclination=0;%i       = input(' Inclination                          [-90, 90]    i      [deg] = ');
   RAAN=0; %%RAAN    = input(' Right Ascension of Ascendent Node    [  0,360[    RAAN   [deg] = ');    
   w=0;    %%w       = input(' Argument of perigee                  [  0,360[    w      [deg] = ');
   v0=0;   %%v0      = input(' True anomaly at the departure        [  0,360[    v0     [deg] = ');
-  inclination=89.999999;%i       = input(' Inclination                          [-90, 90]    i      [deg] = ');
   a=RE+altitude/1000;%a       = input(' Major semi-axis                       (>6378)     a      [km]  = ');
   ecc_max = sprintf('%6.4f',1-RE/a);     % maximum value of eccentricity allowed
   e=0;%e       = input([' Eccentricity                         (<',ecc_max,')    e            = ']);
@@ -53,7 +54,7 @@ function visualizationLONLATALT(ns,cosmostime,sstx,ssty,sstz,angles,altitude)
   t0   = cosmostime(1,1);                           % initial time          [s]
   tf=cosmostime(end,1);                             % final time
   vis_step=2;       %step = input(' Time step.        [s] step = ');  % time step             [s]    
-  viztime    = t0:vis_step:tf;                          % vector of time        [s] 
+  vizgridtime    = t0:vis_step:tf;                          % vector of time        [s] 
   %% DETERMINATION OF THE DYNAMICS
   cosE0 = (e+cos(v0))./(1+e.*cos(v0));               % cosine of initial eccentric anomaly
   sinE0 = (sqrt(1-e^2).*sin(v0))./(1+e.*cos(v0));    %   sine of initial eccentric anomaly
@@ -62,11 +63,11 @@ function visualizationLONLATALT(ns,cosmostime,sstx,ssty,sstz,angles,altitude)
     E0=E0+2*pi;
   end
   tp = (-E0+e.*sin(E0))./n+t0;                       % pass time at the perigee               [s]
-  M  = n.*(viztime-tp);                                    % mean anomaly                           [rad]
+  M  = n.*(vizgridtime-tp);                                    % mean anomaly                           [rad]
   %% Mk = Ek - e*sin(Ek);
   % Eccentric anomaly (must be solved iteratively for Ek)
-  E = zeros(size(viztime,2),1);
-  for j=1:size(viztime,2)
+  E = zeros(size(vizgridtime,2),1);
+  for j=1:size(vizgridtime,2)
     E(j) = anom_ecc(M(j),e);                     % eccentric anomaly         [rad]
   end
   %% True anomaly, Argument of latitude, Radius
@@ -96,8 +97,8 @@ function visualizationLONLATALT(ns,cosmostime,sstx,ssty,sstz,angles,altitude)
   greenwich0=0;
   %% SUB-SATELLITE-POINT
   greenwich0 = greenwich0*pi/180;                 % Greenwich hour angle at the initial time    [rad]
-  rot_earth  = wE.*(viztime-t0)+greenwich0;             % Greenwich hour angle at the time t          [rad]
-  for j=1:size(viztime,2)
+  rot_earth  = wE.*(vizgridtime-t0)+greenwich0;             % Greenwich hour angle at the time t          [rad]
+  for j=1:size(vizgridtime,2)
     if rot_earth(j) < (-pi)
       nn = ceil(rot_earth(j)/(-2*pi));
       rot_earth(j) = rot_earth(j) + nn*2*pi;
@@ -108,19 +109,25 @@ function visualizationLONLATALT(ns,cosmostime,sstx,ssty,sstz,angles,altitude)
   end
   
   %% interpolate relative position on visualization time steps
+
   for j=1:ns
-    sstxvizgrid(j,:)=interp1(cosmostime(:,j),sstx(j,:),viztime);
-    sstyvizgrid(j,:)=interp1(cosmostime(:,j),ssty(j,:),viztime);
-    sstzvizgrid(j,:)=interp1(cosmostime(:,j),sstz(j,:),viztime);
+    sstxvizgrid(j,:)=interp1(cosmostime(:,j),sstx(j,:),vizgridtime);
+    sstyvizgrid(j,:)=interp1(cosmostime(:,j),ssty(j,:),vizgridtime);
+    sstzvizgrid(j,:)=interp1(cosmostime(:,j),sstz(j,:),vizgridtime);
     
-    zaxvizgrid(j,:) =interp1(cosmostime(:,j),squeeze(angles(1,j,:)),viztime);
-    yaxvgrid(j,:)   =interp1(cosmostime(:,j),squeeze(angles(2,j,:)),viztime);
-    xaxvizgrid(j,:) =interp1(cosmostime(:,j),squeeze(angles(3,j,:)),viztime);
+    pitchvizgrid(j,:) =interp1(cosmostime(:,j),squeeze(pitch(j,:)),vizgridtime);
+    yawvizgrid(j,:)   =interp1(cosmostime(:,j),squeeze(yaw(j,:)),vizgridtime);
+    rollvizgrid(j,:) =interp1(cosmostime(:,j),squeeze(roll(j,:)),vizgridtime);
   end
   %% centerpoint
-  Lat(1,:)     =  asin(sin(inclination).*sin(theta))/pi*180;    % Latitude             [deg]
-  Lon(1,:)    = wrapTo360((atan2(ys./rs,xs./rs)-rot_earth')/pi*180);      % Longitude            [deg]
-  Rad(1,:)     = rs;                                            % radius                [km]
+  Lat(1,:)     =  asin(sin(inclination).*sin(theta))/pi*180;          % Latitude             [deg]
+  Lon(1,:)     = wrapTo360((atan2(ys./rs,xs./rs)-rot_earth')/pi*180); % Longitude            [deg]
+  Rad(1,:)     = rs;                                                  % radius                [km]
+  
+  pitchvizgrid=[zeros(1,size(pitchvizgrid,2)); pitchvizgrid];
+  yawvizgrid  =[zeros(1,size(pitchvizgrid,2)); yawvizgrid];
+  rollvizgrid =[zeros(1,size(pitchvizgrid,2)); rollvizgrid]; 
+  
   %% off set of the formation satellites
   for j=1:ns
     latoff(j,:)      = asin(  sstxvizgrid(j,:)/1000  ./  (rs(:,1)'  + sstzvizgrid(j,:)/1000) ); %%latitude offset
@@ -128,7 +135,7 @@ function visualizationLONLATALT(ns,cosmostime,sstx,ssty,sstz,angles,altitude)
   end
   
   %% Lat, Lon, Rad of formation satellites 
-  for i=1:size(viztime,2)-1
+  for i=1:size(vizgridtime,2)-1
     for j=2:ns+1
       if i==1 %% 1-point, northward
         Lat(j,i)     = Lat(1,i)+latoff(j-1,i)/pi*180;      % Latitude             [deg]
@@ -142,8 +149,8 @@ function visualizationLONLATALT(ns,cosmostime,sstx,ssty,sstz,angles,altitude)
         Lat(j,i)     = Lat(1,i)-latoff(j-1,i)/pi*180;      % Latitude             [deg]
         Lon(j,i)    = wrapTo360(Lon(1,i)+longoff(j-1,i)/pi*180);    % Longitude            [deg]
         Rad(j,i)     = Rad(i)'+sstzvizgrid(j-1,i)/1000;       % radius                [km]
-        zaxvizgrid(j-1,i)= zaxvizgrid(j-1,i)-180;
-      elseif i==size(viztime,2) %% last point
+        pitchvizgrid(j-1,i)= pitchvizgrid(j-1,i)-180;
+      elseif i==size(vizgridtime,2) %% last point
         if Lat(1,i)>Lat(1,i-1) %% northward
           Lat(j,i)     = Lat(1,i)+latoff(j-1,i)/pi*180;      % Latitude             [deg]
           Lon(j,i)    = wrapTo360(Lon(1,i)+longoff(j-1,i)/pi*180);    % Longitude            [deg]
@@ -161,8 +168,7 @@ function visualizationLONLATALT(ns,cosmostime,sstx,ssty,sstz,angles,altitude)
        
   %% write file   
   for i=1:ns+1
-    %csvwrite(strcat('sat',num2str(i),'LLR.csv'),[viztime' Lat(i,:)' Lon(i,:)' Rad(i,:)']);
-    dlmwrite(strcat('sat',num2str(i),'LLR.csv'),[viztime' Lat(i,:)' Lon(i,:)' Rad(i,:)'],'precision',12);
+    dlmwrite(strcat('sat',num2str(i),'_LLR_PYR.csv'),[vizgridtime' Lat(i,:)' Lon(i,:)' Rad(i,:)' pitchvizgrid(i,:)' yawvizgrid(i,:)' rollvizgrid(i,:)' ],'precision',12);
   end
   
   

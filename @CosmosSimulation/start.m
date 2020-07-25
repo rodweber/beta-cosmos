@@ -45,9 +45,6 @@ spmd(this.NumSatellites)
 	
 	while sat.Alive % Satellites turned on, but still doing nothing.     
     
-      % Update orbit counter.
-      gps.incrementOrbitCounter();
-
       % Calculate endOfSectionsCycle.
       endOfSectionsCycle = (this.IDX - 1) / this.NumOrbitSections;
 
@@ -136,13 +133,14 @@ spmd(this.NumSatellites)
           '(',num2str(orbit.TimeOrbitDuration(2)),' s)'];
         sat.comm(msg);
       end
+      
+      % Update orbit counter.
+      gps.incrementOrbitCounter();
 
       % If maximum number of orbits for the simulation has been reached, turn off the satellite.
       if orbit.OrbitCounter >= this.MaxNumOrbits
-
         %% for sim
         send(dq,['[sim] Maximum number of orbits reached! ','Killing [',sat.Name,']']);
-        
         sat.Alive = false;
       end
 		
