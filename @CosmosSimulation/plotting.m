@@ -1,10 +1,29 @@
-function plotting(angles,sst,refPosChange,time,ns,meanMotion,u,e)
-  if 0
+function plotting(ns,meanMotionRad)
+
+%% read data from telemetry files
+for i=1:ns
+  temptime=readmatrix(strcat('TMTimeVector',num2str(i),'.csv'));  
+  temprefPosChange=readmatrix(strcat('TMSatPosition',num2str(i),'.csv'));  
+  tempSatStates=readmatrix(strcat('TMSatStates',num2str(i),'.csv'));  
+  if i==1
+      timeSteps=size(temptime,1);
+      time=zeros(timeSteps,ns);
+      sst=zeros(ns,6,timeSteps);
+      angles=zeros(ns,3,timeSteps);
+      refPosChange=zeros(1,3,timeSteps);
+      refPosChange(1,:,:)=temprefPosChange';
+  end
+  time(:,i)=temptime(:);
+  sst(i,:,:)=tempSatStates(:,1:6)';
+  angles(i,:,:)=tempSatStates(:,7:9)';
+end
+
+if 0
     figure
       for i=1:3
         subplot(3,1,i)
         for j=1:ns
-          plot(time(:,j)/2/pi*meanMotion,squeeze(e(j,i,:)));hold on;
+          plot(time(:,j)/2/pi*meanMotionRad,squeeze(e(j,i,:)));hold on;
         end
         legend;
         title(strcat('error coordinate',num2str(i)))
@@ -24,34 +43,37 @@ function plotting(angles,sst,refPosChange,time,ns,meanMotion,u,e)
     figure
       subplot(2,3,1)%% roll
         for i=1:ns
-          plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(angles(i,1,:)));hold on
+          plot(squeeze(time(:,i)/2/pi*meanMotionRad),squeeze(angles(i,1,:)));hold on
           names(i)=[{strcat('sat',int2str(i))}];
         end
       ylabel('roll angle [deg]');xlabel('no. of orbits');grid on;hold off;
       legend(names);
+      axis([-inf inf -10 370])
       subplot(2,3,2)%% pitch
       for i=1:ns
-         plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(angles(i,2,:)));hold on
+         plot(squeeze(time(:,i)/2/pi*meanMotionRad),squeeze(angles(i,2,:)));hold on
       end
       ylabel('pitch angle [deg]');xlabel('no. of orbits');grid on;hold off;
+      axis([-inf inf -10 190])
       subplot(2,3,3)%%yaw
       for i=1:ns
-        plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(angles(i,3,:)));hold on
+        plot(squeeze(time(:,i)/2/pi*meanMotionRad),squeeze(angles(i,3,:)));hold on
       end
       ylabel('yaw angle [deg]');xlabel('no. of orbits');grid on;hold off
+      axis([-inf inf -10 370])      
       subplot(2,3,4)%%x
       for i=1:ns
-         plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(sst(i,1,:)));hold on
+         plot(squeeze(time(:,i)/2/pi*meanMotionRad),squeeze(sst(i,1,:)));hold on
       end
       ylabel('x [m]');xlabel('no. of orbits');grid on;hold off
       subplot(2,3,5)%%y
       for i=1:ns
-         plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(sst(i,2,:)));hold on
+         plot(squeeze(time(:,i)/2/pi*meanMotionRad),squeeze(sst(i,2,:)));hold on
       end
       ylabel('y [m]');xlabel('no. of orbits');grid on;hold off
       subplot(2,3,6)%%z
       for i=1:ns
-        plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(sst(i,3,:)));hold on
+        plot(squeeze(time(:,i)/2/pi*meanMotionRad),squeeze(sst(i,3,:)));hold on
       end
       ylabel('z [m]');xlabel('no. of orbits');grid on;hold off
   end
@@ -61,64 +83,64 @@ function plotting(angles,sst,refPosChange,time,ns,meanMotion,u,e)
     figure
       subplot(4,3,1)%% roll
         for i=1:ns
-          plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(angles(i,1,:)));hold on
+          plot(squeeze(time(:,i)/2/pi*meanMotionRad),squeeze(angles(i,1,:)));hold on
           names(i)=[{strcat('sat',int2str(i))}];
         end
       ylabel('roll angle [deg]');xlabel('no. of orbits');grid on;hold off;
       legend(names);
       subplot(4,3,2)%% pitch
       for i=1:ns
-         plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(angles(i,2,:)));hold on
+         plot(squeeze(time(:,i)/2/pi*meanMotionRad),squeeze(angles(i,2,:)));hold on
       end
       ylabel('pitch angle [deg]');xlabel('no. of orbits');grid on;hold off;
       subplot(4,3,3)%%yaw
       for i=1:ns
-        plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(angles(i,3,:)));hold on
+        plot(squeeze(time(:,i)/2/pi*meanMotionRad),squeeze(angles(i,3,:)));hold on
       end
       ylabel('yaw angle [deg]');xlabel('no. of orbits');grid on;hold off
       subplot(4,3,4)%%x
       for i=1:ns
-         plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(sst(i,1,:)));hold on
+         plot(squeeze(time(:,i)/2/pi*meanMotionRad),squeeze(sst(i,1,:)));hold on
       end
       ylabel('x [m]');xlabel('no. of orbits');grid on;hold off
       subplot(4,3,5)%%y
       for i=1:ns
-         plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(sst(i,2,:)));hold on
+         plot(squeeze(time(:,i)/2/pi*meanMotionRad),squeeze(sst(i,2,:)));hold on
       end
       ylabel('y [m]');xlabel('no. of orbits');grid on;hold off
       subplot(4,3,6)%%z
       for i=1:ns
-        plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(sst(i,3,:)));hold on
+        plot(squeeze(time(:,i)/2/pi*meanMotionRad),squeeze(sst(i,3,:)));hold on
       end
       ylabel('z [m]');xlabel('no. of orbits');grid on;hold off
       subplot(4,3,7)%%u1
       for i=1:ns
-        plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(u(i,1,:)));hold on
+        plot(squeeze(time(:,i)/2/pi*meanMotionRad),squeeze(u(i,1,:)));hold on
       end
       ylabel('u1');xlabel('no. of orbits');grid on;hold off
       subplot(4,3,8)%%u2
       for i=1:ns
-        plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(u(i,2,:)));hold on
+        plot(squeeze(time(:,i)/2/pi*meanMotionRad),squeeze(u(i,2,:)));hold on
       end
       ylabel('u2');xlabel('no. of orbits');grid on;hold off
       subplot(4,3,9)%%u3
       for i=1:ns
-         plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(u(i,3,:)));hold on
+         plot(squeeze(time(:,i)/2/pi*meanMotionRad),squeeze(u(i,3,:)));hold on
       end
       ylabel('u3');xlabel('no. of orbits');grid on;hold off  
       subplot(4,3,10)%%u
       for i=1:ns
-         plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(sst(i,4,:)));hold on
+         plot(squeeze(time(:,i)/2/pi*meanMotionRad),squeeze(sst(i,4,:)));hold on
       end
       ylabel('u [m/s]');xlabel('no. of orbits');grid on;hold off
       subplot(4,3,11)%%v
       for i=1:ns
-         plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(sst(i,5,:)));hold on
+         plot(squeeze(time(:,i)/2/pi*meanMotionRad),squeeze(sst(i,5,:)));hold on
       end
       ylabel('v [m/s]');xlabel('no. of orbits');grid on;hold off
       subplot(4,3,12)%%w
       for i=1:ns
-         plot(squeeze(time(:,i)/2/pi*meanMotion),squeeze(sst(i,6,:)));hold on
+         plot(squeeze(time(:,i)/2/pi*meanMotionRad),squeeze(sst(i,6,:)));hold on
       end
       ylabel('w [m/s]');xlabel('no. of orbits');grid on;hold off
 

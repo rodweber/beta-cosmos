@@ -86,6 +86,7 @@ spmd(this.NumSatellites)
           this.updTimeVector(id, timestep);
 
           % Send reference position to all non 1-satellites.
+          %! this should go into a new COM module
           refPosChange = zeros(3,1);
           if id == 1
             refPosChange(1:3) = fc.State(1:3) - fc.StateOld(1:3);
@@ -146,22 +147,33 @@ spmd(this.NumSatellites)
 		
 	end % While alive (main orbital loop).
 	
+  %{
   %% for sim
   % Globally concatenate all output variables on lab index 1.
 	% Must be the last lines of code of the parallel pool.
+  %! change: write in TM files
 	satellites = gcat(sat,1,1);
 	orbits = gcat(orbit,1,1);
 	flightControlModules = gcat(fc,1,1);
 	gpsModules = gcat(gps,1,1);
+  
+  
 	timeVectorLengths = gcat(this.TimeVectorLengths(id),1,1);
 	timeVector = gcat(this.TimeVector(id,:),1,1);
 	satPositionsLengths = gcat(this.SatPositionsLengths(id),1,1);
 	satPositions = gcat(this.SatPositions(id,:,:),1,1);
 	satStatesLengths = gcat(this.SatStatesLengths(id),1,1);
 	satStates = gcat(this.SatStates(id,:,:),1,1);
-	
-end % Parallel code.
+  %}
+  
+	%% write telemetry to files, should be a function of satellite
+  %% also the data containers need to be properties of the Satellite, not Simulation
+  writematrix(this.TimeVector(id,:)',strcat('TMTimeVector',num2str(id),'.csv'));  
+  writematrix(squeeze(this.SatPositions(id,:,:))',strcat('TMSatPosition',num2str(id),'.csv'));  
+  writematrix(squeeze(this.SatStates(id,:,:))',strcat('TMSatStates',num2str(id),'.csv'));  
 
+end % Parallel code.
+%{
 % Get the globally concatenated values stored on lab index 1.
 % Must be placed right after the end of the parallel pool.
 this.Satellites = satellites{1};
@@ -174,7 +186,7 @@ this.SatPositionsLengths = satPositionsLengths{1};
 this.SatPositions = satPositions{1};
 this.SatStatesLengths = satStatesLengths{1};
 this.SatStates = satStates{1};
-
+%}
 % Terminate the existing parallel pool session.
 delete(gcp('nocreate'));
 
@@ -183,5 +195,7 @@ timeEndPool = posixtime(datetime('now')); % Posixtime [seconds].
 timeDurationPool = timeEndPool - timeStartPool;
 fprintf('Total simulation time: %s seconds.\n',...
 num2str(timeDurationPool));
+
+
 
 end % Function CosmosSimulation.start.

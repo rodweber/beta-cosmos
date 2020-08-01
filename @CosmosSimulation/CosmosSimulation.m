@@ -11,6 +11,7 @@ classdef CosmosSimulation < handle
 	properties (GetAccess = public, SetAccess = private)
     param 
 		AccelFactor % Acceleration factor for the simulation.
+    vizScale
 		FlightControlModules % Array of FlightControl objects.
 		GPSModules % Array of GPS objects.
 		Orbits % Array of Orbit objects.
@@ -52,6 +53,7 @@ classdef CosmosSimulation < handle
 			this.param=param;
 			this.MaxNumOrbits = param.MaxNumOrbits;
 			this.AccelFactor = param.AccelFactor;
+			this.vizScale = param.vizScale;
 			this.IDX = param.InitIDX;
 			this.OrbitSectionSize = param.OrbitSectionSize;
 			this.OrbitSections = 1:param.OrbitSectionSize:360;
@@ -87,15 +89,15 @@ classdef CosmosSimulation < handle
                 
                 % Bring each satellite to life.
                 % Inform the location of the FFPS file to each satellite.
-				this.Satellites(i) = Satellite( ...
-					param.Altitude, ...
-					param.DeltaAngle, ...
-					param.AutoResponse, ...
-					param.AvailableGPS, ...
-					param.AvailableTLE, ...
-					param.NumSatellites, ...
-					param.FormationMode,...
-                    ffpsFilePath);
+              this.Satellites(i) = Satellite( ...
+              param.Altitude, ...
+              param.DeltaAngle, ...
+              param.AutoResponse, ...
+              param.AvailableGPS, ...
+              param.AvailableTLE, ...
+              param.NumSatellites, ...
+              param.FormationMode,...
+              ffpsFilePath);
             end
             
 			% Create aliases for satellite orbits.
@@ -113,10 +115,10 @@ classdef CosmosSimulation < handle
 			
 			% Create aliases for GPS modules.
 			this.GPSModules = GPS.empty(this.NumSatellites,0);
-            for i = 1 : this.NumSatellites
+      for i = 1 : this.NumSatellites
 				this.GPSModules(i) = this.Satellites(i).GPSModule;
-            end
-            this.iniConditions=iniConditions;
+      end
+      this.iniConditions=iniConditions;
 
     end		
 	end % Constructor.
@@ -147,8 +149,10 @@ classdef CosmosSimulation < handle
 
  		function updSatStatesIni(this, satID, satState)
 			this.SatStates(satID, 1:9, 1) = satState;
-		end
+    end
 
+    
+    %! give better name this is the reference position change
 		function updSatPositions(this, satID, newValue)
 			nextPos = this.SatPositionsLengths(satID) + 1;
 			this.SatPositions(satID, 1:3, nextPos) = newValue;
@@ -167,7 +171,7 @@ classdef CosmosSimulation < handle
 	
 	methods (Static)
 		
-		plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e)
+		plotting(ns, meanMotionRad)
 		createListCustomClasses(filepath, workspaceFileName)
 		visualizationLONLATALT(ns,ttime,sstx,ssty,sstz,pitch,yaw,roll,altitude)
 

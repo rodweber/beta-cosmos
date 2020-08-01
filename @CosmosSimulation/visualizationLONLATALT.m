@@ -1,6 +1,28 @@
-function visualizationLONLATALT(ns,cosmostime,sstx,ssty,sstz,pitch,yaw,roll,altitude)
-%function visualizationLONLATALT(ns,ttime,sstx,ssty,sstz,altitude,anglesGE,...
-%  modelfilename,masterfilename,radiusOfEarth,mu,vis_step,accelerationfactor,footprintyn,USyn)
+function visualizationLONLATALT(ns,altitude)
+
+%% read data from telemery files
+for i=1:ns
+  temptime=readmatrix(strcat('TMTimeVector',num2str(i),'.csv'));  
+  tempSatStates=readmatrix(strcat('TMSatStates',num2str(i),'.csv')); 
+  if i==1
+      timeSteps=size(temptime,1);
+      cosmostime=zeros(timeSteps,ns);
+      sstx =zeros(ns,timeSteps);
+      ssty =zeros(ns,timeSteps);
+      sstz =zeros(ns,timeSteps);
+      pitch=zeros(ns,timeSteps);
+      yaw  =zeros(ns,timeSteps);
+      roll =zeros(ns,timeSteps);
+  end
+  cosmostime(:,i)=temptime(:);
+  sstx(i,:)=tempSatStates(:,1)';
+  ssty(i,:,:)=tempSatStates(:,2)';
+  sstz(i,:,:)=tempSatStates(:,3)';
+  pitch(i,:)=tempSatStates(:,7)';
+  yaw(i,:)  =tempSatStates(:,8)';
+  roll(i,:) =tempSatStates(:,9)';
+end
+
   %% this function adds the global movement of the satellite based on Kepler's laws
   %this function works with km instead of m %!harmonize
 
@@ -14,10 +36,9 @@ function visualizationLONLATALT(ns,cosmostime,sstx,ssty,sstz,pitch,yaw,roll,alti
   RE = radiusOfEarth/1000;          % Earth's radius                            [km]
   muE = mu/1e9;    % Earth gravitational parameter             [km^3/sec^2]
   wE = (2*pi/86164);  % Earth rotation velocity aorund z-axis     [rad/sec]
-
   
   %% ORBIT INPUT
-  inclination=89.999999;%i       = input(' Inclination                          [-90, 90]    i      [deg] = ');
+  %inclination=89.999999;%i       = input(' Inclination                          [-90, 90]    i      [deg] = ');
   inclination=0;%i       = input(' Inclination                          [-90, 90]    i      [deg] = ');
   RAAN=0; %%RAAN    = input(' Right Ascension of Ascendent Node    [  0,360[    RAAN   [deg] = ');    
   w=0;    %%w       = input(' Argument of perigee                  [  0,360[    w      [deg] = ');
@@ -111,64 +132,77 @@ function visualizationLONLATALT(ns,cosmostime,sstx,ssty,sstz,pitch,yaw,roll,alti
   %% interpolate relative position on visualization time steps
 
   for j=1:ns
-    sstxvizgrid(j,:)=interp1(cosmostime(:,j),sstx(j,:),vizgridtime);
-    sstyvizgrid(j,:)=interp1(cosmostime(:,j),ssty(j,:),vizgridtime);
-    sstzvizgrid(j,:)=interp1(cosmostime(:,j),sstz(j,:),vizgridtime);
+    sstXvizgrid(j,:)=interp1(cosmostime(:,j),sstx(j,:),vizgridtime);
+    sstYvizgrid(j,:)=interp1(cosmostime(:,j),ssty(j,:),vizgridtime);
+    sstZvizgrid(j,:)=interp1(cosmostime(:,j),sstz(j,:),vizgridtime);
     
     pitchvizgrid(j,:) =interp1(cosmostime(:,j),squeeze(pitch(j,:)),vizgridtime);
     yawvizgrid(j,:)   =interp1(cosmostime(:,j),squeeze(yaw(j,:)),vizgridtime);
-    rollvizgrid(j,:) =interp1(cosmostime(:,j),squeeze(roll(j,:)),vizgridtime);
+    rollvizgrid(j,:)  =interp1(cosmostime(:,j),squeeze(roll(j,:)),vizgridtime);
   end
   %% centerpoint
-  Lat(1,:)     =  asin(sin(inclination).*sin(theta))/pi*180;          % Latitude             [deg]
-  Lon(1,:)     = wrapTo360((atan2(ys./rs,xs./rs)-rot_earth')/pi*180); % Longitude            [deg]
-  Rad(1,:)     = rs;                                                  % radius                [km]
+  Lat(1,:)      = asin(sin(inclination).*sin(theta))/pi*180;           % Latitude             [deg]
+  Lon(1,:)      = wrapTo360((atan2(ys./rs,xs./rs)-rot_earth')/pi*180); % Longitude            [deg]
+  Rad(1,:)      = rs;                                                  % radius                [km]
   
-  pitchvizgrid=[zeros(1,size(pitchvizgrid,2)); pitchvizgrid];
-  yawvizgrid  =[zeros(1,size(pitchvizgrid,2)); yawvizgrid];
-  rollvizgrid =[zeros(1,size(pitchvizgrid,2)); rollvizgrid]; 
+  pitchvizgrid  = [zeros(1,size(pitchvizgrid,2)); pitchvizgrid];
+  yawvizgrid    = [zeros(1,size(pitchvizgrid,2)); yawvizgrid];
+  rollvizgrid   = [zeros(1,size(pitchvizgrid,2)); rollvizgrid]; 
   
   %% off set of the formation satellites
-  for j=1:ns
-    latoff(j,:)      = asin(  sstxvizgrid(j,:)/1000  ./  (rs(:,1)'  + sstzvizgrid(j,:)/1000) ); %%latitude offset
-    longoff(j,:)     = asin( sstyvizgrid(j,:)/1000   ./   (rs(:,1)' + sstzvizgrid(j,:)/1000) ); %%longitude offset
+  for i=1:size(vizgridtime,2)-1
+    for j=1:ns
+      localTransformedCoSystem = rotz(inclination*180/pi-90)*[sstXvizgrid(j,i) ; sstYvizgrid(j,i); sstZvizgrid(j,i)];
+      offPlaneOffsetAngle(j,i) = asind(  localTransformedCoSystem(1)/1000 / (rs(i,1) +  localTransformedCoSystem(3)/1000) );
+      inPlaneOffsetAngle(j,i)  = asind(  localTransformedCoSystem(2)/1000 / (rs(i,1)  + localTransformedCoSystem(3)/1000) );
+    end
   end
   
   %% Lat, Lon, Rad of formation satellites 
   for i=1:size(vizgridtime,2)-1
     for j=2:ns+1
+      
+      Lon(j,i)     = wrapTo360(Lon(1,i)+offPlaneOffsetAngle(j-1,i));         % Longitude            [deg]
+      Lat(j,i)     = Lat(1,i)+inPlaneOffsetAngle(j-1,i);      % Latitude             [deg]
+      Rad(j,i)     = Rad(i)'+sstZvizgrid(j-1,i)/1000;                               % radius                [km]
+
+      %{
       if i==1 %% 1-point, northward
-        Lat(j,i)     = Lat(1,i)+latoff(j-1,i)/pi*180;      % Latitude             [deg]
-        Lon(j,i)    = wrapTo360(Lon(1,i)+longoff(j-1,i)/pi*180);    % Longitude            [deg]
-        Rad(j,i)     = Rad(i)'+sstzvizgrid(j-1,i)/1000;       % radius                [km]
-      elseif Lat(1,i+1)>Lat(1,i) %% northward
-        Lat(j,i)     = Lat(1,i)+latoff(j-1,i)/pi*180;      % Latitude             [deg]
-        Lon(j,i)    = wrapTo360(Lon(1,i)+longoff(j-1,i)/pi*180);    % Longitude            [deg]
-        Rad(j,i)     = Rad(i)'+sstzvizgrid(j-1,i)/1000;       % radius                [km]
-      elseif Lat(1,i+1)<Lat(1,i) %% southward
-        Lat(j,i)     = Lat(1,i)-latoff(j-1,i)/pi*180;      % Latitude             [deg]
-        Lon(j,i)    = wrapTo360(Lon(1,i)+longoff(j-1,i)/pi*180);    % Longitude            [deg]
-        Rad(j,i)     = Rad(i)'+sstzvizgrid(j-1,i)/1000;       % radius                [km]
-        pitchvizgrid(j-1,i)= pitchvizgrid(j-1,i)-180;
-      elseif i==size(vizgridtime,2) %% last point
-        if Lat(1,i)>Lat(1,i-1) %% northward
-          Lat(j,i)     = Lat(1,i)+latoff(j-1,i)/pi*180;      % Latitude             [deg]
-          Lon(j,i)    = wrapTo360(Lon(1,i)+longoff(j-1,i)/pi*180);    % Longitude            [deg]
+          Lat(j,i)     = Lat(1,i)+ramOffsetAngle(j-1,i)/pi*180;      % Latitude             [deg]
+          Lon(j,i)     = wrapTo360(Lon(1,i)+planeOffsetAngle(j-1,i)/pi*180);    % Longitude            [deg]
           Rad(j,i)     = Rad(i)'+sstzvizgrid(j-1,i)/1000;       % radius                [km]
-        elseif Lat(1,i)<Lat(1,i-1) %% southward
-          Lat(j,i)     = Lat(1,i)-latoff(j-1,i)/pi*180;      % Latitude             [deg]
-          Lon(j,i)    = wrapTo360(Lon(1,i)-longoff(j-1,i)/pi*180);    % Longitude            [deg]
+        elseif Lat(1,i+1)>Lat(1,i) %% northward
+          Lat(j,i)     = Lat(1,i)+ramOffsetAngle(j-1,i)/pi*180;      % Latitude             [deg]
+          Lon(j,i)     = wrapTo360(Lon(1,i)+planeOffsetAngle(j-1,i)/pi*180);    % Longitude            [deg]
           Rad(j,i)     = Rad(i)'+sstzvizgrid(j-1,i)/1000;       % radius                [km]
+        elseif Lat(1,i+1)<Lat(1,i) %% southward
+          Lat(j,i)     = Lat(1,i)-ramOffsetAngle(j-1,i)/pi*180;      % Latitude             [deg]
+          Lon(j,i)     = wrapTo360(Lon(1,i)+planeOffsetAngle(j-1,i)/pi*180);    % Longitude            [deg]
+          Rad(j,i)     = Rad(i)'+sstzvizgrid(j-1,i)/1000;       % radius                [km]
+          pitchvizgrid(j-1,i)= pitchvizgrid(j-1,i)-180;
+        elseif i==size(vizgridtime,2) %% last point
+            if Lat(1,i)>Lat(1,i-1) %% northward
+              Lat(j,i)    = Lat(1,i)+ramOffsetAngle(j-1,i)/pi*180;      % Latitude             [deg]
+              Lon(j,i)    = wrapTo360(Lon(1,i)+planeOffsetAngle(j-1,i)/pi*180);    % Longitude            [deg]
+              Rad(j,i)    = Rad(i)'+sstzvizgrid(j-1,i)/1000;       % radius                [km]
+            elseif Lat(1,i)<Lat(1,i-1) %% southward
+              Lat(j,i)     = Lat(1,i)-ramOffsetAngle(j-1,i)/pi*180;      % Latitude             [deg]
+              Lon(j,i)     = wrapTo360(Lon(1,i)-planeOffsetAngle(j-1,i)/pi*180);    % Longitude            [deg]
+              Rad(j,i)     = Rad(i)'+sstzvizgrid(j-1,i)/1000;       % radius                [km]
+            end
+        else
+          %send(dq,'error visualizationLONLATALT');
         end
-      else
-        %send(dq,'error visualizationLONLATALT');
-      end
-    end
-  end
-       
+      
+      %}
+    end %% number of satellites
+  end %% time step
+     
+  
+  
   %% write file   
   for i=1:ns+1
-    dlmwrite(strcat('sat',num2str(i),'_LLR_PYR.csv'),[vizgridtime' Lat(i,:)' Lon(i,:)' Rad(i,:)' pitchvizgrid(i,:)' yawvizgrid(i,:)' rollvizgrid(i,:)' ],'precision',12);
+    writematrix([vizgridtime' Lat(i,:)' Lon(i,:)' Rad(i,:)' pitchvizgrid(i,:)' yawvizgrid(i,:)' rollvizgrid(i,:)' ],strcat('sat',num2str(i),'_LLR_PYR.csv'));
   end
   
   
