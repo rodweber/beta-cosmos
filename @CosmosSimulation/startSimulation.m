@@ -1,4 +1,4 @@
-function start(this)
+function startSimulation(this)
 %% Initiate Cosmos simulation.
 %_____________________________________________________________________
 %
@@ -22,6 +22,12 @@ timeStartPool = posixtime(datetime('now')); % Posixtime [seconds].
 % For better debugging, comment spmd command and its end line.
 % Set id = 1 (instead of labindex).
 spmd(this.NumSatellites)
+  
+    %! JT: most of what is donen here in the parallel loop needs to go to Satellite.fly
+    %! JT: process in runCosmosBeta could go to the constructor of CosmoSimulation or
+    % CosmosSimulation.start. Then, maybe runCosmosBeta could be become a function of
+    % CosmosSimulation. Maybe we could get rid of the aliases(they are neat from programming pov,
+    % but confusing sometimes
     
     % Get unique IDs for each of the satellites, from 1 to N. %! JT: do we need id? isnt labindex enough?
     % for the fsw, the sat needs to find its own id in a different way, for instance from the file that read later
@@ -33,6 +39,8 @@ spmd(this.NumSatellites)
     fc    = this.FlightControlModules(id);
     gps   = this.GPSModules(id);
     
+    %!JT: we should have a dedicated class COM where we hide all details of the communication
+    %between the satellites. Communication with the screen could be kept as is
     % Set satellite communication channel as the parpool data queue.
     commChannel = dq;
     

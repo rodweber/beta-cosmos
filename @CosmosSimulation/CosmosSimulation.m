@@ -160,7 +160,7 @@ classdef CosmosSimulation < handle
 		end
 		
 		updateIDX(this, meanAnomalyFromAN)
-		start(this) %! JT: there seems to be a Matlab built-in function with the same name. we may want to rename ours
+		startSimulation(this) %! JT: there seems to be a Matlab built-in function with the same name. we may want to rename ours
 		incrementIDX(this)
 		
 	end % Public methods.
