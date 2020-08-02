@@ -1,23 +1,31 @@
-function visualizationLONLATALT(ns,altitude)
+function visualizationLONLATALT(ns,VIZaltitude)
+%% input:
+% ns: number of satellites
+% VIZaltitude: altitude used for visualization. The actual altitude may change for long periods of
+% operations. However, this will be so small that it is irrelevant for visualization
+%% output:
+% none
+% however, files are written that are used by cosmosVIZ
 
 %% read data from telemery files
+%% JT: this works only if the telemetry data of all satellites is equal in size and sync'ed. Sooner or later, this needs to become more versatile
 for i=1:ns
-  temptime=readmatrix(strcat('TMTimeVector',num2str(i),'.csv'));  
+  tempTime=readmatrix(strcat('TMTimeVector',num2str(i),'.csv'));  
   tempSatStates=readmatrix(strcat('TMSatStates',num2str(i),'.csv')); 
   if i==1
-      timeSteps=size(temptime,1);
-      cosmostime=zeros(timeSteps,ns);
-      sstx =zeros(ns,timeSteps);
-      ssty =zeros(ns,timeSteps);
-      sstz =zeros(ns,timeSteps);
+      timeSteps=size(tempTime,1);
+      cosmosTime=zeros(timeSteps,ns);
+      sstX =zeros(ns,timeSteps);
+      sstY =zeros(ns,timeSteps);
+      sstZ =zeros(ns,timeSteps);
       pitch=zeros(ns,timeSteps);
       yaw  =zeros(ns,timeSteps);
       roll =zeros(ns,timeSteps);
   end
-  cosmostime(:,i)=temptime(:);
-  sstx(i,:)=tempSatStates(:,1)';
-  ssty(i,:,:)=tempSatStates(:,2)';
-  sstz(i,:,:)=tempSatStates(:,3)';
+  cosmosTime(:,i)=tempTime(:);
+  sstX(i,:)=tempSatStates(:,1)';
+  sstY(i,:,:)=tempSatStates(:,2)';
+  sstZ(i,:,:)=tempSatStates(:,3)';
   pitch(i,:)=tempSatStates(:,7)';
   yaw(i,:)  =tempSatStates(:,8)';
   roll(i,:) =tempSatStates(:,9)';
@@ -43,7 +51,7 @@ end
   RAAN=0; %%RAAN    = input(' Right Ascension of Ascendent Node    [  0,360[    RAAN   [deg] = ');    
   w=0;    %%w       = input(' Argument of perigee                  [  0,360[    w      [deg] = ');
   v0=0;   %%v0      = input(' True anomaly at the departure        [  0,360[    v0     [deg] = ');
-  a=RE+altitude/1000;%a       = input(' Major semi-axis                       (>6378)     a      [km]  = ');
+  a=RE+VIZaltitude/1000;%a       = input(' Major semi-axis                       (>6378)     a      [km]  = ');
   ecc_max = sprintf('%6.4f',1-RE/a);     % maximum value of eccentricity allowed
   e=0;%e       = input([' Eccentricity                         (<',ecc_max,')    e            = ']);
   RAAN  = RAAN*pi/180;        % RAAN                          [rad]
@@ -72,8 +80,8 @@ end
   hours   = floor(T/3600);                   % hours   of the orbital period
   minutes = floor((T-hours*3600)/60);        % minutes of the orbital period
   seconds = floor(T-hours*3600-minutes*60);  % seconds of the orbital period
-  t0   = cosmostime(1,1);                           % initial time          [s]
-  tf=cosmostime(end,1);                             % final time
+  t0   = cosmosTime(1,1);                           % initial time          [s]
+  tf=cosmosTime(end,1);                             % final time
   vis_step=2;       %step = input(' Time step.        [s] step = ');  % time step             [s]    
   vizgridtime    = t0:vis_step:tf;                          % vector of time        [s] 
   %% DETERMINATION OF THE DYNAMICS
@@ -132,22 +140,22 @@ end
   %% interpolate relative position on visualization time steps
 
   for j=1:ns
-    sstXvizgrid(j,:)=interp1(cosmostime(:,j),sstx(j,:),vizgridtime);
-    sstYvizgrid(j,:)=interp1(cosmostime(:,j),ssty(j,:),vizgridtime);
-    sstZvizgrid(j,:)=interp1(cosmostime(:,j),sstz(j,:),vizgridtime);
+    sstXvizgrid(j,:)=interp1(cosmosTime(:,j),sstX(j,:),vizgridtime);
+    sstYvizgrid(j,:)=interp1(cosmosTime(:,j),sstY(j,:),vizgridtime);
+    sstZvizgrid(j,:)=interp1(cosmosTime(:,j),sstZ(j,:),vizgridtime);
     
-    pitchvizgrid(j,:) =interp1(cosmostime(:,j),squeeze(pitch(j,:)),vizgridtime);
-    yawvizgrid(j,:)   =interp1(cosmostime(:,j),squeeze(yaw(j,:)),vizgridtime);
-    rollvizgrid(j,:)  =interp1(cosmostime(:,j),squeeze(roll(j,:)),vizgridtime);
+    pitchVizGrid(j,:) =interp1(cosmosTime(:,j),squeeze(pitch(j,:)),vizgridtime);
+    yawVizGrid(j,:)   =interp1(cosmosTime(:,j),squeeze(yaw(j,:)),vizgridtime);
+    rollVizGrid(j,:)  =interp1(cosmosTime(:,j),squeeze(roll(j,:)),vizgridtime);
   end
   %% centerpoint
-  Lat(1,:)      = asin(sin(inclination).*sin(theta))/pi*180;           % Latitude             [deg]
-  Lon(1,:)      = wrapTo360((atan2(ys./rs,xs./rs)-rot_earth')/pi*180); % Longitude            [deg]
-  Rad(1,:)      = rs;                                                  % radius                [km]
+  lat(1,:)      = asin(sin(inclination).*sin(theta))/pi*180;           % Latitude             [deg]
+  lon(1,:)      = wrapTo360((atan2(ys./rs,xs./rs)-rot_earth')/pi*180); % Longitude            [deg]
+  rad(1,:)      = rs;                                                  % radius                [km]
   
-  pitchvizgrid  = [zeros(1,size(pitchvizgrid,2)); pitchvizgrid];
-  yawvizgrid    = [zeros(1,size(pitchvizgrid,2)); yawvizgrid];
-  rollvizgrid   = [zeros(1,size(pitchvizgrid,2)); rollvizgrid]; 
+  pitchVizGrid  = [zeros(1,size(pitchVizGrid,2)); pitchVizGrid];
+  yawVizGrid    = [zeros(1,size(pitchVizGrid,2)); yawVizGrid];
+  rollVizGrid   = [zeros(1,size(pitchVizGrid,2)); rollVizGrid]; 
   
   %% off set of the formation satellites
   for i=1:size(vizgridtime,2)-1
@@ -162,9 +170,9 @@ end
   for i=1:size(vizgridtime,2)-1
     for j=2:ns+1
       
-      Lon(j,i)     = wrapTo360(Lon(1,i)+offPlaneOffsetAngle(j-1,i));         % Longitude            [deg]
-      Lat(j,i)     = Lat(1,i)+inPlaneOffsetAngle(j-1,i);      % Latitude             [deg]
-      Rad(j,i)     = Rad(i)'+sstZvizgrid(j-1,i)/1000;                               % radius                [km]
+      lon(j,i)     = wrapTo360(lon(1,i)+offPlaneOffsetAngle(j-1,i));         % Longitude            [deg]
+      lat(j,i)     = lat(1,i)+inPlaneOffsetAngle(j-1,i);      % Latitude             [deg]
+      rad(j,i)     = rad(i)'+sstZvizgrid(j-1,i)/1000;                               % radius                [km]
 
       %{
       if i==1 %% 1-point, northward
@@ -202,7 +210,7 @@ end
   
   %% write file   
   for i=1:ns+1
-    writematrix([vizgridtime' Lat(i,:)' Lon(i,:)' Rad(i,:)' pitchvizgrid(i,:)' yawvizgrid(i,:)' rollvizgrid(i,:)' ],strcat('sat',num2str(i),'_LLR_PYR.csv'));
+    writematrix([vizgridtime' lat(i,:)' lon(i,:)' rad(i,:)' pitchVizGrid(i,:)' yawVizGrid(i,:)' rollVizGrid(i,:)' ],strcat('sat',num2str(i),'_LLR_PYR.csv'));
   end
   
   
@@ -223,7 +231,7 @@ end
 
     %% display position satellites
       for i=1:ns+1
-        plotm(Lat(1,:),Lon(1,:),'Color',[1 0   0.2]);hold on;
+        plotm(lat(1,:),lon(1,:),'Color',[1 0   0.2]);hold on;
       end
       view(90,0)
   end
