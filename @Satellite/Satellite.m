@@ -16,6 +16,10 @@ classdef Satellite < handle
 		GPSModule % Object of class GPS.
 		Name % Unique name for identification of the satellite.
 		Orbit % Object of class Orbit.
+    controlVector
+    controlVectorTM
+    forceVector
+    forceVectorTM
 	end
 	
 	properties (GetAccess = public, SetAccess = private)
@@ -48,7 +52,11 @@ classdef Satellite < handle
 			this.AutoResponse = autoResponse;
 			this.FlightControl = FlightControl(numSats, mode, deltaAngle, ffpsFilePath);
 			this.Orbit = Orbit(altitude, gpsAvailability, tleAvailability);
-			this.GPSModule = GPS();	
+			this.GPSModule = GPS();
+      this.controlVector=zeros(3,numSats);
+      this.controlVectorTM=zeros(1,3);
+      this.forceVector=zeros(1,3);
+      this.forceVectorTM=zeros(1,3);
 		end
 		
 	end % Constructor.

@@ -5,6 +5,8 @@ for i=1:ns
   tempTime=readmatrix(strcat('TMTimeVector',num2str(i),'.csv'));  
   tempRefPosChange=readmatrix(strcat('TMSatPosition',num2str(i),'.csv'));  
   tempSatStates=readmatrix(strcat('TMSatStates',num2str(i),'.csv'));  
+  tempControlVector=readmatrix(strcat('TMControlVector',num2str(i),'.csv'));  
+  tempForceVector  =readmatrix(strcat('TMforceVector',num2str(i),'.csv'));  
   if i==1
       timeSteps=size(tempTime,1);
       cosmosTime=zeros(timeSteps,ns);
@@ -12,10 +14,14 @@ for i=1:ns
       angles=zeros(ns,3,timeSteps);
       refPosChange=zeros(1,3,timeSteps);
       refPosChange(1,:,:)=tempRefPosChange';
+      controlVector=zeros(ns,3,timeSteps);
+      forceVector=zeros(ns,3,timeSteps);      
   end
   cosmosTime(:,i)=tempTime(:);
   sst(i,:,:)=tempSatStates(:,1:6)';
   angles(i,:,:)=tempSatStates(:,7:9)';
+  controlVector(i,:,:)=tempControlVector';
+  forceVector(i,:,:)=tempForceVector';
 end
 
 
@@ -41,7 +47,7 @@ if 0
     hold off;  
   end
   
-  if 1 %% plot general variables option short
+  if 1 %% plot general variables
     figure
       subplot(2,3,1)%% roll
         for i=1:ns
@@ -51,18 +57,23 @@ if 0
       ylabel('roll angle [deg]');xlabel('no. of orbits');grid on;hold off;
       legend(names);
       axis([-inf inf -10 370])
+      yticks([0 45 90 135 180 225 270 315 360])
+      
       subplot(2,3,2)%% pitch
       for i=1:ns
          plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(angles(i,2,:)));hold on
       end
       ylabel('pitch angle [deg]');xlabel('no. of orbits');grid on;hold off;
       axis([-inf inf -10 190])
+      yticks([0 45 90 135 180])
+
       subplot(2,3,3)%%yaw
       for i=1:ns
         plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(angles(i,3,:)));hold on
       end
       ylabel('yaw angle [deg]');xlabel('no. of orbits');grid on;hold off
-      axis([-inf inf -10 370])      
+      axis([-inf inf -10 370])
+      yticks([0 45 90 135 180 225 270 315 360])
       subplot(2,3,4)%%x
       for i=1:ns
          plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(sst(i,1,:)));hold on
@@ -81,79 +92,44 @@ if 0
   end
   
   
-  if 0 %% plot general variables option long
+  if 1 %% plot control and force
     figure
-      subplot(4,3,1)%% roll
+      subplot(2,3,1)%% control vector x
+      for i=1:ns
+         plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(controlVector(i,1,:)));hold on
+      end
+      ylabel('control vector x [?]');xlabel('no. of orbits');grid on;hold off
+      subplot(2,3,2)%% control vector y
+      for i=1:ns
+         plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(controlVector(i,2,:)));hold on
+      end
+      ylabel('control vector y [?]');xlabel('no. of orbits');grid on;hold off
+      subplot(2,3,3)%% control vector z
+      for i=1:ns
+        plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(controlVector(i,3,:)));hold on
+      end
+      ylabel('control vector z [?]');xlabel('no. of orbits');grid on;hold off
+      subplot(2,3,4)%% force vector x direction
         for i=1:ns
-          plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(angles(i,1,:)));hold on
+          plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(forceVector(i,1,:)));hold on
           names(i)=[{strcat('sat',int2str(i))}];
         end
-      ylabel('roll angle [deg]');xlabel('no. of orbits');grid on;hold off;
+      ylabel('force vector x [?]');xlabel('no. of orbits');grid on;hold off;
       legend(names);
-      subplot(4,3,2)%% pitch
+      
+      subplot(2,3,5)%% force vector y direction
       for i=1:ns
-         plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(angles(i,2,:)));hold on
+         plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(forceVector(i,2,:)));hold on
       end
-      ylabel('pitch angle [deg]');xlabel('no. of orbits');grid on;hold off;
-      subplot(4,3,3)%%yaw
-      for i=1:ns
-        plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(angles(i,3,:)));hold on
-      end
-      ylabel('yaw angle [deg]');xlabel('no. of orbits');grid on;hold off
-      subplot(4,3,4)%%x
-      for i=1:ns
-         plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(sst(i,1,:)));hold on
-      end
-      ylabel('x [m]');xlabel('no. of orbits');grid on;hold off
-      subplot(4,3,5)%%y
-      for i=1:ns
-         plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(sst(i,2,:)));hold on
-      end
-      ylabel('y [m]');xlabel('no. of orbits');grid on;hold off
-      subplot(4,3,6)%%z
-      for i=1:ns
-        plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(sst(i,3,:)));hold on
-      end
-      ylabel('z [m]');xlabel('no. of orbits');grid on;hold off
-      subplot(4,3,7)%%u1
-      for i=1:ns
-        plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(u(i,1,:)));hold on
-      end
-      ylabel('u1');xlabel('no. of orbits');grid on;hold off
-      subplot(4,3,8)%%u2
-      for i=1:ns
-        plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(u(i,2,:)));hold on
-      end
-      ylabel('u2');xlabel('no. of orbits');grid on;hold off
-      subplot(4,3,9)%%u3
-      for i=1:ns
-         plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(u(i,3,:)));hold on
-      end
-      ylabel('u3');xlabel('no. of orbits');grid on;hold off  
-      subplot(4,3,10)%%u
-      for i=1:ns
-         plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(sst(i,4,:)));hold on
-      end
-      ylabel('u [m/s]');xlabel('no. of orbits');grid on;hold off
-      subplot(4,3,11)%%v
-      for i=1:ns
-         plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(sst(i,5,:)));hold on
-      end
-      ylabel('v [m/s]');xlabel('no. of orbits');grid on;hold off
-      subplot(4,3,12)%%w
-      for i=1:ns
-         plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(sst(i,6,:)));hold on
-      end
-      ylabel('w [m/s]');xlabel('no. of orbits');grid on;hold off
+      ylabel('force vector y [?]');xlabel('no. of orbits');grid on;hold off;
 
-    %traub = csvread('TraubFig5.csv');
-    %csvwrite('zxyplane.csv',squeeze(sst(1:3,2,:)))
-
-    %xzplane=csvread('zxplane.csv');
-    %xzyplane=csvread('zxyplane.csv');   
-    % set(0, 'DefaultFigureRenderer', 'painters');
+      subplot(2,3,6)%% force vector z
+      for i=1:ns
+        plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(forceVector(i,3,:)));hold on
+      end
+      ylabel('force vector z [?]');xlabel('no. of orbits');grid on;hold off;
   end
-  
+
   if 1 %% 3d printing
     figure
       fontSize=40;

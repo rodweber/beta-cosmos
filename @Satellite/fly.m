@@ -33,7 +33,7 @@ this.FlightControl.updWindPressures(this.Orbit.Rho, this.Orbit.V, this.Orbit.Tem
 % Determine desired trajectory.
 
 
-% determine time in orbit
+% determine time elapsed since last ascending equator crossing
 time = currentOrbitSection / this.Orbit.MeanMotionDeg;
 
 % Update desired state.
@@ -51,10 +51,12 @@ this.FlightControl.State(6)=this.FlightControl.State(6)+maxRandVel*(rand-0.5);
 
 % Set and get state error for this satellite in array of errors of all satellites
 stateError = this.FlightControl.getStateError();
-% Communicate new state error of this satellite to other satellites
-this.broadcastSend(stateError);
-% Receive the state errors from other satellites
-receivedStateErrors = this.broadcastReceive();
+
+%%JT: this should go through COM module
+  % Communicate new state error of this satellite to other satellites
+  this.broadcastSend(stateError);
+  % Receive the state errors from other satellites
+  receivedStateErrors = this.broadcastReceive();
 
 % Update information on state errors from other satellites.
 this.FlightControl.updateStateErrors(receivedStateErrors);
@@ -103,21 +105,21 @@ usedTotalForceVector = zeros(3,size(this.FlightControl.Alphas, 2),size(this.Flig
 
 % Compute control vector.
 for i=1:this.FlightControl.NumSatellites
-  controlVector(:,i) = -IR * B' * P * this.FlightControl.StateErrors(:, i);
+  this.controlVector(:,i) = -IR * B' * P * this.FlightControl.StateErrors(:, i);
 end
 
 %%
     %% shift and average control force
-    controlVectorMin         = min(controlVector(1,:));
+    controlVectorMin         = min(this.controlVector(1,:));
     for i=1:this.FlightControl.NumSatellites %% transform error for each satellite
-      controlVector(1,i)     = controlVector(1,i) - controlVectorMin;
+      this.controlVector(1,i)     = this.controlVector(1,i) - controlVectorMin;
     end
     averagecontrolVector     = zeros(3,1);
     for i=1:this.FlightControl.NumSatellites %% compute average error
-      averagecontrolVector(2:3)= averagecontrolVector(2:3)+controlVector(2:3,i)/this.FlightControl.NumSatellites;      
+      averagecontrolVector(2:3)= averagecontrolVector(2:3)+this.controlVector(2:3,i)/this.FlightControl.NumSatellites;      
     end
     for i=1:this.FlightControl.NumSatellites %% assign average error
-      controlVector(2:3,i) = controlVector(2:3,i)-averagecontrolVector(2:3);
+      this.controlVector(2:3,i) = this.controlVector(2:3,i)-averagecontrolVector(2:3);
     end
 %%
 
@@ -155,19 +157,20 @@ else
 	% usedTotalForceVector = ...
 end
 
-if norm(controlVector(:,this.FlightControl.SatID))==0
-  forceVector = [0 0 0]'; alphaOpt=0; betaOpt=0; gammaOpt=0;
+if norm(this.controlVector(:,this.FlightControl.SatID))==0
+  this.forceVector = [0 0 0]'; alphaOpt=0; betaOpt=0; gammaOpt=0;
 else
-  [forceVector, alphaOpt, betaOpt, gammaOpt] = this.FlightControl.findBestAttitude(...
-    usedTotalForceVector, controlVector(:,this.FlightControl.SatID),this.FlightControl.Alphas, this.FlightControl.Betas, this.FlightControl.Gammas, ...
+  [this.forceVector, alphaOpt, betaOpt, gammaOpt] = this.FlightControl.findBestAttitude(...
+    usedTotalForceVector, this.controlVector(:,this.FlightControl.SatID),this.FlightControl.Alphas, ...
+    this.FlightControl.Betas, this.FlightControl.Gammas, ...
     oldAlphas, oldBetas, oldGammas);
 end
-if 2*norm(controlVector(:,this.FlightControl.SatID))<norm(forceVector)
-    forceVector=[0 0 0]'; alphaOpt=0; betaOpt=0; gammaOpt=0;
+if 2*norm(this.controlVector(:,this.FlightControl.SatID))<norm(this.forceVector)
+    this.forceVector=[0 0 0]'; alphaOpt=0; betaOpt=0; gammaOpt=0;
 end
 %this.FlightControl.State(1:6)
 % Update satellite state: solve ODE with backward Euler step.
-this.FlightControl.State(1:6) = (A * this.FlightControl.StateOld(1:6) + B * forceVector / this.FlightControl.SatelliteMass) *...
+this.FlightControl.State(1:6) = (A * this.FlightControl.StateOld(1:6) + B * this.forceVector / this.FlightControl.SatelliteMass) *...
                                 deltaTime + this.FlightControl.StateOld(1:6);
 
 this.FlightControl.State(7:9) = [alphaOpt betaOpt gammaOpt]';
@@ -178,5 +181,8 @@ this.FlightControl.State(7:9) = [alphaOpt betaOpt gammaOpt]';
 
 % Update duration of the current orbit.
 this.Orbit.updateOrbitDuration();
+
+%send(this.CommChannel,'hi')
+%send(this.CommChannel,labindex)
 
 end % Function Satellite.fly.
