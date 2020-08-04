@@ -1,4 +1,4 @@
-function updateStateDesired(this, time, meanMotion)
+function updateStateDesired(this, time, meanMotionRad)
 % JT: this needs change: the size-determining values need to go to parameters, otherwise this files must be changed each time a new case is run
 
 %% Update desired satellite state.
@@ -74,13 +74,13 @@ end
     B=(2-5*SSC^2)/2/SSC;
     D=sqrt(3*SSC^2-2); %% if SSC==1 then D=1
  
-    sstDesired(1,:)= this.FFPS.ffp2   + B*meanMotion*this.FFPS.ffp6*time +    this.FFPS.ffp1*cos(sqrt(2*SSC/A)*meanMotion*time+this.FFPS.ffp7+MAO)                          - this.FFPS.ffp5*sqrt(2*SSC*A)*sin(sqrt(2*SSC/A)*meanMotion*time+this.FFPS.ffp7+MAO);
-    sstDesired(2,:)=                                                        this.FFPS.ffp3*cos(D*meanMotion*time+this.FFPS.ffp8+MAO)                                      + this.FFPS.ffp4/D/meanMotion*         sin(D*meanMotion*time+this.FFPS.ffp8+MAO);
-    sstDesired(3,:)= this.FFPS.ffp6                                     +    this.FFPS.ffp5*cos(sqrt(2*SSC/A)*meanMotion*time+this.FFPS.ffp7+MAO)                          + this.FFPS.ffp1/sqrt(2*SSC*A)*sin(sqrt(2*SSC/A)*meanMotion*time+this.FFPS.ffp7+MAO);
+    sstDesired(1,:)= this.FFPS.ffp2   + B*meanMotionRad*this.FFPS.ffp6*time +    this.FFPS.ffp1*cos(sqrt(2*SSC/A)*meanMotionRad*time+this.FFPS.ffp7+MAO)                          - this.FFPS.ffp5*sqrt(2*SSC*A)*sin(sqrt(2*SSC/A)*meanMotionRad*time+this.FFPS.ffp7+MAO);
+    sstDesired(2,:)=                                                        this.FFPS.ffp3*cos(D*meanMotionRad*time+this.FFPS.ffp8+MAO)                                      + this.FFPS.ffp4/D/meanMotionRad*         sin(D*meanMotionRad*time+this.FFPS.ffp8+MAO);
+    sstDesired(3,:)= this.FFPS.ffp6                                     +    this.FFPS.ffp5*cos(sqrt(2*SSC/A)*meanMotionRad*time+this.FFPS.ffp7+MAO)                          + this.FFPS.ffp1/sqrt(2*SSC*A)*sin(sqrt(2*SSC/A)*meanMotionRad*time+this.FFPS.ffp7+MAO);
 
-    sstDesired(4,:)=                   B*meanMotion*this.FFPS.ffp6      -    this.FFPS.ffp1*sin(sqrt(2*SSC/A)*meanMotion*time+this.FFPS.ffp7+MAO)*sqrt(2*SSC/A)*meanMotion - this.FFPS.ffp5*sqrt(2*SSC*A)*cos(sqrt(2*SSC/A)*meanMotion*time+this.FFPS.ffp7+MAO)*sqrt(2*SSC/A)*meanMotion;
-    sstDesired(5,:)=                                                   -    this.FFPS.ffp3*sin(D*meanMotion*time+this.FFPS.ffp8+MAO)*D*meanMotion                         + this.FFPS.ffp4/D/meanMotion*         cos(D*meanMotion*time+this.FFPS.ffp8+MAO)*D*meanMotion;
-    sstDesired(6,:)=                                                   -    this.FFPS.ffp5*sin(sqrt(2*SSC/A)*meanMotion*time+this.FFPS.ffp7+MAO)*sqrt(2*SSC/A)*meanMotion + this.FFPS.ffp1/sqrt(2*SSC*A)*cos(sqrt(2*SSC/A)*meanMotion*time+this.FFPS.ffp7+MAO)*sqrt(2*SSC/A)*meanMotion;
+    sstDesired(4,:)=                   B*meanMotionRad*this.FFPS.ffp6      -    this.FFPS.ffp1*sin(sqrt(2*SSC/A)*meanMotionRad*time+this.FFPS.ffp7+MAO)*sqrt(2*SSC/A)*meanMotionRad - this.FFPS.ffp5*sqrt(2*SSC*A)*cos(sqrt(2*SSC/A)*meanMotionRad*time+this.FFPS.ffp7+MAO)*sqrt(2*SSC/A)*meanMotionRad;
+    sstDesired(5,:)=                                                   -    this.FFPS.ffp3*sin(D*meanMotionRad*time+this.FFPS.ffp8+MAO)*D*meanMotionRad                         + this.FFPS.ffp4/D/meanMotionRad*         cos(D*meanMotionRad*time+this.FFPS.ffp8+MAO)*D*meanMotionRad;
+    sstDesired(6,:)=                                                   -    this.FFPS.ffp5*sin(sqrt(2*SSC/A)*meanMotionRad*time+this.FFPS.ffp7+MAO)*sqrt(2*SSC/A)*meanMotionRad + this.FFPS.ffp1/sqrt(2*SSC*A)*cos(sqrt(2*SSC/A)*meanMotionRad*time+this.FFPS.ffp7+MAO)*sqrt(2*SSC/A)*meanMotionRad;
 
 
 this.StateDesired = sstDesired;

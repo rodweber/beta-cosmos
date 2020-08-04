@@ -58,10 +58,14 @@ spmd(this.NumSatellites)
       %% The orbit is divided into sections of few degrees size.
       %% IDX tells in which section we are in
       
-      %%add here:
-      %% GPS determines ephemerides and IDX
-      %% pause until the end of the orbitSection(IDX)
-  
+      %% JT: add here:
+      %% get meanAnomalyFromAAN from GPS:
+      %% meanAnomalyFromAN = sat.GPSModule.getMeanAnomalyFromAN();
+      %% calculate current IDX: this.updateIDX(gps.MeanAnomalyFromAN);
+      %% pause until the end of the orbitSection(IDX):
+      %% pause( (this.OrbitSections(this.IDX) - gps.MeanAnomalyFromAN) / orbit.MeanMotionDeg / this.AccelFactor);
+      %% JT: OrbitSections and IDX should be renamed to OrbitSectionsMeanAnomalyFromAN and orbitSectionsID
+
       timeStep = this.OrbitSectionSize / orbit.MeanMotionDeg;
 
       while this.IDX <= this.NumOrbitSections

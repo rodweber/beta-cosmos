@@ -40,14 +40,14 @@ time = currentOrbitSection / this.Orbit.MeanMotionDeg;
 this.FlightControl.updateStateDesired(time, this.Orbit.MeanMotionRad);
 
 % apply noise
-maxRandPos=0;
-maxRandVel=0.;
-this.FlightControl.State(1)=this.FlightControl.State(1)+maxRandPos*(rand-0.5);
-this.FlightControl.State(2)=this.FlightControl.State(2)+maxRandPos*(rand-0.5);
-this.FlightControl.State(3)=this.FlightControl.State(3)+maxRandPos*(rand-0.5);
-this.FlightControl.State(4)=this.FlightControl.State(4)+maxRandVel*(rand-0.5);
-this.FlightControl.State(5)=this.FlightControl.State(5)+maxRandVel*(rand-0.5);
-this.FlightControl.State(6)=this.FlightControl.State(6)+maxRandVel*(rand-0.5);
+% maxRandPos=0.;
+% maxRandVel=0.;
+% this.FlightControl.State(1)=this.FlightControl.State(1)+maxRandPos*(rand-0.5);
+% this.FlightControl.State(2)=this.FlightControl.State(2)+maxRandPos*(rand-0.5);
+% this.FlightControl.State(3)=this.FlightControl.State(3)+maxRandPos*(rand-0.5);
+% this.FlightControl.State(4)=this.FlightControl.State(4)+maxRandVel*(rand-0.5);
+% this.FlightControl.State(5)=this.FlightControl.State(5)+maxRandVel*(rand-0.5);
+% this.FlightControl.State(6)=this.FlightControl.State(6)+maxRandVel*(rand-0.5);
 
 % Set and get state error for this satellite in array of errors of all satellites
 stateError = this.FlightControl.getStateError();
@@ -98,11 +98,16 @@ deltaTime = sizeOrbitSection / this.Orbit.MeanMotionDeg;
 %------------------------------------------------
 this.FlightControl.StateOld = this.FlightControl.State;
 
-oldAlphas = this.FlightControl.State(7); oldBetas  = this.FlightControl.State(8); oldGammas = this.FlightControl.State(9);
+oldAlphas = this.FlightControl.State(7);
+oldBetas  = this.FlightControl.State(8);
+oldGammas = this.FlightControl.State(9);
 
 % Vector of size 3 x sizeAlphas x sizeBetas x sizeGammas.
-usedTotalForceVector = zeros(3,size(this.FlightControl.Alphas, 2),size(this.FlightControl.Betas , 2),size(this.FlightControl.Gammas, 2));
+usedTotalForceVector = zeros(3,size(this.FlightControl.Alphas, 2),...
+                               size(this.FlightControl.Betas , 2),...
+                               size(this.FlightControl.Gammas, 2));
 
+                             
 % Compute control vector.
 for i=1:this.FlightControl.NumSatellites
   this.controlVector(:,i) = -IR * B' * P * this.FlightControl.StateErrors(:, i);
@@ -160,19 +165,28 @@ end
 if norm(this.controlVector(:,this.FlightControl.SatID))==0
   this.forceVector = [0 0 0]'; alphaOpt=0; betaOpt=0; gammaOpt=0;
 else
-  [this.forceVector, alphaOpt, betaOpt, gammaOpt] = this.FlightControl.findBestAttitude(...
-    usedTotalForceVector, this.controlVector(:,this.FlightControl.SatID),this.FlightControl.Alphas, ...
-    this.FlightControl.Betas, this.FlightControl.Gammas, ...
-    oldAlphas, oldBetas, oldGammas);
+  [this.forceVector, alphaOpt, betaOpt, gammaOpt] =...
+        this.FlightControl.findBestAttitude(usedTotalForceVector,this.controlVector(:,this.FlightControl.SatID),...
+                                            this.FlightControl.Alphas,this.FlightControl.Betas, this.FlightControl.Gammas, ...
+                                            oldAlphas, oldBetas, oldGammas);
 end
+
 if 2*norm(this.controlVector(:,this.FlightControl.SatID))<norm(this.forceVector)
     this.forceVector=[0 0 0]'; alphaOpt=0; betaOpt=0; gammaOpt=0;
 end
-%this.FlightControl.State(1:6)
-% Update satellite state: solve ODE with backward Euler step.
-this.FlightControl.State(1:6) = (A * this.FlightControl.StateOld(1:6) + B * this.forceVector / this.FlightControl.SatelliteMass) *...
-                                deltaTime + this.FlightControl.StateOld(1:6);
 
+method2SolveODE=1;
+switch method2SolveODE %% update satellite state through solving ODE with
+  case 1 %  with backward Euler step.
+      this.FlightControl.State(1:6) = (A * this.FlightControl.StateOld(1:6) + B * this.forceVector / this.FlightControl.SatelliteMass) *...
+                                deltaTime + this.FlightControl.StateOld(1:6);
+  case 2
+      ;
+  otherwise
+      ;
+end
+
+                              
 this.FlightControl.State(7:9) = [alphaOpt betaOpt gammaOpt]';
 
 %------------------------------------------------
@@ -181,8 +195,5 @@ this.FlightControl.State(7:9) = [alphaOpt betaOpt gammaOpt]';
 
 % Update duration of the current orbit.
 this.Orbit.updateOrbitDuration();
-
-%send(this.CommChannel,'hi')
-%send(this.CommChannel,labindex)
 
 end % Function Satellite.fly.

@@ -214,7 +214,7 @@ end
   end
   
   
-  if 1 %% show on globe
+  if 0 %% show on globe
     %% set-up GIS
     grs80 = referenceEllipsoid('grs80','km');
     load topo
@@ -233,7 +233,9 @@ end
       for i=1:ns+1
         plotm(lat(1,:),lon(1,:),'Color',[1 0   0.2]);hold on;
       end
-      view(90,0)
+      title('ALPHA');
+    view(90,0)
+
   end
   
   
