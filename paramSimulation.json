@@ -1,0 +1,89 @@
+{
+  "selectedFormationFlightMode": 1,
+  "simMaxNumOrbits": 5,
+  "simAccelerationFactor": 100e3,
+  "vizScale": 1,
+  "modes": [
+    {
+      "modeID": 1,
+      "modeName": "Cluster",
+      "numSatellites": 3,
+      "attitudeResolutionDeg": 45,
+      "initOrbitAltitude": 453e3,
+      "sizeOrbitSectionDeg": 0.2,
+      "initOrbitSectionID": 1,
+      "autoResponse": true,
+      "availableGPS": true,
+      "availableTLE": false,
+      "ffps": [
+        {
+          "ffp1": 0,
+          "ffp2": 0,
+          "ffp3": 0,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        },
+        {
+          "ffp1": 100,
+          "ffp2": -115,
+          "ffp3": 100,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        },
+        {
+          "ffp1": 0,
+          "ffp2": -115,
+          "ffp3": 0,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        }
+      ],
+      "folderFFPS": "ffpsCluster"
+    },
+    {
+      "modeID": 2,
+      "modeName": "ISMission",
+      "numSatellites": 2,
+      "attitudeResolutionDeg": 45,
+      "initOrbitAltitude": 453e3,
+      "sizeOrbitSectionDeg": 0.2,
+      "initOrbitSectionID": 1,
+      "autoResponse": true,
+      "availableGPS": true,
+      "availableTLE": false,
+      "ffps": [
+        {
+          "ffp1": 0,
+          "ffp2": 0,
+          "ffp3": 0,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        },
+        {
+          "ffp1": 0,
+          "ffp2": 0,
+          "ffp3": 0,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        }
+      ],
+      "folderFFPS": "ffpsISMission"
+    }
+  ],
+  "_comment": "Field for comments of any kind. Leave it for later use when needed."
+}

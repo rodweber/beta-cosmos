@@ -5,6 +5,12 @@ function startSimulation(this)
 % Details here.
 % ______________________________________________________________________________
 
+% Read file with simulation parameters.
+filename = 'paramSimulation.json';
+fid = fopen(filename,'r');
+simParams = jsondecode(fscanf(fid,'%s'));
+this.setSimParams(simParams);
+
 % Create data queue for parallel pool.
 dq = parallel.pool.DataQueue;
 

@@ -7,37 +7,38 @@
 % ______________________________________________________________________________
 
 classdef CosmosSimulation < handle
-	
-	properties (GetAccess = public, SetAccess = private)
-		
+  
+  properties (GetAccess = public, SetAccess = private)
+    
     param
     iniConditions %% initial conditions
     vizScale
     
-		AccelFactor % Acceleration factor for the simulation.
-		FlightControlModules % Array of FlightControl objects.
-		GPSModules % Array of GPS objects.
-		IDX % Change this ????????????????????????????????????????????????
-		MaxNumOrbits % Maximum number of orbits to run.
-		NumOrbitSections % Total number of orbit sections.
-		NumSatellites % Total number of satellites in the formation.
-		Orbits % Array of Orbit objects.
-		OrbitSectionSize % Size of each orbit section [deg].
-		OrbitSections % Orbital sections for the simulation.
-		Satellites % Array of Satellite objects.
-		SatPositions % Satellite positions in relation to the reference.
-		SatPositionsLengths % Length of the satellite positions vectors.
-		SatStates % Satellites states for plotting.
-		SatStatesLengths % Length of the satellite states vectors.
-		%Status % Simulation status.
-		TimeVector % Time vector for plotting.
-		TimeVectorLengths % Length of the time vector for each satellite.
-		
+    AccelFactor % Acceleration factor for the simulation.
+    FlightControlModules % Array of FlightControl objects.
+    GPSModules % Array of GPS objects.
+    IDX % Change this ????????????????????????????????????????????????
+    MaxNumOrbits % Maximum number of orbits to run.
+    NumOrbitSections % Total number of orbit sections.
+    NumSatellites % Total number of satellites in the formation.
+    Orbits % Array of Orbit objects.
+    OrbitSectionSize % Size of each orbit section [deg].
+    OrbitSections % Orbital sections for the simulation.
+    Satellites % Array of Satellite objects.
+    SatPositions % Satellite positions in relation to the reference.
+    SatPositionsLengths % Length of the satellite positions vectors.
+    SatStates % Satellites states for plotting.
+    SatStatesLengths % Length of the satellite states vectors.
+    SimParams % Struct holding all simulation parameters set by the user.
+    %Status % Simulation status.
+    TimeVector % Time vector for plotting.
+    TimeVectorLengths % Length of the time vector for each satellite.
+    
   end
-	
-	methods % Constructor.
-		
-		function this = CosmosSimulation(param, iniConditions)
+  
+  methods % Constructor.
+    
+    function this = CosmosSimulation(param, iniConditions)
       %% Constructor for class CosmosSimulation
       %
       % Input:
@@ -161,6 +162,10 @@ classdef CosmosSimulation < handle
     
     function setIDX(this, value)
       this.IDX = value;
+    end
+    
+    function setSimParams(this, simParamStruct)
+      this.SimParams = simParamStruct;
     end
     
   end % Public methods.
