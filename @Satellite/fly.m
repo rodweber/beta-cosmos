@@ -6,9 +6,6 @@ function fly(this, currentOrbitSection, sizeOrbitSection)
 % method of class Satellite
 % ______________________________________________________________________________
 
-% Rod: I added some random lines here
-% JT: hi Rod, I must do something about the solar radiation pressue
-
 % Get updated orbital parameters from GPS/TLE.
 orbitFromGPS = this.GPSModule.getOrbitCounter();
 meanAnomalyFromAN = this.GPSModule.getMeanAnomalyFromAN();
