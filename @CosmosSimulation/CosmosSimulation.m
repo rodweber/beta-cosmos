@@ -7,38 +7,42 @@
 % ______________________________________________________________________________
 
 classdef CosmosSimulation < handle
-  
-  properties (GetAccess = public, SetAccess = private)
-    
-    param
-    iniConditions %% initial conditions
-    vizScale
-    
-    AccelFactor % Acceleration factor for the simulation.
-    FlightControlModules % Array of FlightControl objects.
-    GPSModules % Array of GPS objects.
-    IDX % Change this ????????????????????????????????????????????????
-    MaxNumOrbits % Maximum number of orbits to run.
-    NumOrbitSections % Total number of orbit sections.
-    NumSatellites % Total number of satellites in the formation.
-    Orbits % Array of Orbit objects.
-    OrbitSectionSize % Size of each orbit section [deg].
-    OrbitSections % Orbital sections for the simulation.
-    Satellites % Array of Satellite objects.
-    SatPositions % Satellite positions in relation to the reference.
-    SatPositionsLengths % Length of the satellite positions vectors.
-    SatStates % Satellites states for plotting.
-    SatStatesLengths % Length of the satellite states vectors.
-    SimParams % Struct holding all simulation parameters set by the user.
-    %Status % Simulation status.
-    TimeVector % Time vector for plotting.
-    TimeVectorLengths % Length of the time vector for each satellite.
-    
-  end
-  
+
+properties (GetAccess = public, SetAccess = public)
+
+  AccelFactor % Acceleration factor for the simulation.
+  AllParams % Struct with all parameters set by the user.
+  FlightControlModules % Array of FlightControl objects.
+  GPSModules % Array of GPS objects.
+%!RW: deleted param idx: replaced it by OrbitSectionNow
+% IDX % 
+%!RW: change name? initial conditions for what?
+  InitConditions % 
+  MaxNumOrbits % Maximum number of orbits to run.
+  ModeName % Formation flight mode name.
+  NumOrbitSections % Total number of orbit sections.
+  NumSatellites % Total number of satellites in the formation.
+  Orbits % Array of Orbit objects.
+  OrbitSections % Array of orbit sections with defined angle step [deg].
+  OrbitSectionInitial % Initial orbit section ID for the simulation.
+  OrbitSectionNow % Current orbit section ID.
+  OrbitSectionSize % Size of each orbit section [deg].
+  Satellites % Array of Satellite objects.
+  SatPositions % Satellite positions in relation to the reference.
+  SatPositionsLengths % Length of the satellite positions vectors.
+  SatStates % Satellites states for plotting.
+  SatStatesLengths % Length of the satellite states vectors.
+%!RW: leave parameter status for later implementation.
+% Status % Simulation status.
+  TimeVector % Time vector for plotting.
+  TimeVectorLengths % Length of the time vector for each satellite.
+  VizScale % Scale for satellite distances in visualization.
+
+end
+
   methods % Constructor.
     
-    function this = CosmosSimulation(param, iniConditions)
+    function this = CosmosSimulation()
       %% Constructor for class CosmosSimulation
       %
       % Input:
@@ -47,73 +51,95 @@ classdef CosmosSimulation < handle
       % Output:
       % - Object of class Simulation.
       
-      this.param = param;
-      this.iniConditions=iniConditions;
-      this.vizScale = param.vizScale;
+      % Read parameters from JSON file.
+      filename = 'CosmosParameters.json';
+      fid = fopen(filename,'r');
+      params = jsondecode(fscanf(fid,'%s'));
+      fclose(fid);
       
-      this.MaxNumOrbits = param.MaxNumOrbits;
-      this.AccelFactor = param.AccelFactor;
-      this.IDX = param.InitIDX;
-      this.OrbitSectionSize = param.OrbitSectionSize;
-      this.OrbitSections = param.OrbitSectionSize:param.OrbitSectionSize:360;
+      % Get all parameters that are contained in the JSON file.
+      modeID = params.SelectedFormationFlightMode;
+      maxNumOrbits = params.SimMaxNumOrbits;
+      accelFactor = params.SimAccelerationFactor;
+      vizScale = params.VizScale;
+      modeName = params.Modes(modeID).ModeName;
+      numSatellites = params.Modes(modeID).NumSatellites;
+%!RW: attitudeResolutionDeg -> former deltaAngle
+      attitudeResolutionDeg = params.Modes(modeID).AttitudeResolutionDeg;
+      initOrbitAltitude = params.Modes(modeID).InitOrbitAltitude;
+      sizeOrbitSection = params.Modes(modeID).SizeOrbitSectionDeg;
+      initOrbitSection = params.Modes(modeID).InitOrbitSectionID;
+      autoResponse = params.Modes(modeID).AutoResponse;
+      availableGPS = params.Modes(modeID).AvailableGPS;
+      availableTLE = params.Modes(modeID).AvailableTLE;
+      initConditions = params.Modes(modeID).InitialConditions;
+      ffpsFolderName = params.Modes(modeID).FFPSFolder;
+      ffpsValues = params.Modes(modeID).FFPSValues;
+      
+      % Set simulation parameters.
+      this.AccelFactor = accelFactor;
+      this.AllParams = params;
+      this.MaxNumOrbits = maxNumOrbits;
+      this.ModeName = modeName;
+      this.NumSatellites = numSatellites;
+      this.VizScale = vizScale;
+      
+%!RW: Parameters still in simulation, later transfer to FlightControl.
+      this.InitConditions = initConditions;
+      this.OrbitSections = sizeOrbitSection:sizeOrbitSection:360;
+      this.OrbitSectionInitial = initOrbitSection;
+      this.OrbitSectionNow = initOrbitSection;
+      this.OrbitSectionSize = sizeOrbitSection;
       this.NumOrbitSections = length(this.OrbitSections);
       
-      this.NumSatellites = param.NumSatellites;
+      % Set satellites positions and states to zero.
+%!RW: delete this, allow user to set initial positions and states in JSON file.
+      this.SatPositions = zeros(numSatellites,3,1);
+      this.SatPositionsLengths = ones(numSatellites,1);
+      this.SatStates = zeros(numSatellites,9,1);
+      this.SatStatesLengths = ones(numSatellites,1);
       
-      this.SatPositions = zeros(this.NumSatellites,3,1);
-      this.SatPositionsLengths = ones(this.NumSatellites,1);
+      % Set time vectors for simulation.
+      this.TimeVector = zeros(numSatellites,1);
+      this.TimeVectorLengths = ones(numSatellites,1);
       
-      this.SatStates = zeros(this.NumSatellites,9,1);
-      this.SatStatesLengths = ones(this.NumSatellites,1);
+      % Create array for objects of class Satellite.
+      this.Satellites = Satellite.empty(numSatellites,0);
       
-      this.TimeVector = zeros(this.NumSatellites,1);
-      this.TimeVectorLengths = ones(this.NumSatellites,1);
+      % Create arrays for aliases of Satellite children objects.
+      % Aliases allow calling children objects with shorter commands.
+      this.Orbits = Orbit.empty(numSatellites,0);
+      this.FlightControlModules = FlightControl.empty(numSatellites,0);
+      this.GPSModules = GPS.empty(numSatellites,0);
       
-      % Create array with objects of class Satellite.
-      this.Satellites = Satellite.empty(this.NumSatellites,0);
+      % Set location in which to save files with FFPS for the satellites.
+      ffpsFolderPath = strcat('satstorage',filesep,ffpsFolderName);
+      [~, ~, ~] = mkdir(ffpsFolderPath); % [status, msg, msgID]
+      ffpsFilePrefix = 'fc_FFP_sat';
+      ffpsPathPrefix = strcat(ffpsFolderPath,filesep,ffpsFilePrefix);
       
-      % Get location in which to save file with FFPS for the satellites.
-      ffpsFolder = param.FolderFFPS;
-      [~,~,~] = mkdir(ffpsFolder); % [status,msg,msgID]
-      
-      % Set common part of the name for FFPS files.
-      ffpsFileName = 'fc_FFP_sat';
-      
-      for i = 1 : this.NumSatellites
+      for i = 1 : numSatellites
         % Create a JSON file for each satellite's formation flight parameters.
-        ffpsPath = strcat(ffpsFolder,filesep,ffpsFileName,num2str(i),'.json');
-        fid = fopen(ffpsPath,'w');
-        fprintf(fid,'%s',jsonencode( param.FFPS(i) ) );
+        ffpsFullPath = strcat(ffpsPathPrefix,num2str(i),'.json');
+        fid = fopen(ffpsFullPath,'w');
+        fprintf(fid,'%s',jsonencode( ffpsValues(i) ) );
         fclose(fid);
         
         % Bring each satellite to life.
         % Inform the location of the FFPS file to each satellite.
         this.Satellites(i) = Satellite( ...
-          param.Altitude, ...
-          param.DeltaAngle, ...
-          param.AutoResponse, ...
-          param.AvailableGPS, ...
-          param.AvailableTLE, ...
-          param.NumSatellites, ...
-          param.FormationMode,...
-          ffpsPath);
-      end
-      
-      % Create aliases for satellite orbits.
-      this.Orbits = Orbit.empty(this.NumSatellites,0);
-      for i = 1 : this.NumSatellites
+          initOrbitAltitude, ...
+          attitudeResolutionDeg, ...
+          autoResponse, ...
+          availableGPS, ...
+          availableTLE, ...
+          numSatellites, ...
+          modeID, ...
+          ffpsFullPath);
+        
+        % Create simulation aliases for satellite children objects.
         this.Orbits(i) = this.Satellites(i).Orbit;
-      end
-      
-      % Create aliases for satellite flight control modules.
-      this.FlightControlModules = FlightControl.empty(this.NumSatellites,0);
-      for i = 1 : this.NumSatellites
         this.FlightControlModules(i) = this.Satellites(i).FlightControl;
-      end
-      
-      % Create aliases for GPS modules.
-      this.GPSModules = GPS.empty(this.NumSatellites,0);
-      for i = 1 : this.NumSatellites
         this.GPSModules(i) = this.Satellites(i).GPSModule;
       end
       
@@ -121,9 +147,9 @@ classdef CosmosSimulation < handle
     
   end % Constructor section.
   
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%% Public Methods %%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Public Methods %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   methods (Access = public)
     
@@ -160,29 +186,29 @@ classdef CosmosSimulation < handle
     startSimulation(this)
     incrementIDX(this)
     
+%!RW: later rename function to setOrbitSection?
     function setIDX(this, value)
-      this.IDX = value;
-    end
-    
-    function setSimParams(this, simParamStruct)
-      this.SimParams = simParamStruct;
+%       this.IDX = value;
+      this.OrbitSectionNow = value;
     end
     
   end % Public methods.
   
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%% Static Methods %%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	
-	methods (Static)
-    
-    %visualizationLONLATALT(ns,ttime,sstx,ssty,sstz,pitch,yaw,roll,altitude)
-    visualizationLONLATALT(ns,VIZaltitude)
-    
-		%plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e)
-    plotting(ns, meanMotionRad)
-		createListCustomClasses(filepath, workspaceFileName)
-		
-	end % Static methods.
-	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Static Methods %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+methods (Static)
+  
+  %!RW: for reference, old function:
+  % visualizationLONLATALT(ns,ttime,sstx,ssty,sstz,pitch,yaw,roll,altitude)
+  visualizationLONLATALT(ns,VIZaltitude)
+  
+  %!RW: for reference, old function:
+  % plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e)
+  plotting(ns, meanMotionRad)
+  createListCustomClasses(filepath, workspaceFileName)
+  
+end % Static methods.
+
 end % Class CosmosSimulation.

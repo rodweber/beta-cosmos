@@ -1,0 +1,98 @@
+{
+  "SelectedFormationFlightMode": 1,
+  "SimMaxNumOrbits": 2,
+  "SimAccelerationFactor": 100e3,
+  "VizScale": 1,
+  "Modes": [
+    {
+      "ModeID": 1,
+      "ModeName": "Cluster",
+      "NumSatellites": 3,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude": 453e3,
+      "SizeOrbitSectionDeg": 0.2,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "ffpsCluster",
+      "FFPSValues": [
+        {
+          "ffp1": 0,
+          "ffp2": 0,
+          "ffp3": 0,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        },
+        {
+          "ffp1": 100,
+          "ffp2": -115,
+          "ffp3": 100,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        },
+        {
+          "ffp1": 0,
+          "ffp2": -115,
+          "ffp3": 0,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        }
+      ]
+    },
+    {
+      "ModeID": 2,
+      "ModeName": "ISMission",
+      "NumSatellites": 2,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude": 453e3,
+      "SizeOrbitSectionDeg": 0.2,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "ffpsISMission",
+      "FFPSValues": [
+        {
+          "ffp1": 0,
+          "ffp2": 0,
+          "ffp3": 0,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        },
+        {
+          "ffp1": 0,
+          "ffp2": 0,
+          "ffp3": 0,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        }
+      ]
+    }
+  ],
+  "_Comment": "Field for comment of any kind. Leave it to use when needed."
+}

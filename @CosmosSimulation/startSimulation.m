@@ -5,12 +5,6 @@ function startSimulation(this)
 % Details here.
 % ______________________________________________________________________________
 
-% Read file with simulation parameters.
-filename = 'paramSimulation.json';
-fid = fopen(filename,'r');
-simParams = jsondecode(fscanf(fid,'%s'));
-this.setSimParams(simParams);
-
 % Create data queue for parallel pool.
 dq = parallel.pool.DataQueue;
 
@@ -53,8 +47,11 @@ spmd(this.NumSatellites)
   % Set satellite communication channel as the parpool data queue.
 	commChannel = dq;
 	
-    % Set up some parameters, such as battery status, sat status, initial conditions.
-	sat.initialize(id, commChannel,this.iniConditions(id,:));
+%!RW: transfer configuration of initial conditions to simulation, leave
+%satellite initialization only with real-case-like instructions.
+  % Set up some parameters, such as battery status, sat status, initial conditions.
+% sat.initialize(id, commChannel, this.iniConditions(id,:));
+  sat.initialize(id, commChannel, this.InitConditions(id,:));
   
     %% for sim
   % for simulation output, set initial conditions
@@ -115,7 +112,7 @@ spmd(this.NumSatellites)
     
     
     %% Start orbit sections loop.
-		while this.IDX <= this.NumOrbitSections
+		while this.OrbitSectionNow <= this.NumOrbitSections
 			
 			% Determine start time of this cycle, in order to subtract the 
 			% total cycle duration from the pause time (pause #2).
@@ -123,10 +120,17 @@ spmd(this.NumSatellites)
 			
 			% Start flying on orbital loop.
       % in which section (in degree) are we?
-      currentOrbitSection = this.OrbitSections(this.IDX);
+%!RW: this.OrbitSectionNow holds the ID of the current orbit section, while the
+%variable currentOrbitSection holds the value in degrees. This implementation is
+%very confusing. Maybe change name of variables or the implemenation method to
+%be more clear and avoid bugs/errors later.
+      currentOrbitSection = this.OrbitSections(this.OrbitSectionNow);
       %send(DQ,'bef');
       
       % run the formation flight algorithm
+%!RW: same from above notes applies here
+%!RW: later, the handling of the OrbitSectionSize needs to be implemented in
+%flight control module
       sat.fly(currentOrbitSection, this.OrbitSectionSize);
       %send(DQ,'after');
 			
@@ -135,21 +139,35 @@ spmd(this.NumSatellites)
       
       % Send reference position to all non 1-satellites.
       %! this should go into a new COM module
+%!RW: this implementation is a type of master-slave communication. Only 
+%satellite 1 is sending the position changes to other satellites. This should be
+%implemented inside of a new communication module/object.
       refPosChange = zeros(3,1);
       if id == 1
         refPosChange(1:3) = fc.State(1:3) - fc.StateOld(1:3);
         for satID = 2 : this.NumSatellites
-          tag = 1000000 * satID + 10000 * this.IDX + 100 * orbit.OrbitCounter + 1;
+          tag = 1000000 * satID + ...
+                  10000 * this.OrbitSectionNow + ...
+                    100 * orbit.OrbitCounter + ...
+                      1;
           labSend(refPosChange, satID, tag);
         end
       end
       
       % Receive reference position in other satellites.
-      if id ~= 1
-        tag = 1000000 * id + 10000 * this.IDX + 100 * orbit.OrbitCounter + 1;
+%!RW: from notes above, this is a type of master-slave communication. All
+%satellites, with exception of satellite 1, are receiving the tag sent by the
+%master (satellite 1). Also implement this part inside of a new communication
+%module/object.
+      satID = id;
+      if satID ~= 1
+        tag = 1000000 * satID + ...
+                10000 * this.OrbitSectionNow + ...
+                  100 * orbit.OrbitCounter + ...
+                    1;
         refPosChange = labReceive(1, tag);
       end
-      			
+      
 			% Move coordinate system.
 			% Should the old state be shifted as well?
 			shift = -refPosChange(1:3);
