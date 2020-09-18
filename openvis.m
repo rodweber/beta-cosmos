@@ -1,4 +1,7 @@
 %% File to open visualization for Cosmos Beta in MATLAB Simulink
+% Warning supressers
+%#ok<*NASGU> line 27
+%#ok<*UNRCH> line 69
 
 %% Set parameters
 warning on verbose;
@@ -8,18 +11,19 @@ close all; clc; % Do not clear variables, it makes the project unstable.
 % Set parameter to automatically run Simulink visualization.
 AUTORUN = 1; % [true: 1 | false: 0]
 
-% Inform the name of this file without the extension "m".
-THIS_FILE_NAME = 'openvis';
+% Set inclination of the satellite orbits.
+INCLINATION = 0; % Inclination of the satellite orbits, in degrees.
 
-% Inform the name of the project file for the Cosmos simulation.
-PROJECT_FILE_NAME = 'cosmosVisualization'; % Without extension 'prj'.
-PROJECT_FOLDER = 'visualization';
+% IMPORTANT:
+% The last coordinates file in the list below or in the folder MUST BE the
+% reference for the other satellites.
 
+% Set flag to look for coordinate files in a specific folder.
+COORD_FOLDER_FLAG = 1; % [true: 1 | false: 0]
+coordfolder = strcat('coordinates',filesep,'dataSet3_Angles_vizScale100-orig');
+
+% In case COORD_FOLDER_FLAG is set to FALSE, define names of coordinate files:
 % Files with coordinates data for satellites.
-%coordfiles = {'sat1LLR'};
-%coordfiles = {'sat1LLR','sat2LLR','sat3LLR','sat4LLR'};
-%coordfiles = {'sat1_LLR_PYR','sat2_LLR_PYR','sat3_LLR_PYR','sat4_LLR_PYR'};
-%coordfiles = {'LLR_sat_1','LLR_sat_2','LLR_sat_3','LLR_sat_4'};
 coordfiles = {
     'inc000-LLR_PYR_sat-1';
     'inc000-LLR_PYR_sat-2';
@@ -27,16 +31,13 @@ coordfiles = {
     'inc000-LLR_PYR_sat-ref'
     };
 
-COORD_FOLDER_FLAG = 1; % [true: 1 | false: 0]
-coordfolder = strcat('coordinates',filesep,'dataSet2_vizScale100');
-if COORD_FOLDER_FLAG
-    coordfiles = {dir(strcat(coordfolder,filesep,'*.csv')).name};
-end
+% The parameters below normally shouldn't change.
+% Inform the name of this file without the extension "m".
+THIS_FILE_NAME = 'openvis';
 
-INCLINATION = 0; % Inclination of the satellite orbits, in degrees.
-
-% Conversion of the orbital inclination, from degrees to radians.
-INCLINATION = INCLINATION * (pi/180);
+% Inform the name of the project file for the Cosmos simulation.
+PROJECT_FILE_NAME = 'cosmosVisualization'; % Without extension 'prj'.
+PROJECT_FOLDER = 'visualization';
 
 %% Set paths
 if(~isdeployed)
@@ -57,6 +58,19 @@ end
 
 rmpath(genpath(strcat('coordinates',filesep)));
 addpath(coordfolder);
+
+%% Prepare data
+disp('Satellite coordinate files:');
+if COORD_FOLDER_FLAG
+  coordfiles = {dir(strcat(coordfolder,filesep,'*.csv')).name};
+  disp(coordfolder);
+  disp(coordfiles');
+else
+  disp(coordfiles);
+end
+
+% Conversion of the orbital inclination, from degrees to radians.
+INCLINATION = INCLINATION * (pi/180);
 
 %% Run Simulink file
 
@@ -86,6 +100,8 @@ simsat(1).lat = struct('time',0,'signals',struct('dimensions',0,'values',0));
 simsat(1).long = struct('time',0,'signals',struct('dimensions',0,'values',0));
 simsat(1).sma = struct('time',0,'signals',struct('dimensions',0,'values',0));
 simsat(1).pos = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).posU1 = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).posU2 = struct('time',0,'signals',struct('dimensions',0,'values',0));
 simsat(1).inc = struct('time',0,'signals',struct('dimensions',0,'values',0));
 simsat(1).rot = struct('time',0,'signals',struct('dimensions',0,'values',0));
 simsat(1).pitch = struct('time',0,'signals',struct('dimensions',0,'values',0));
@@ -102,9 +118,9 @@ for n = 1:numsats
     latDeg = coord(:,2); % [degrees]
     longDeg = coord(:,3); % [degrees]
     smaKm = coord(:,4); % [km]
-    pitch = coord(:,5); % [degrees]
-    yaw = coord(:,6); % [degrees]
-    roll = coord(:,7); % [degrees]
+    pitch = coord(:,6); % [degrees]
+    yaw = coord(:,7); % [degrees]
+    roll = coord(:,5); % [degrees]
     
     % Convert data to SI units
     latRad = latDeg * (pi/180); % [rad]
@@ -134,6 +150,20 @@ for n = 1:numsats
     y = zeros(dataLength,1);
     z = zeros(dataLength,1);
     simsat(n).pos.signals.values = [x y z];
+    
+    simsat(n).posU1.time = timestamps;
+    simsat(n).posU1.signals.dimensions = 3;
+    x = zeros(dataLength,1);
+    y = zeros(dataLength,1);
+    z = zeros(dataLength,1);
+    simsat(n).posU1.signals.values = [x y z];
+    
+    simsat(n).posU2.time = timestamps;
+    simsat(n).posU2.signals.dimensions = 3;
+    x = zeros(dataLength,1);
+    y = zeros(dataLength,1);
+    z = zeros(dataLength,1);
+    simsat(n).posU2.signals.values = [x y z];
     
     simsat(n).inc.time = timestamps;
     simsat(n).inc.signals.dimensions = 1;
@@ -171,6 +201,11 @@ for i = 1:dataLength
         long = simsat(n).long.signals.values(i);
         sma = simsat(n).sma.signals.values(i);
         
+        % Get roll, pitch, yaw angles.
+        rollAngle = simsat(n).roll.signals.values(i);
+        pitchAngle = simsat(n).pitch.signals.values(i);
+        yawAngle = simsat(n).yaw.signals.values(i);
+        
         % From latitude-longitude, calculate position in ECEF.
         base = sma * cos(lat);
         z = sma * sin(lat);
@@ -179,6 +214,35 @@ for i = 1:dataLength
         simsat(n).pos.signals.values(i,1) = x;
         simsat(n).pos.signals.values(i,2) = y;
         simsat(n).pos.signals.values(i,3) = z;
+        
+        % Compute unit vector from x, y, z.
+        posVector = [x y z];
+        unitPositionVector1 = posVector / norm(posVector);
+        
+        % Set U1.
+        simsat(n).posU1.signals.values(i,1) = unitPositionVector1(1);
+        simsat(n).posU1.signals.values(i,2) = unitPositionVector1(2);
+        simsat(n).posU1.signals.values(i,3) = unitPositionVector1(3);
+        
+        % For each pair of lat-long, compute unit vector to center of Earth.
+        % Initial vector is [SMA, 0, 0].
+        % Normalize vector to start with vector0 = [1 0 0].
+        unitPositionVector2 = [1 0 0];
+        
+        % Compute latitude and longitude rotations.
+        a = -lat;
+        rotLat = [cos(a/2), 0, sin(a/2), 0]; % [quaternion]
+        a = long;
+        rotLong = [cos(a/2), 0, 0, sin(a/2)]; % [quaternion]
+        
+        % Update unit vector pointing to satellite position.
+        unitPositionVector2 = quatrotate(rotLat, unitPositionVector2);
+        unitPositionVector2 = quatrotate(rotLong, unitPositionVector2);
+        
+        % Set U2.
+        simsat(n).posU2.signals.values(i,1) = unitPositionVector2(1);
+        simsat(n).posU2.signals.values(i,2) = unitPositionVector2(2);
+        simsat(n).posU2.signals.values(i,3) = unitPositionVector2(3);
         
         % -----------------------------------------------------------------
         % Method 1 (more complex, stop here, implement Method 2)
@@ -238,21 +302,44 @@ for i = 1:dataLength
         %   - payload pointing to Nadir, and
         %   - wings perpendicular to Equator line.
         % To correct orientation of the 3D satellite to initial attitude,
-        % rotate -90deg (-pi/2) on ECEF's Y-axis.
+        % ROLL -90deg (-pi/2) on ECEF's Y-axis.
         a = -pi/2;
         rot = [cos(a/2), 0, sin(a/2), 0]; % [quaternion]
         
-        % For each pair of lat-long, compute vector to center of Earth.
-        % Initial vector is [SMA, 0, 0].
-        % Normalize vector to start with vector0 = [1 0 0].
-        vector1 = [1 0 0];
+        % Define local satellite axes.
         localYaw = [1 0 0];
         localPitch = [0 0 1];
         localRoll = [0 1 0];
         
-        % -----------------------------------------------------------------
-        % Correct for orbit inclination.
+        %% ROLL
+        % ROLL on ECEF's Y-axis with angle -latitude.
+        % Output vector2.
+        a = -lat + rollAngle;
+        rotRoll = [cos(a/2), 0, sin(a/2), 0]; % [quaternion]
         
+        % Update locals.
+        localYaw = quatrotate(rotRoll, localYaw);
+        localPitch = quatrotate(rotRoll, localPitch);
+        localRoll = quatrotate(rotRoll, localRoll);
+        
+        % Update cumulative quaternion rotation.
+        rot = quatmultiply(rotRoll, rot);
+        
+        %% PITCH
+        % Rotate on ECEF's Z-axis with angle +longitude.
+        % Output vector3.
+        a = long + pitchAngle;
+        rotPitch = [cos(a/2), 0, 0, sin(a/2)]; % [quaternion]
+        
+        % Update locals.
+        localYaw = quatrotate(rotPitch, localYaw);
+        localPitch = quatrotate(rotPitch, localPitch);
+        localRoll = quatrotate(rotPitch, localRoll);
+        
+        % Update cumulative quaternion rotation.
+        rot = quatmultiply(rotPitch, rot);
+        
+        %% Correction for orbit inclination
         % If the lat-long point is in the ascending portion of the orbit, the 
         % inclination will be positive.
         % If the lat-long point is in the descending portion of the orbit, the 
@@ -275,13 +362,13 @@ for i = 1:dataLength
         % If lat_now = 0, lat_before = -1,
         % diff = +1,
         % diff positive -> latitude increasing, ascending portion of the orbit
-        % latitude increasing -> use positive orbit inclination for roll
+        % latitude increasing -> use positive orbit inclination for YAW
         
         % Example B:
         % If lat_now = 85, lat_before = 86,
         % diff = -1,
         % diff negative -> latitude decreasing, descending portion of the orbit
-        % latitude decreasing -> use negative orbit inclination for roll
+        % latitude decreasing -> use negative orbit inclination for YAW
         
         if diff < 0
             inclinationToUse = -INCLINATION;
@@ -289,115 +376,40 @@ for i = 1:dataLength
             inclinationToUse = INCLINATION;
         end
         
-        a = inclinationToUse;
-        rot1 = [cos(a/2), sin(a/2), 0, 0]; % [quaternion]
-        % Update cumulative quaternion rotation.
-        rot = quatmultiply(rot1, rot);
-        % Update locals.
-        localYaw = quatrotate(rot1, localYaw);
-        localPitch = quatrotate(rot1, localPitch);
-        localRoll = quatrotate(rot1, localRoll);
-        
-        % Rotate on local yaw, currently on ECEF's X-axis.
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % Try this:
-        %  initial attitude
-        %  orbit inclination on ECEF-X
-        %  pitch angle on localPitch
-        %  yaw angle on ECEF-X
-        %  -latitude on ECEF-Y
-        %  longitude on ECEF-Z
-        %  roll angle on localRoll
-%         a = simsat(n).yaw.signals.values(i);
-%         rotYaw = [cos(a/2), sin(a/2), 0, 0]; % [quaternion]
-%         % Update quaternion rotation.
-%         rot = quatmultiply(rotYaw, rot);
-        
-        % -----------------------------------------------------------------
-        
-        % Rotate on ECEF's Y-axis with angle -latitude.
-        % Output vector2.
-        a = -lat;
-        rot2 = [cos(a/2), 0, sin(a/2), 0]; % [quaternion]
-        vector2 = quatrotate(rot2, vector1);
-        % Update cumulative quaternion rotation.
-        rot = quatmultiply(rot2, rot);
-        % Update locals.
-        localYaw = quatrotate(rot2, localYaw);
-        localPitch = quatrotate(rot2, localPitch);
-        localRoll = quatrotate(rot2, localRoll);
-        
-        % Rotate on ECEF's Z-axis with angle +longitude.
-        % Output vector3.
-        a = long;
-        rot3 = [cos(a/2), 0, 0, sin(a/2)]; % [quaternion]
-        vector3 = quatrotate(rot3, vector2);
-        % Update cumulative quaternion rotation.
-        rot = quatmultiply(rot3, rot);
-        % Update locals.
-        localYaw = quatrotate(rot3, localYaw);
-        localPitch = quatrotate(rot3, localPitch);
-        localRoll = quatrotate(rot3, localRoll);
-        
-        % -----------------------------------------------------------------
-        % Vector from Earth center to satellite location -> vector3
-        % -----------------------------------------------------------------
-        % Compute Rodrigues matrices here.
-        % References:
+        %% YAW
+        % Use YAW with Rodrigues rotation on satellite's unit position vector.
+        % ----------------------------------------------------------------------
+        % Unit vector from Earth center to satellite location -> u
+        % ----------------------------------------------------------------------
+        % References for Rodrigues rotation matrix.
         % https://math.stackexchange.com/questions/142821/matrix-for-rotation-around-a-vector
         % https://mathworld.wolfram.com/RodriguesRotationFormula.html
         
-        % Pitch angle around localPitch.
-        u = localPitch; % rotation matrix will be around u, must be normalized
-        a = simsat(n).pitch.signals.values(i);
-        W = [  0  -u(3)  u(2);
-             u(3)   0   -u(1);
-            -u(2)  u(1)   0 ];
-        I = eye(3); % identity matrix 3x3
-        rodriguesRotMatrix = I + sin(a)*W + (2*sin(a/2)^2)*(W^2);
-        % Convert Rodrigues rotation matrix to quaternions.
-        rotPitch = rotm2quat(rodriguesRotMatrix);
-        % Update cumulative quaternion rotation.
-        rot = quatmultiply(rotPitch, rot);
-        % Update locals.
-        localYaw = quatrotate(rotPitch, localYaw);
-        localPitch = quatrotate(rotPitch, localPitch);
-        localRoll = quatrotate(rotPitch, localRoll);
+        % Set normalized vector 'u'.
+        u = [unitPositionVector2(1) -unitPositionVector2(2) -unitPositionVector2(3)];
         
-        % Yaw angles around vector3.
-        u = vector3; % rotation matrix will be around u, must be normalized
-        a = simsat(n).yaw.signals.values(i);
+        % Set yaw rotation angle.
+        a = inclinationToUse + yawAngle;
+        
+        % Compute Rodrigues rotation matrix.
         W = [  0  -u(3)  u(2);
              u(3)   0   -u(1);
             -u(2)  u(1)   0 ];
         I = eye(3); % identity matrix 3x3
         rodriguesRotMatrix = I + sin(a)*W + (2*sin(a/2)^2)*(W^2);
+        
         % Convert Rodrigues rotation matrix to quaternions.
         rotYaw = rotm2quat(rodriguesRotMatrix);
-        % Update cumulative quaternion rotation.
-        rot = quatmultiply(rotYaw, rot);
+        
         % Update locals.
         localYaw = quatrotate(rotYaw, localYaw);
         localPitch = quatrotate(rotYaw, localPitch);
         localRoll = quatrotate(rotYaw, localRoll);
         
-        % Roll angle around localRoll.
-        u = localRoll; % rotation matrix will be around u, must be normalized
-        a = simsat(n).roll.signals.values(i);
-        W = [  0  -u(3)  u(2);
-             u(3)   0   -u(1);
-            -u(2)  u(1)   0 ];
-        I = eye(3); % identity matrix 3x3
-        rodriguesRotMatrix = I + sin(a)*W + (2*sin(a/2)^2)*(W^2);
-        % Convert Rodrigues rotation matrix to quaternions.
-        rotRoll = rotm2quat(rodriguesRotMatrix);
         % Update cumulative quaternion rotation.
-        rot = quatmultiply(rotRoll, rot);
-        % Update locals.
-        localYaw = quatrotate(rotRoll, localYaw);
-        localPitch = quatrotate(rotRoll, localPitch);
-        localRoll = quatrotate(rotRoll, localRoll);
+        rot = quatmultiply(rotYaw, rot);
         
+        %% Total rotation
         % Multiplied all rotation quaternions to get final rotation.
         % Loop to save all elements of the final rotation quaternion.
         for q = 1:4
