@@ -20,7 +20,7 @@ INCLINATION = 0; % Inclination of the satellite orbits, in degrees.
 
 % Set flag to look for coordinate files in a specific folder.
 COORD_FOLDER_FLAG = 1; % [true: 1 | false: 0]
-coordfolder = strcat('coordinates',filesep,'dataSet3_Angles_vizScale100-orig');
+coordfolder = strcat('coordinates',filesep,'vizScale1000woJumpinessAndNewVizScale');
 
 % In case COORD_FOLDER_FLAG is set to FALSE, define names of coordinate files:
 % Files with coordinates data for satellites.
@@ -431,20 +431,21 @@ open_system('asbCubeSat');
 % in Command Window:
 % findall(groot, 'Name', 'COSMOS Visualization')
 
-if AUTORUN
-    % Try to get handle of the figure window for 3D visualization.
+% Try to get handle of the figure window for 3D visualization.
+cosmosVisHandle = findall(groot, 'Name', 'COSMOS Visualization');
+if isempty(cosmosVisHandle)
+    % If handle is empty, means that the figure is closed.
+    % Open figure.
+    open('cosmosSimulation.x3d');
     cosmosVisHandle = findall(groot, 'Name', 'COSMOS Visualization');
-    if isempty(cosmosVisHandle)
-        % If handle is empty, means that the figure is closed.
-        % Open figure.
-        open('cosmosSimulation.x3d');
-        cosmosVisHandle = findall(groot, 'Name', 'COSMOS Visualization');
-        % Find VRSimMenu in cosmosVisHandle.Children(5)
-        % Find submenus in cosmosVisHandle.Children(5).Children(1) to (3)
-    else
-        % If handle is found, figure is already open. Bring it to front.
-        figure(cosmosVisHandle);
-    end
+    % Find VRSimMenu in cosmosVisHandle.Children(5)
+    % Find submenus in cosmosVisHandle.Children(5).Children(1) to (3)
+else
+    % If handle is found, figure is already open. Bring it to front.
+    figure(cosmosVisHandle);
+end
+
+if AUTORUN
     % Start Simulink visualization.
     sim('asbCubeSat',stopTime);
 end
