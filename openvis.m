@@ -11,6 +11,13 @@ close all; clc; % Do not clear variables, it makes the project unstable.
 % Set parameter to automatically run Simulink visualization.
 AUTORUN = 1; % [true: 1 | false: 0]
 
+% Set parameter to automatically smooth changes in satellite orientations.
+AUTOSMOOTH = 1; % [true: 1 | false: 0]
+
+% If AUTOSMOOTH is enabled, set num of data points for computing smoothed value.
+SMOOTH_SPAN = 51;
+SMOOTH_METHOD = 'moving';
+
 % Set inclination of the satellite orbits.
 INCLINATION = 0; % Inclination of the satellite orbits, in degrees.
 
@@ -121,6 +128,12 @@ for n = 1:numsats
     pitch = coord(:,6); % [degrees]
     yaw = coord(:,7); % [degrees]
     roll = coord(:,5); % [degrees]
+    
+    if(AUTOSMOOTH)
+      pitch = smooth(pitch,SMOOTH_SPAN,SMOOTH_METHOD);
+      yaw   = smooth(yaw  ,SMOOTH_SPAN,SMOOTH_METHOD);
+      roll  = smooth(roll ,SMOOTH_SPAN,SMOOTH_METHOD);
+    end
     
     % Convert data to SI units
     latRad = latDeg * (pi/180); % [rad]
