@@ -12,8 +12,8 @@
     <Inline url='"earthAnim.wrl" '>
     </Inline>
   </Transform>
-  <Transform DEF='Satellite4'  scale='0.1 0.1 0.1' rotation='0.50838 0.84409 -0.08794 2'>
-    <Transform DEF='FollowSat_0003'  translation='-5.5 2 0' rotation='-0.0923 -0.7011 -0.0923 1.5878'>
+  <Transform DEF='SatelliteReference'  scale='0.1 0.1 0.1' rotation='0.50838 0.84409 -0.08794 2'>
+    <Transform DEF='FollowReference'  translation='-5.5 2 0' rotation='-0.0923 -0.7011 -0.0923 1.5878'>
       <Viewpoint DEF='FollowSatView_0003'  fieldOfView='0.7854' description='Follow Local-Ref' position='0 0 0'>
       </Viewpoint>
     </Transform>
@@ -74,7 +74,7 @@
       </Viewpoint>
     </Transform>
   </Transform>
-  <Transform DEF='Satellite2'  scale='0.1 0.1 0.1' rotation='0.50838 0.84409 -0.08794 3.4347' center='0 0.05 -0.1'>
+  <Transform DEF='Satellite2'  scale='0.1 0.1 0.1' rotation='0.50838 0.84409 -0.08794 3.4347'>
     <Shape DEF='SatelliteBus_0002' >
       <Appearance>
         <ImageTexture url='"texture/cubesat.jpg" '>
@@ -126,7 +126,7 @@
       </Viewpoint>
     </Transform>
   </Transform>
-  <Transform DEF='Satellite1'  scale='0.1 0.1 0.1' rotation='0.50838 0.84409 -0.08794 3.4347' center='0 -0.05 0.1'>
+  <Transform DEF='Satellite1'  scale='0.1 0.1 0.1' rotation='0.50838 0.84409 -0.08794 3.4347'>
     <Shape DEF='SatelliteBus' >
       <Appearance>
         <ImageTexture url='"texture/cubesat.jpg" '>

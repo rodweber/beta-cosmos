@@ -22,21 +22,21 @@ SMOOTH_METHOD = 'moving';
 INCLINATION = 0; % Inclination of the satellite orbits, in degrees.
 
 % IMPORTANT:
-% The last coordinates file in the list below or in the folder MUST BE the
+% The FIRST coordinates file in the list below or in the folder MUST BE the
 % reference for the other satellites.
 
 % Set flag to look for coordinate files in a specific folder.
 COORD_FOLDER_FLAG = 1; % [true: 1 | false: 0]
-coordfolder = strcat('coordinates',filesep,'vizScale1000woJumpinessAndNewVizScale');
+coordfolder = strcat('coordinates',filesep,'data4_CLUSTER350km52degViz10000');
 
 % In case COORD_FOLDER_FLAG is set to FALSE, define names of coordinate files:
 % Files with coordinates data for satellites.
 coordfiles = {
-    'inc000-LLR_PYR_sat-1';
-    'inc000-LLR_PYR_sat-2';
-    'inc000-LLR_PYR_sat-3';
-    'inc000-LLR_PYR_sat-ref'
-    };
+  'sat0-LLR_PYR';
+  'sat1-LLR_PYR';
+  'sat2-LLR_PYR';
+  'sat3-LLR_PYR'
+  };
 
 % The parameters below normally shouldn't change.
 % Inform the name of this file without the extension "m".
@@ -48,19 +48,19 @@ PROJECT_FOLDER = 'visualization';
 
 %% Set paths
 if(~isdeployed)
-	% Get directory path of the active file in MATLAB's Editor.
-	[filepath,~,~] = fileparts(matlab.desktop.editor.getActiveFilename);
-	addpath(genpath(filepath)); % Add file path to the current MATLAB path.
-	
-	% Get path for directory of the file name set in THIS_FILE_NAME.
-	[filepath,~,~] = fileparts(which(THIS_FILE_NAME));
-	addpath(genpath(filepath)); % Add file path to the current MATLAB path.
-    
-    % Get path for directory of the simulation project.
-    [projectPath,~,~] = fileparts(which([PROJECT_FILE_NAME,'.prj']));
-	
-	% Change working directory to the directory of this m-file.
-	cd(filepath);
+  % Get directory path of the active file in MATLAB's Editor.
+  [filepath,~,~] = fileparts(matlab.desktop.editor.getActiveFilename);
+  addpath(genpath(filepath)); % Add file path to the current MATLAB path.
+  
+  % Get path for directory of the file name set in THIS_FILE_NAME.
+  [filepath,~,~] = fileparts(which(THIS_FILE_NAME));
+  addpath(genpath(filepath)); % Add file path to the current MATLAB path.
+  
+  % Get path for directory of the simulation project.
+  [projectPath,~,~] = fileparts(which([PROJECT_FILE_NAME,'.prj']));
+  
+  % Change working directory to the directory of this m-file.
+  cd(filepath);
 end
 
 rmpath(genpath(strcat('coordinates',filesep)));
@@ -69,8 +69,12 @@ addpath(coordfolder);
 %% Prepare data
 disp('Satellite coordinate files:');
 if COORD_FOLDER_FLAG
-  coordfiles = {dir(strcat(coordfolder,filesep,'*.csv')).name};
   disp(coordfolder);
+  % Read names of coordinate files.
+  coordfiles = {dir(strcat(coordfolder,filesep,'*.csv')).name};
+  % Rearrange files so that the local coordinate is the last one in the list.
+  % This step is necessary for correct visualization in the 3D world simulink.
+  coordfiles = circshift(coordfiles,-1);
   disp(coordfiles');
 else
   disp(coordfiles);
