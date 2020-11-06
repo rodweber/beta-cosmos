@@ -73,6 +73,7 @@ end
   sstTemp=RE+VIZaltitude/1000;%a       = input(' Major semi-axis                       (>6378)     a      [km]  = ');
   ecc_max = sprintf('%6.4f',1-RE/sstTemp);     % maximum value of eccentricity allowed
   e=0;%e       = input([' Eccentricity                         (<',ecc_max,')    e            = ']);
+  
   RAAN  = RAAN*pi/180;        % RAAN                          [rad]
   w     = w*pi/180;           % Argument of perigee           [rad]
   v0    = v0*pi/180;          % True anomaly at the departure [rad]
@@ -199,18 +200,18 @@ end
     for j=2:ns+1
 
       lon(j,i)     = wrapTo360(lon(1,i)+offPlaneOffsetAngle(j-1,i));         % Longitude            [deg]
-      lat(j,i)     = lat(1,i)+inPlaneOffsetAngle(j-1,i);      % Latitude             [deg]
-      rad(j,i)     = rad(1,i)'+sstZvizgrid(j-1,i)/1000;                               % radius                [km]
+      lat(j,i)     = lat(1,i)+inPlaneOffsetAngle(j-1,i);                     % Latitude             [deg]
+      rad(j,i)     = rad(1,i)'+sstZvizgrid(j-1,i)/1000;                      % radius                [km]
 
       %{
       if i==1 %% 1-point, northward
-          Lat(j,i)     = Lat(1,i)+ramOffsetAngle(j-1,i)/pi*180;      % Latitude             [deg]
-          Lon(j,i)     = wrapTo360(Lon(1,i)+planeOffsetAngle(j-1,i)/pi*180);    % Longitude            [deg]
-          Rad(j,i)     = Rad(i)'+sstzvizgrid(j-1,i)/1000;       % radius                [km]
+          Lat(j,i)     = Lat(1,i)+ramOffsetAngle(j-1,i)/pi*180;              % Latitude             [deg]
+          Lon(j,i)     = wrapTo360(Lon(1,i)+planeOffsetAngle(j-1,i)/pi*180); % Longitude            [deg]
+          Rad(j,i)     = Rad(i)'+sstzvizgrid(j-1,i)/1000;                    % radius                [km]
         elseif Lat(1,i+1)>Lat(1,i) %% northward
-          Lat(j,i)     = Lat(1,i)+ramOffsetAngle(j-1,i)/pi*180;      % Latitude             [deg]
-          Lon(j,i)     = wrapTo360(Lon(1,i)+planeOffsetAngle(j-1,i)/pi*180);    % Longitude            [deg]
-          Rad(j,i)     = Rad(i)'+sstzvizgrid(j-1,i)/1000;       % radius                [km]
+          Lat(j,i)     = Lat(1,i)+ramOffsetAngle(j-1,i)/pi*180;              % Latitude             [deg]
+          Lon(j,i)     = wrapTo360(Lon(1,i)+planeOffsetAngle(j-1,i)/pi*180); % Longitude            [deg]
+          Rad(j,i)     = Rad(i)'+sstzvizgrid(j-1,i)/1000;                    % radius                [km]
         elseif Lat(1,i+1)<Lat(1,i) %% southward
           Lat(j,i)     = Lat(1,i)-ramOffsetAngle(j-1,i)/pi*180;      % Latitude             [deg]
           Lon(j,i)     = wrapTo360(Lon(1,i)+planeOffsetAngle(j-1,i)/pi*180);    % Longitude            [deg]
@@ -233,7 +234,10 @@ end
       %}
     end %% number of satellites
   end %% time step
-  
+
+  lon(:,end)     = lon(:,end-1);
+  lat(:,end)     = lat(:,end-1);
+  rad(:,end)     = rad(:,end-1);
        
   %% write files for LLR & RPY of each satellite and the reference (satellite). Latter is numbered as sat0.
   for i=1:ns+1
@@ -244,18 +248,18 @@ end
   if 1 %% GNSS reflectometry visualization
     %% compute or define GNSS satellites position
     noOfGNSSsats=1;
-    timeGNSS=0:1:10;
-    latGNSS=10:1:20;
-    lonGNSS=30:1:40;
-    altGNSS=20000*ones(1,11);
+    steps=10;
+    timeGNSS=vizgridtime(1):(vizgridtime(end)-vizgridtime(1))/steps:vizgridtime(end);
+    latGNSS=10:(20-10)/steps:20;
+    lonGNSS=30:(40-30)/steps:40;
+    altGNSS=20000*ones(1,steps+1);
     
-    %% compute SP location
+    %% compute SP location per each cubesat and each GNSS satellite
     for i=1:ns
       for j=1:noOfGNSSsats
-        [latSP(i,j,:), lonSP(i,j,:)]=computeSPlocation(lat(i,:),lon(i,:),rad(i,:),latGNSS(j,:),lonGNSS(j,:),altGNSS(j,:)+radiusOfEarth/1000);
+        [latSP(i,j,:), lonSP(i,j,:)]=computeSPlocation(vizgridtime',lat(i,:),lon(i,:),rad(i,:),timeGNSS,latGNSS(j,:),lonGNSS(j,:),altGNSS(j,:)+radiusOfEarth/1000,radiusOfEarth/1000);
       end
     end
-  
     %% set-up GIS
     grs80 = referenceEllipsoid('grs80','km');
     load topo
@@ -281,11 +285,20 @@ end
        %% display location of SP
        for i=1:ns
          for j=1:noOfGNSSsats
-           plotm(squeeze(latSP(i,j,:))',squeeze(lonSP(i,j,:))','Color',[1 0 1]);hold on;
+           plotm(squeeze(latSP(i,j,:))',squeeze(lonSP(i,j,:))',ones(1,size(lonSP,3)),'Color',[0 0 0]);hold on;
          end
        end
        view(90,0)
-  end 
+       figure
+         for i=1:ns
+           for j=1:noOfGNSSsats
+             plot(squeeze(latSP(i,j,:))',squeeze(lonSP(i,j,:))');hold on;
+           end
+         end
+         legend
+       
+  end %% end GNSS-R visualization
+  
 end
 
 
@@ -346,39 +359,83 @@ end
 
 
 
-function [latSP, lonSP]=computeSPlocation(lat,lon,rad,latGNSS,lonGNSS,radGNSS)
+function [latSP, lonSP]=computeSPlocation(vizgridtime,latRec,lonRec,radRec,timeGNSS,latGNSS,lonGNSS,radGNSS,rC)
+%% based on:
 %% A New Approach to Determine the Specular Point of Forward Reflected GNSS Signals
 %% Benjamin John Southwell Dolby Laboratories, Inc. Andrew G Dempster UNSW Sydney
+%%%% input variables:
+%% vizgridtime
+%% latRec
+%% lonRec
+%% radRec
+%% timeGNSS
+%% latGNSS
+%% lonGNSS
+%% radGNSS
+%% radiusOfEarth
+%%%% output variables:
+%% latSP
+%% lonSP
 
   %% interpolate latGNSS/lonGNSS on lat/lon/rad grid
-  latGNSSnewGrid=latGNSS;
-  lonGNSSnewGrid=lonGNSS;  
-  radGNSSnewwGrid=radGNSS;
-    for j=1:size(lat,2)
-      %% compute beta
+  latGNSSnewGrid=interp1(timeGNSS,latGNSS,vizgridtime,'spline',0);
+  lonGNSSnewGrid=interp1(timeGNSS,lonGNSS,vizgridtime,'spline',0);
+  radGNSSnewGrid=interp1(timeGNSS,radGNSS,vizgridtime,'spline',0);
 
-      T=1;
-      R=1;
-      rC=1;
-      %% compute thetaR, thetaT
-      thetaRlat=lat(j);
-      thetaTlat=latGNSSnewGrid(1);
-      thetaRlon=lon(j);
-      thetaTlon=lonGNSSnewGrid(1);
-      THETAlat=thetaRlat+thetaTlat;
-      THETAlon=thetaRlon+thetaTlon;
-
-      
-      myfunLat = @(betaLat) asind(rC/T*sin(betaLat))+asind(rC/R*sin(betaLat))+THETAlat+2*betaLat-360; 
-      funLat = @(betaLat) myfunLat(betaLat);    
-      betaLat = fzero(funLat,1);
-
-      myfunLon = @(betaLon) asind(rC/T*sin(betaLon))+asind(rC/R*sin(betaLon))+THETAlon+2*betaLon-360; 
-      funLon = @(betaLon) myfunLon(betaLon);    
-      betaLon = fzero(funLon,1);
-
-      %% compute latSP and lonSP
-      latSP(j)=betaLat;
-      lonSP(j)=betaLon;
+  latSP=zeros(1,size(vizgridtime,1));
+  lonSP=zeros(1,size(vizgridtime,1));
+  
+  for i=1:size(latRec,2) %% compute betas for each lat data point
+    T=radGNSSnewGrid(i);
+    R=radRec(i);
+    %% compute thetaR, thetaT
+    if latGNSSnewGrid(i)> 270 && latRec(i)<90
+      THETAlat=latGNSSnewGrid(i)-latRec(i)-360;
+    elseif latGNSSnewGrid(i) < 90 && latRec(i) > 270
+      THETAlat=latGNSSnewGrid(i)-latRec(i)+360;
+    else
+       THETAlat=latGNSSnewGrid(i)-latRec(i);
     end
+    
+    %fprintf('\n latGNSS %f latCS %f THETAlat %f T %f R %f  ',latGNSSnewGrid(i),latRec(i),THETAlat, T, R)
+    myfunLat = @(betaLat) asind(rC/T*sind(betaLat))+asind(rC/R*sind(betaLat))+THETAlat+2*betaLat-360;
+    funLat = @(betaLat) myfunLat(betaLat);
+    betaLat = fzero(funLat,180-THETAlat);
+    betaLatOld=betaLat;
+    thetaSPLat(i)=180-betaLat-asind(rC/T*sind(betaLat));
+    latSPTemp(i)=latGNSSnewGrid(i)-thetaSPLat(i);    
+    %fprintf('\n thetaSPLat %f betaLat %f latSPTemp %f: ',thetaSPLat(i),betaLat,latSPTemp(i))
+
+    if lonGNSSnewGrid(i)> 270 && lonRec(i)<90
+      THETAlon=lonGNSSnewGrid(i)-lonRec(i)-360;
+    elseif lonGNSSnewGrid(i) < 90 && lonRec(i) > 270
+      THETAlon=lonGNSSnewGrid(i)-lonRec(i)+360;
+    else
+      THETAlon=lonGNSSnewGrid(i)-lonRec(i);
+    end
+      
+    %fprintf('\n lon1 %f %f %f: ',lonGNSSnewGrid(i),lonRec(i),THETAlon)
+    myfunLon = @(betaLon) asind(rC/T*sind(betaLon))+asind(rC/R*sind(betaLon))+THETAlon+2*betaLon-360;
+    funLon = @(betaLon) myfunLon(betaLon);
+    betaLon = fzero(funLon,180-THETAlon);
+    betaLonOld=betaLon;
+    thetaSPLon(i)=180-betaLon-asind(rC/T*sind(betaLon));
+    lonSPTemp(i)=lonGNSSnewGrid(i)-thetaSPLon(i);  
+    %fprintf('\n lon2 %f %f %f : ',thetaSPLon(i),betaLon,lonSPTemp(i))
+
+    if isfinite(latSPTemp(i)) && isfinite(lonSPTemp(i))
+      latSP(i)=latSPTemp(i);
+      lonSP(i)=lonSPTemp(i);
+    else
+      latSP(i)=0;
+      lonSP(i)=0;      
+    end
+  %  if lonSP(i)>90
+  %    input('x');
+  %  end
+  end
+ % latSP
+ % lonSP
+ % input('xXXX');
+  
 end
