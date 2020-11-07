@@ -8,7 +8,7 @@ function visualizationLONLATALT(vizScale,ns,altitude)
 % however, files are written that are used by cosmosVIZ
 
 %% global parameter for formation
-inclination=90; %% [-90, 90] [deg]
+inclination=35; %% [-90, 90] [deg]
 radiusOfEarth=6371000;          %% [m]
 RAAN=0; %%RAAN    = input(' Right Ascension of Ascendent Node    [  0,360[    RAAN   [deg] = ');
 v0=0;   %%v0      = input(' True anomaly at the departure        [  0,360[    v0     [deg] = ');
@@ -154,20 +154,10 @@ end
   end
   
   if 1 %% GNSS reflectometry visualization
-    %% compute or define GNSS satellites position
-    noOfGNSSsats=2;
-    
-    inclinationGNSS(1)=60;
-    RAANGNSS(1)=0;
-    v0GNSS(1)=0;
-    altitudeGNSS(1)=20e6;
-    
-    inclinationGNSS(2)=30;
-    RAANGNSS(2)=0;
-    v0GNSS(2)=0;
-    altitudeGNSS(2)=20e6;
-
-    for i=1:noOfGNSSsats
+    %% define GNSS constellation
+    [noOfGNSSsats,inclinationGNSS,RAANGNSS,v0GNSS,altitudeGNSS]=GNSSConstellation();
+    %% compute or define GNSS satellites position    
+    for i=1:noOfGNSSsats      
      [timeGNSS(i,:),latGNSS(i,:),lonGNSS(i,:),radGNSS(i,:)]=kepler(cosmosTime,inclinationGNSS(i),RAANGNSS(i),v0GNSS(i),altitudeGNSS(i),radiusOfEarth);
      altGNSS(i,:)=radGNSS(i,:)-radiusOfEarth/1000;
     end
@@ -474,5 +464,24 @@ lat      = asin(sin(inclination).*sin(theta))/pi*180;           % Latitude      
 lon      = wrapTo360((atan2(ys./rs,xs./rs)-rot_earth')/pi*180); % Longitude            [deg]
 rad      = rs;                                                  % radius                [km]
 
+end
+
+
+function [noOfGNSSsats,inclinationGNSS,RAANGNSS,v0GNSS,altitudeGNSS]=GNSSConstellation()
+
+noOfPlanes=6;
+noOfGNSSsatsPerPlane=5;
+
+noOfGNSSsats=noOfGNSSsatsPerPlane*noOfPlanes;
+
+inclinationGNSS=55*ones(1,noOfGNSSsats);
+altitudeGNSS=20e6*ones(1,noOfGNSSsats);
+
+for i=1:noOfPlanes
+  for j=1:noOfGNSSsatsPerPlane
+    RAANGNSS((i-1)*j+j)=360/noOfPlanes*(i-1);
+    v0GNSS((i-1)*j+j)=360/noOfGNSSsatsPerPlane*(j-1);
+  end
+end
 
 end
