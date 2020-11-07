@@ -166,7 +166,7 @@ end
     
     %!RW: for reference, old function:
     % visualizationLONLATALT(ns,ttime,sstx,ssty,sstz,pitch,yaw,roll,altitude)
-    visualizationLONLATALT(this, vizScale, ns, VIZaltitude)
+    visualizationLONLATALT(this, vizScale, ns, altitude)
     
     %!RW: for reference, old function:
     % plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e)
