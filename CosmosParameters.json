@@ -1,8 +1,8 @@
 {
-  "SelectedFormationFlightMode": 1,
+  "SelectedFormationFlightMode": 7,
   "SimMaxNumOrbits":1,
   "SimAccelerationFactor": 100e3,
-  "VizScale": 1000,
+  "VizScale": 100,
   "Modes": [
 
 
@@ -19,8 +19,8 @@
       "AvailableTLE": false,
       "InitialConditions": [
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [-1, 0, 0, 0, 0, 0, 0, 0, 0],
-        [-2, 0, 0, 0, 0, 0, 0, 0, 0]
+        [-1000, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-2000, 0, 0, 0, 0, 0, 0, 0, 0]
       ],
       "FFPSFolder": "ffpsCluster",
       "FFPSValues": [
@@ -36,7 +36,7 @@
         },
         {
           "ffp1": 50,
-          "ffp2": -115,
+          "ffp2": -1150,
           "ffp3": 50,
           "ffp4": 0,
           "ffp5": 0,
@@ -46,7 +46,7 @@
         },
         {
           "ffp1": 0,
-          "ffp2": -230,
+          "ffp2": -2300,
           "ffp3": 0,
           "ffp4": 0,
           "ffp5": 0,
@@ -341,6 +341,48 @@
           "ffp1": 50,
           "ffp2": 0,
           "ffp3": 50,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        }
+      ]
+    }
+,
+
+
+    {
+      "ModeID": 7,
+      "ModeName": "SPlocationFinderTest",
+      "NumSatellites": 2,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude": 350e3,
+      "SizeOrbitSectionDeg": 0.2,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-2000, 1000, 1000, 0, 0, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "ffpsCluster",
+      "FFPSValues": [
+        {
+          "ffp1": 0,
+          "ffp2": 0,
+          "ffp3": 0,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        },
+        {
+          "ffp1": 1000,
+          "ffp2": -2000,
+          "ffp3": 1000,
           "ffp4": 0,
           "ffp5": 0,
           "ffp6": 0,
