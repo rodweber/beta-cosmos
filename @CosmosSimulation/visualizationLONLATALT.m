@@ -8,11 +8,13 @@ function visualizationLONLATALT(vizScale,ns,altitude)
 % however, files are written that are used by cosmosVIZ
 
 %% global parameter for formation
-inclination=35; %% [-90, 90] [deg]
+inclination=90; %% [-90, 90] [deg]
+inclination=35; %% [-90, 90] [deg] %CYGNSS
 radiusOfEarth=6371000;          %% [m]
 RAAN=0; %%RAAN    = input(' Right Ascension of Ascendent Node    [  0,360[    RAAN   [deg] = ');
 v0=0;   %%v0      = input(' True anomaly at the departure        [  0,360[    v0     [deg] = ');
-
+keplerStepSize=2;
+sizeOfSpecularPoint=10; % radius, [km]
 
 %% read data from telemery files
 % JT: this works only if the telemetry data of all satellites is equal in size 
@@ -50,7 +52,7 @@ end
   end
   
   %% compute orbit
-  [vizTime,latitude,longitude,radius]=kepler(cosmosTime,inclination,RAAN,v0,altitude,radiusOfEarth);
+  [vizTime,latitude,longitude,radius]=kepler(cosmosTime,keplerStepSize,inclination,RAAN,v0,altitude,radiusOfEarth);
   
   %% interpolate relative position on visualization time steps
   for i=1:ns
@@ -152,25 +154,36 @@ end
   for i=1:ns+1
     writematrix([vizTime' latScaled(i,:)' lonScaled(i,:)' radScaled(i,:)' rollVizTime(i,:)' pitchVizTime(i,:)' yawVizTime(i,:)'  ],strcat('sat',num2str(i-1),'_LLR_RPY.csv'));
   end
-  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
   if 1 %% GNSS reflectometry visualization
+    fprintf('\n GNSS processing');
+    GNSScpuStartTime = posixtime(datetime('now')); % Posixtime [seconds].
+    
     %% define GNSS constellation
     [noOfGNSSsats,inclinationGNSS,RAANGNSS,v0GNSS,altitudeGNSS]=GNSSConstellation();
     %% compute or define GNSS satellites position    
     for i=1:noOfGNSSsats      
-     [timeGNSS(i,:),latGNSS(i,:),lonGNSS(i,:),radGNSS(i,:)]=kepler(cosmosTime,inclinationGNSS(i),RAANGNSS(i),v0GNSS(i),altitudeGNSS(i),radiusOfEarth);
+     [timeGNSS(i,:),latGNSS(i,:),lonGNSS(i,:),radGNSS(i,:)]=kepler(cosmosTime,keplerStepSize,inclinationGNSS(i),RAANGNSS(i),v0GNSS(i),altitudeGNSS(i),radiusOfEarth);
      altGNSS(i,:)=radGNSS(i,:)-radiusOfEarth/1000;
     end
+    fprintf('\n setting up GNSS constellation time: %s seconds.\n',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
+    
     %% compute SP location per each cubesat and each GNSS satellite
+    latSP=zeros(ns+1,noOfGNSSsats,size(vizTime,2));
+    lonSP=zeros(ns+1,noOfGNSSsats,size(vizTime,2));
     for i=2:ns+1
       for j=1:noOfGNSSsats
         [latSP(i,j,:), lonSP(i,j,:)]=computeSPlocation(vizTime,lat(i,:),lon(i,:),rad(i,:),timeGNSS(j,:),latGNSS(j,:),lonGNSS(j,:),altGNSS(j,:)+radiusOfEarth/1000,radiusOfEarth/1000);
+        fprintf('\n %d / %d',(i-1)*j+j-1,ns*noOfGNSSsats);
       end
     end
-    %% set-up GIS
-    grs80 = referenceEllipsoid('grs80','km');
-    load topo
-    figure('Renderer','opengl')
+    fprintf('\n computing specular point location time: %s seconds.\n',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
+    
+    if 1 %% 3D plot
+      %% set-up GIS
+      grs80 = referenceEllipsoid('grs80','km');
+      load topo
+      figure('Renderer','opengl')
       ax = axesm('globe','Geoid',grs80,'Grid','off','GLineWidth',1,'GLineStyle','-', 'Gcolor',[0.9 0.9 0.1],'Galtitude',100);
       ax.Position = [0 0 1 1];
       axis equal off
@@ -192,12 +205,14 @@ end
       %% display location of SP
       for i=2:ns+1
         for j=1:noOfGNSSsats
-          %plotm(squeeze(latSP(i,j,:))',squeeze(lonSP(i,j,:))',ones(1,size(lonSP,3)),'o','Color',[0 0 0]);hold on;
-          plotm(squeeze(latSP(i,j,:))',squeeze(lonSP(i,j,:))',ones(1,size(lonSP,3)),'o');hold on;
+          plotm(squeeze(latSP(i,j,:))',squeeze(lonSP(i,j,:))',ones(1,size(lonSP,3)),'.');hold on;
+          %circlem(squeeze(latSP(i,j,:)),squeeze(lonSP(i,j,:)),10000*ones(size(lonSP,3),1));hold on; %% does not work at the moment  
         end
       end
       view(90,0)
-       
+    end
+      
+    if 1 %%2D plot
       figure
       ax = worldmap('World');
       setm(ax, 'Origin', [0 0 0])
@@ -209,11 +224,16 @@ end
       geoshow(rivers, 'Color', 'blue')
       for i=2:ns+1
         for j=1:noOfGNSSsats
-          plotm(squeeze(latSP(i,j,:))',squeeze(lonSP(i,j,:))','o');hold on;
+          %plotm(squeeze(latSP(i,j,:))',squeeze(lonSP(i,j,:))','.');hold on;
+          circlem(squeeze(latSP(i,j,:))',squeeze(lonSP(i,j,:))',sizeOfSpecularPoint*ones(size(lonSP,3),1));hold on;
         end
-      end       
-       
+      end
+    end
+    viscircles([0 0], 1);
+    fprintf('\n Total GNSS computation time: %s seconds.\n',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
+      
   end %% end GNSS-R visualization
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
   
 end
 
@@ -338,8 +358,12 @@ function [latSP, lonSP]=computeSPlocation(vizTime,latRec,lonRec,radRec,timeGNSS,
     %fprintf('\n lon2 %f %f %f : ',thetaSPLon(i),betaLon,lonSPTemp(i))
 
     if isfinite(latSPTemp(i)) && isfinite(lonSPTemp(i))
-      latSP(i)=latSPTemp(i);
-      lonSP(i)=lonSPTemp(i);
+      if abs(latSPTemp(i))>90
+        fprintf('\n error in latitude: latSPTemp(i) %f ',latSPTemp(i));
+      else
+        latSP(i)=latSPTemp(i);
+      end
+      lonSP(i)=wrapTo360(lonSPTemp(i));
     else
       latSP(i)=0;
       lonSP(i)=0;      
@@ -355,7 +379,7 @@ function [latSP, lonSP]=computeSPlocation(vizTime,latRec,lonRec,radRec,timeGNSS,
 end
 
 
-function [vizTime,lat,lon,rad]=kepler(cosmosTime,inclination,RAAN,v0,altitude,radiusOfEarth)
+function [vizTime,lat,lon,rad]=kepler(cosmosTime,keplerStepSize,inclination,RAAN,v0,altitude,radiusOfEarth)
 
 %% this function adds the global movement of the satellite based on Kepler's laws
 %this function works with km instead of m %!harmonize
@@ -405,8 +429,7 @@ minutes = floor((T-hours*3600)/60);        % minutes of the orbital period
 seconds = floor(T-hours*3600-minutes*60);  % seconds of the orbital period
 t0   = cosmosTime(1,1);                           % initial time          [s]
 tf=cosmosTime(end,1);                             % final time
-vis_step=2;       %step = input(' Time step.        [s] step = ');  % time step             [s]
-vizTime    = t0:vis_step:tf;                          % vector of time        [s]
+vizTime    = t0:keplerStepSize:tf;                          % vector of time        [s]
 %% DETERMINATION OF THE DYNAMICS
 cosE0 = (e+cos(v0))./(1+e.*cos(v0));               % cosine of initial eccentric anomaly
 sinE0 = (sqrt(1-e^2).*sin(v0))./(1+e.*cos(v0));    %   sine of initial eccentric anomaly
@@ -477,6 +500,9 @@ noOfGNSSsats=noOfGNSSsatsPerPlane*noOfPlanes;
 inclinationGNSS=55*ones(1,noOfGNSSsats);
 altitudeGNSS=20e6*ones(1,noOfGNSSsats);
 
+RAANGNSS=zeros(noOfPlanes*noOfGNSSsatsPerPlane);
+v0GNSS=zeros(noOfPlanes*noOfGNSSsatsPerPlane);
+
 for i=1:noOfPlanes
   for j=1:noOfGNSSsatsPerPlane
     RAANGNSS((i-1)*j+j)=360/noOfPlanes*(i-1);
@@ -485,3 +511,97 @@ for i=1:noOfPlanes
 end
 
 end
+
+
+function [h,circlelat,circlelon] = circlem(lat,lon,radius,varargin)
+%CIRCLEM draws circles on maps. 
+% 
+%% Syntax
+% 
+%  circlem(lat,lon,radius)
+%  circlem(...,'units',LengthUnit)
+%  circlem(...,'PatchProperty',PatchValue)
+%  h = circlem(...)
+%  [h,circlelat,circlelon] = circlem(...)
+% 
+%% Description 
+%
+% circlem(lat,lon,radius) draws a circle or circles of radius or radii
+% given by radius centered at lat, lon, where radius, lat, and
+% lon may be any combination of scalars, vectors, or MxN array. All non-
+% scalar inputs must have matching dimensions. 
+% 
+% circlem(...,'units',LengthUnit) specifies a length unit of input
+% radius. See validateLengthUnit for valid units. Default unit is
+% kilometers. 
+% 
+% circlem(...,'PatchProperty',PatchValue) specifies patch properties such
+% as edgecolor, facecolor, facealpha, linewidth, etc. 
+% 
+% h = circlem(...) returns the patch handle of plotted circle(s). 
+%  
+% [h,circlelat,circlelon] = circlem(...) also returns arrays of latitudes 
+% and longitudes corresponding to the outline of each circle drawn.  Each
+% "circle" is in actuality a polygon made of 100 lat/lon pairs.
+% 
+% 
+%% Author Info
+% This function was written by Chad A. Greene of the University of Texas Institute 
+% for Geophysics (UTIG) on October 14, 2014.  
+%
+% See also scircle1, distance, validateLengthUnit
+%% Initial input checks: 
+assert(license('test','map_toolbox')==1,'circlem requires Matlab''s Mapping Toolbox.')    
+try
+    MapIsCurrent = ismap; 
+    assert(MapIsCurrent==1,'The circlem function requires you to initialize a map first.') 
+catch
+    error('The circlem function requires you to initialize a map first.') 
+end    
+assert(nargin>2,'circlem function requires at least three inputs--latitude(s), longitude(s), and radius(ii)')
+assert(isnumeric(lat)==1,'Input latitude(s) must be numeric.');
+assert(isnumeric(lon)==1,'Input longitude(s) must be numeric.');
+assert(max(abs(lat))<=90,'Latitudes cannot exceed 90 degrees North or South.') 
+assert(max(abs(lon))<=360,'Longitudes cannot exceed 360 degrees North or South.') 
+assert(isnumeric(radius)==1,'Radius must be numeric.') 
+%% Declare units
+units = 'km'; % kilometers by default
+tmp = strncmpi(varargin,'unit',4); 
+if any(tmp)
+    units = varargin{find(tmp)+1}; 
+    tmp(find(tmp)+1)=1; 
+    varargin = varargin(~tmp); 
+end
+%% Reshape inputs as needed
+% columnate:
+lat = lat(:); 
+lon = lon(:); 
+radius = radius(:); 
+% How many circles do we need to make? 
+NumCircles = max([length(lat) length(lon) length(radius)]); 
+% Make vectors all the same lengths so scircle1 will be happy:  
+if length(lat)<NumCircles
+    assert(isscalar(lat)==1,'It seems that the inputs to circlem have too many different sizes. Lat, lon, and radius can be any combination of scalars, vectors, or 2D grids, but all nonscalar inputs must be the same size.')
+    lat = lat*ones(NumCircles,1); 
+end
+if length(lon)<NumCircles
+    assert(isscalar(lon)==1,'It seems that the inputs to circlem have too many different sizes. Lat, lon, and radius can be any combination of scalars, vectors, or 2D grids, but all nonscalar inputs must be the same size.')
+    lon = lon*ones(NumCircles,1); 
+end
+if length(radius)<NumCircles
+    assert(isscalar(radius)==1,'It seems that the inputs to circlem have too many different sizes. Lat, lon, and radius can be any combination of scalars, vectors, or 2D grids, but all nonscalar inputs must be the same size.')
+    radius = radius*ones(NumCircles,1); 
+end
+%% Calculate circle coordinates:
+[circlelat,circlelon] = scircle1(lat,lon,radius,[],earthRadius(units));
+%%  Plot and format circle(s): 
+h = patchm(circlelat,circlelon,'k','facecolor','none'); 
+if nargin>3 && ~isempty(varargin)
+    set(h,varargin{:})
+end
+%% Clean up: 
+if nargout==0
+    clear h
+end
+end
+
