@@ -3,34 +3,38 @@ ________________________________________________________________________
 
 MATLAB -> Home -> Preferences
 
+-> Colors -> Programming Tools
+
+  Section display options - Show lines between sections: False
+
 -> Editor/Debugger -> Display
 
-	Right-hand text limit - Show line: True
-	Right-hand text limit - Placement: 80 columns
-	Right-hand text limit - Width: 1 pixel
+  Right-hand text limit - Show line: True
+  Right-hand text limit - Placement: 80 columns
+  Right-hand text limit - Width: 1 pixel
 
 -> Editor/Debugger -> Tab
 
-	Tab size: 2
-	Indent size: 2
-	Tab key inserts spaces: True
-	Emacs-style Tab key smart indenting: True
+  Tab size: 2
+  Indent size: 2
+  Tab key inserts spaces: True
+  Emacs-style Tab key smart indenting: False
 
 -> Editor/Debugger -> Language
 
-	Maximum column width: 80 (Start from beginning of line)
-	Wrap comments automatically while typing: True
-	Apply smart indenting while typing: True
+  Maximum column width: 80 (Start from beginning of line)
+  Wrap comments automatically while typing: True
+  Apply smart indenting while typing: True
 
 -> Editor/Debugger -> Code Folding
 
-	Enable code folding: False
+  Enable code folding: False
 
 -> Fonts
 
-	Code font: Monospaced
-	Font size (Mac): 12
-	Font size (Win): 10-14
+  Code font: Monospaced
+  Font size (Mac): 12
+  Font size (Win): 10-14
 ________________________________________________________________________
 
 Reasons for Standard Configuration
