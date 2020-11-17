@@ -1,14 +1,13 @@
 {
-  "SelectedFormationFlightMode": 7,
+  "SelectedFormationFlightMode": 9,
   "SimMaxNumOrbits":1,
   "SimAccelerationFactor": 100e3,
-  "VizScale": 100,
+  "VizScale": 1,
   "Modes": [
-
 
     {
       "ModeID": 1,
-      "ModeName": "Cluster",
+      "ModeName": "ClusterReference",
       "NumSatellites": 3,
       "AttitudeResolutionDeg": 45,
       "InitOrbitAltitude": 350e3,
@@ -19,45 +18,16 @@
       "AvailableTLE": false,
       "InitialConditions": [
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [-1000, 0, 0, 0, 0, 0, 0, 0, 0],
-        [-2000, 0, 0, 0, 0, 0, 0, 0, 0]
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0]
       ],
-      "FFPSFolder": "ffpsCluster",
+      "FFPSFolder": "Cluster",
       "FFPSValues": [
-        {
-          "ffp1": 0,
-          "ffp2": 0,
-          "ffp3": 0,
-          "ffp4": 0,
-          "ffp5": 0,
-          "ffp6": 0,
-          "ffp7": 0,
-          "ffp8": 0
-        },
-        {
-          "ffp1": 50,
-          "ffp2": -1150,
-          "ffp3": 50,
-          "ffp4": 0,
-          "ffp5": 0,
-          "ffp6": 0,
-          "ffp7": 0,
-          "ffp8": 0
-        },
-        {
-          "ffp1": 0,
-          "ffp2": -2300,
-          "ffp3": 0,
-          "ffp4": 0,
-          "ffp5": 0,
-          "ffp6": 0,
-          "ffp7": 0,
-          "ffp8": 0
-        }
+        {"ffp1": 0 ,"ffp2": 0    ,"ffp3": 0 ,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 50,"ffp2": -115,"ffp3": 50,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0 ,"ffp2": -230,"ffp3": 0 ,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
       ]
     }
-
-
 ,
     {
       "ModeID": 2,
@@ -75,45 +45,14 @@
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0]
       ],
-      "FFPSFolder": "ffpsCluster",
+      "FFPSFolder": "Cluster2",
       "FFPSValues": [
-        {
-          "ffp1": 0,
-          "ffp2": 0,
-          "ffp3": 0,
-          "ffp4": 0,
-          "ffp5": 0,
-          "ffp6": 0,
-          "ffp7": 0,
-          "ffp8": 0
-        },
-        {
-          "ffp1": 30,
-          "ffp2": -115,
-          "ffp3": 30,
-          "ffp4": 0,
-          "ffp5": 0,
-          "ffp6": 0,
-          "ffp7": 0,
-          "ffp8": 0
-        },
-        {
-          "ffp1": 0,
-          "ffp2": -230,
-          "ffp3": 0,
-          "ffp4": 0,
-          "ffp5": 0,
-          "ffp6": 0,
-          "ffp7": 0,
-          "ffp8": 0
-        }
+        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 30,"ffp2": -115,"ffp3": 30,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": -230,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
       ]
     }
-
-
 ,
-
-
     {
       "ModeID": 3,
       "ModeName": "Cluster4Testing",
@@ -131,55 +70,15 @@
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0]
       ],
-      "FFPSFolder": "ffpsCluster",
+      "FFPSFolder": "Cluster4Testing",
       "FFPSValues": [
-        {
-          "ffp1": 0,
-          "ffp2": 0,
-          "ffp3": 0,
-          "ffp4": 0,
-          "ffp5": 0,
-          "ffp6": 0,
-          "ffp7": 0,
-          "ffp8": 0
-        },
-        {
-          "ffp1": 30,
-          "ffp2": -115,
-          "ffp3": 30,
-          "ffp4": 0,
-          "ffp5": 0,
-          "ffp6": 0,
-          "ffp7": 0,
-          "ffp8": 0
-        },
-        {
-          "ffp1": 30,
-          "ffp2": -115,
-          "ffp3": 30,
-          "ffp4": 0,
-          "ffp5": 0,
-          "ffp6": 0,
-          "ffp7": 0,
-          "ffp8": 0
-        },
-        {
-          "ffp1": 30,
-          "ffp2": -115,
-          "ffp3": 30,
-          "ffp4": 0,
-          "ffp5": 0,
-          "ffp6": 0,
-          "ffp7": 0,
-          "ffp8": 0
-        }
+        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 30,"ffp2": -115,"ffp3": 30,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 30,"ffp2": -115,"ffp3": 30,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 30,"ffp2": -115,"ffp3": 30,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
       ]
     }
-
-
 ,
-
-
     {
       "ModeID": 4,
       "ModeName": "SnTMission",
@@ -197,33 +96,11 @@
       ],
       "FFPSFolder": "ffpsSnTMission",
       "FFPSValues": [
-        {
-          "ffp1": 0,
-          "ffp2": 0,
-          "ffp3": 0,
-          "ffp4": 0,
-          "ffp5": 0,
-          "ffp6": 0,
-          "ffp7": 0,
-          "ffp8": 0
-        },
-        {
-          "ffp1": 0,
-          "ffp2": 0,
-          "ffp3": 0,
-          "ffp4": 0,
-          "ffp5": 0,
-          "ffp6": 0,
-          "ffp7": 0,
-          "ffp8": 0
-        }
+        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
       ]
     }
-
-
 ,
-
-
     {
       "ModeID": 5,
       "ModeName": "SnTMission4Test",
@@ -239,33 +116,13 @@
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [-15, 0, 0, 0, 0, 0, 0, 0, 0]
       ],
-      "FFPSFolder": "ffpsSnTMission",
+      "FFPSFolder": "SnTMission4Test",
       "FFPSValues": [
-        {
-          "ffp1": 0,
-          "ffp2": 0,
-          "ffp3": 0,
-          "ffp4": 0,
-          "ffp5": 0,
-          "ffp6": 0,
-          "ffp7": 0,
-          "ffp8": 0
-        },
-        {
-          "ffp1": 0,
-          "ffp2": -10,
-          "ffp3": 0,
-          "ffp4": 0,
-          "ffp5": 0,
-          "ffp6": 0,
-          "ffp7": 0,
-          "ffp8": 0
-        }
+        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": -10,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
       ]
     }
 ,
-
-
     {
       "ModeID": 6,
       "ModeName": "JapanMission",
@@ -285,68 +142,14 @@
         [39.993908, 39.993908, 0.349048, -0.000800, -0.000800, 0.022913, 0.000000, 0.000000, 0.000000],
         [49.992385, 49.992385, 0.436310, -0.001000, -0.001000, 0.028641, 0.000000, 0.000000, 0.000000]
       ],
-      "FFPSFolder": "JapanMission",
+      "FFPSFolder": "ProposalSmallSuperFormation",
       "FFPSValues": [
-        {
-          "ffp1": 0,
-          "ffp2": 0,
-          "ffp3": 0,
-          "ffp4": 0,
-          "ffp5": 0,
-          "ffp6": 0,
-          "ffp7": 0,
-          "ffp8": 0
-        },
-        {
-          "ffp1": 10,
-          "ffp2": 0,
-          "ffp3": 10,
-          "ffp4": 0,
-          "ffp5": 0,
-          "ffp6": 0,
-          "ffp7": 0,
-          "ffp8": 0
-        },
-        {
-          "ffp1": 20,
-          "ffp2": 0,
-          "ffp3": 20,
-          "ffp4": 0,
-          "ffp5": 0,
-          "ffp6": 0,
-          "ffp7": 0,
-          "ffp8": 0
-        },
-        {
-          "ffp1": 30,
-          "ffp2": 0,
-          "ffp3": 30,
-          "ffp4": 0,
-          "ffp5": 0,
-          "ffp6": 0,
-          "ffp7": 0,
-          "ffp8": 0
-        },
-        {
-          "ffp1": 40,
-          "ffp2": 0,
-          "ffp3": 40,
-          "ffp4": 0,
-          "ffp5": 0,
-          "ffp6": 0,
-          "ffp7": 0,
-          "ffp8": 0
-        },
-        {
-          "ffp1": 50,
-          "ffp2": 0,
-          "ffp3": 50,
-          "ffp4": 0,
-          "ffp5": 0,
-          "ffp6": 0,
-          "ffp7": 0,
-          "ffp8": 0
-        }
+        {"ffp1": 0 ,"ffp2": 0,"ffp3": 0 ,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 10,"ffp2": 0,"ffp3": 10,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 20,"ffp2": 0,"ffp3": 20,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 30,"ffp2": 0,"ffp3": 30,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 40,"ffp2": 0,"ffp3": 40,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 50,"ffp2": 0,"ffp3": 50,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
       ]
     }
 ,
@@ -365,7 +168,7 @@
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [-2000, 0, 0, 0, 0, 0, 0, 0, 0]
       ],
-      "FFPSFolder": "ffpsCluster",
+      "FFPSFolder": "SPlocationFinderTest",
       "FFPSValues": [
         {"ffp1":0,"ffp2":0,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
         {"ffp1":0,"ffp2":-2000,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0}
@@ -374,7 +177,7 @@
 ,
     {
       "ModeID": 8,
-      "ModeName": "SPlocationFinderTest",
+      "ModeName": "SuperFormation",
       "NumSatellites": 36,
       "AttitudeResolutionDeg": 45,
       "InitOrbitAltitude": 350e3,
@@ -421,7 +224,7 @@
         [-3400, 0, 0, 0, 0, 0, 0, 0, 0],
         [-3500, 0, 0, 0, 0, 0, 0, 0, 0]
       ],
-      "FFPSFolder": "ffpsCluster",
+      "FFPSFolder": "SuperFormation",
       "FFPSValues": [
         {"ffp1":0,"ffp2":0,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
         {"ffp1":0,"ffp2":-100,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
@@ -459,6 +262,36 @@
         {"ffp1":0,"ffp2":-3300,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
         {"ffp1":0,"ffp2":-3400,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
         {"ffp1":0,"ffp2":-3500,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0}
+      ]
+    }
+,
+    {
+      "ModeID": 9,
+      "ModeName": "ProposalSmallSuperFormation",
+      "NumSatellites": 6,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude": 350e3,
+      "SizeOrbitSectionDeg": 5,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0,   0, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
+        [0, 10000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
+        [0, 20000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
+        [0, 30000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
+        [0, 40000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
+        [0, 50000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000]
+      ],
+      "FFPSFolder": "ProposalSmallSuperFormation",
+      "FFPSValues": [
+        {"ffp1": 0,"ffp2": 0,"ffp3":   0 ,"ffp4": 0,"ffp5":  0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 0,"ffp3": 10000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 0,"ffp3": 20000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 0,"ffp3": 30000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 0,"ffp3": 40000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 0,"ffp3": 50000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
       ]
     }
 
