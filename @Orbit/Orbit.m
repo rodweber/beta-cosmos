@@ -30,6 +30,7 @@ classdef Orbit < handle
 		OrbitCounter % Counter for the number of orbits passed.
 		TimeOrbitDuration % Posixtime [s].
 		TimeOrbitStart % Posixtime [s].
+		MeanEarthRadius = 6371000 % Mean Earth's radius [m].
 		
 	end
 	
@@ -37,7 +38,6 @@ classdef Orbit < handle
 		
 		F % Interpolation function created with fit().
 		J2 = 0.00108263 % To be checked.
-		MeanEarthRadius = 6371000 % Mean Earth's radius [m].
 		Mu = 3.986004418e14 % Earth's gravitational parameter [m^3/s^2].
 		RhoArray % Constant array set in constructor.
 		

@@ -1,6 +1,6 @@
 {
-  "SelectedFormationFlightMode": 9,
-  "SimMaxNumOrbits":1,
+  "SelectedFormationFlightMode": 7,
+  "SimMaxNumOrbits":10,
   "SimAccelerationFactor": 100e3,
   "VizScale": 1,
   "Modes": [
@@ -85,19 +85,19 @@
       "NumSatellites": 2,
       "AttitudeResolutionDeg": 45,
       "InitOrbitAltitude": 453e3,
-      "SizeOrbitSectionDeg": 0.2,
+      "SizeOrbitSectionDeg": 10,
       "InitOrbitSectionID": 1,
       "AutoResponse": true,
       "AvailableGPS": true,
       "AvailableTLE": false,
       "InitialConditions": [
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        [1, 0, 0, 0, 0, 0, 0, 0, 0]
       ],
       "FFPSFolder": "ffpsSnTMission",
       "FFPSValues": [
         {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
-        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+        {"ffp1": 0,"ffp2": 1,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
       ]
     }
 ,
@@ -106,8 +106,8 @@
       "ModeName": "SnTMission4Test",
       "NumSatellites": 2,
       "AttitudeResolutionDeg": 45,
-      "InitOrbitAltitude":400e3,
-      "SizeOrbitSectionDeg": 0.1,
+      "InitOrbitAltitude":350e3,
+      "SizeOrbitSectionDeg": 1,
       "InitOrbitSectionID": 1,
       "AutoResponse": true,
       "AvailableGPS": true,
@@ -159,7 +159,7 @@
       "NumSatellites": 2,
       "AttitudeResolutionDeg": 45,
       "InitOrbitAltitude": 350e3,
-      "SizeOrbitSectionDeg": 0.2,
+      "SizeOrbitSectionDeg": 2,
       "InitOrbitSectionID": 1,
       "AutoResponse": true,
       "AvailableGPS": true,
@@ -278,20 +278,20 @@
       "AvailableTLE": false,
       "InitialConditions": [
         [0,   0, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
-        [0, 10000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
-        [0, 20000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
-        [0, 30000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
-        [0, 40000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
-        [0, 50000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000]
+        [0, 100000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
+        [0, 200000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
+        [0, 300000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
+        [0, 400000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
+        [0, 500000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000]
       ],
       "FFPSFolder": "ProposalSmallSuperFormation",
       "FFPSValues": [
         {"ffp1": 0,"ffp2": 0,"ffp3":   0 ,"ffp4": 0,"ffp5":  0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
-        {"ffp1": 0,"ffp2": 0,"ffp3": 10000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
-        {"ffp1": 0,"ffp2": 0,"ffp3": 20000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
-        {"ffp1": 0,"ffp2": 0,"ffp3": 30000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
-        {"ffp1": 0,"ffp2": 0,"ffp3": 40000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
-        {"ffp1": 0,"ffp2": 0,"ffp3": 50000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+        {"ffp1": 0,"ffp2": 0,"ffp3": 100000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7":0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 0,"ffp3": 200000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7":0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 0,"ffp3": 300000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7":0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 0,"ffp3": 400000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7":0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 0,"ffp3": 500000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7":0,"ffp8": 0}
       ]
     }
 
