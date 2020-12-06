@@ -50,14 +50,14 @@ end
       end      
     end
     figure
-     plot(cosmosTime(:,1)/2/pi*meanMotionRad,TAngle,cosmosTime(:,1)/2/pi*meanMotionRad,SAngle,cosmosTime(:,1)/2/pi*meanMotionRad,directionAngle);hold on;
+     plot(cosmosTime(:,1)/2/pi*meanMotionRad,TAngle,  cosmosTime(:,1)/2/pi*meanMotionRad,SAngle,  cosmosTime(:,1)/2/pi*meanMotionRad,directionAngle);hold on;
       axis([-inf inf -10 190])
       yticks([0 45 90 135 180])
      yyaxis right;
-     plot(cosmosTime(:,1)/2/pi*meanMotionRad,experimentTime);
+     plot(cosmosTime(:,1)/2/pi*meanMotionRad,experimentTime,'-k','LineWidth',3);
      axis([0 inf -.1 1.1])
      title('BETA: experiment time');
-     legend;
+     legend('TAngle','SAngle','directionAngle','experiment time (right)');
      hold off;
   end
 

@@ -144,9 +144,6 @@ end
 
   methods (Access = public)
     
-        
-    
-    
     updateIDX(this, meanAnomalyFromAN)
     startSimulation(this)
     incrementIDX(this)
@@ -164,14 +161,10 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 methods (Static)
-  
-  %!RW: for reference, old function:
-  % visualizationLONLATALT(ns,ttime,sstx,ssty,sstz,pitch,yaw,roll,altitude)
-  visualizationLONLATALT(this,ns,VIZaltitude)
-  
-  %!RW: for reference, old function:
-  % plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e)
   plotting(ns, meanMotionRad)
+  [time,lat,lon,rad]=  keplerPropagation(cosmosTime,keplerStepSize,inclination,RAAN,v0,altitude,radiusOfEarth)
+  ECEFprocessing(this,VIZscale,ns,altitude)
+  GNSSRprocessing(this,ns,radiusOfEarth)
   createListCustomClasses(filepath, workspaceFileName)
   
 end % Static methods.

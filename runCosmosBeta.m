@@ -48,7 +48,9 @@ gps   = csim.GPSModules; % Aliases: gps(1) to gps(n).
 %! this should go to sim.start
 %! empty place holders for now
 csim.plotting(csim.NumSatellites, orbit(1).MeanMotionRad);
-csim.visualizationLONLATALT(csim.VizScale,csim.NumSatellites,orbit(1).Altitude)
+csim.ECEFprocessing(csim,csim.VizScale,csim.NumSatellites,orbit(1).Altitude)
+%radiusOfEarth=6371000;          %% [m]
+csim.GNSSRprocessing(csim,csim.NumSatellites,orbit(1).MeanEarthRadius);
 %Before:
 %u = zeros(csim.NumSatellites, 3, size(csim.SatStates,3));
 %e = zeros(csim.NumSatellites, 6, size(csim.SatStates,3));
