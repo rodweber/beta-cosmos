@@ -1,6 +1,6 @@
 {
   "SelectedFormationFlightMode": 7,
-  "SimMaxNumOrbits":10,
+  "SimMaxNumOrbits":1,
   "SimAccelerationFactor": 100e3,
   "VizScale": 1,
   "Modes": [
@@ -159,7 +159,7 @@
       "NumSatellites": 2,
       "AttitudeResolutionDeg": 45,
       "InitOrbitAltitude": 350e3,
-      "SizeOrbitSectionDeg": 2,
+      "SizeOrbitSectionDeg": 1,
       "InitOrbitSectionID": 1,
       "AutoResponse": true,
       "AvailableGPS": true,
@@ -267,11 +267,11 @@
 ,
     {
       "ModeID": 9,
-      "ModeName": "ProposalSmallSuperFormation",
+      "ModeName": "SmallSuperFormation",
       "NumSatellites": 6,
       "AttitudeResolutionDeg": 45,
-      "InitOrbitAltitude": 350e3,
-      "SizeOrbitSectionDeg": 5,
+      "InitOrbitAltitude": 500e3,
+      "SizeOrbitSectionDeg": 2,
       "InitOrbitSectionID": 1,
       "AutoResponse": true,
       "AvailableGPS": true,

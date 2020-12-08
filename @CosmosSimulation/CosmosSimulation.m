@@ -178,8 +178,8 @@ methods (Static)
   %!RW: for reference, old function:
   % visualizationLONLATALT(ns,ttime,sstx,ssty,sstz,pitch,yaw,roll,altitude)
   % visualizationLONLATALT(this, vizScale, ns, altitude)
-  ECEFprocessing(this,VIZscale,ns,altitude)
-  
+  ECEFprocessing(this,VIZscale,ns,altitude,radiusOfEarth)
+
   GNSSRprocessing(this,ns,radiusOfEarth)
 
   createListCustomClasses(filepath, workspaceFileName)

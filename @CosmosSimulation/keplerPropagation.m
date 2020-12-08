@@ -1,4 +1,3 @@
-
 function [time,lat,lon,rad]=keplerPropagation(cosmosTime,keplerStepSize,inclination,RAAN,v0,altitude,radiusOfEarth)
 
 %% this function adds the global movement of the satellite based on Kepler's laws
