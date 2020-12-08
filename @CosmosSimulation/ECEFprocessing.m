@@ -1,4 +1,4 @@
-function ECEFprocessing(this,vizScale,ns,altitude)
+function ECEFprocessing(this,vizScale,ns,altitude,radiusOfEarth)
 %% input:
 % ns: number of satellites
 % altitude: altitude used for visualization. The actual altitude may change for long periods of
@@ -8,9 +8,8 @@ function ECEFprocessing(this,vizScale,ns,altitude)
 % however, files are written that are used by cosmosVIZ
 
 %% switches
-plotLatLonIn2D=1;
+plotLatLonIn2D=0;
 writeLLRRPYData=1;
-runGNSSprocessing=1;
 
 %% global parameter for formation
 %inclination=0; %% [-90, 90] [deg]  %% equatorial
@@ -20,11 +19,13 @@ runGNSSprocessing=1;
 inclination=97; %% [-90, 90] [deg] %% (approximately) SSO
 
 RAAN=0; %%RAAN    = input(' Right Ascension of Ascendent Node    [  0,360[    RAAN   [deg] = ');
-v0=225;   %%v0      = input(' True anomaly at the departure        [  0,360[    v0     [deg] = ');
-keplerStepSize=10; %% [s]
+%v0=225;   %%v0      = input(' True anomaly at the departure        [  0,360[    v0     [deg] = ');
+v0=0;   %%v0      = input(' True anomaly at the departure        [  0,360[    v0     [deg] = ');
+%% this is the timestep used in the following, also for the GNSSR processing.
+keplerStepSize=1; %% [s]
 
 
-radiusOfEarth=6371000;          %% [m]
+fprintf('\nECEF processing...');
 
 
 %% read data from telemery files
@@ -177,15 +178,10 @@ if writeLLRRPYData
     writematrix([vizTime' latScaled(i,:)' lonScaled(i,:)' radScaled(i,:)' rollVizTime(i,:)' pitchVizTime(i,:)' yawVizTime(i,:)'  ],strcat('sat',num2str(i-1),'_LLR_RPY_Scaled.csv'));
     writematrix([vizTime' lat(i,:)' lon(i,:)' rad(i,:)' ],strcat('sat',num2str(i-1),'_LLR.csv'));
   end
+  fprintf('\nECEF files...written');
 end
-% 
-% 
-% %% GNSS-R processing
-% if runGNSSprocessing
-%   GNSSRprocessing(ns,radiusOfEarth)
-% end
 
-
+fprintf('\nECEF processing...done');
 
 end
 

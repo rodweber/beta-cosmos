@@ -1,18 +1,48 @@
 function   GNSSRprocessing(this,ns,radiusOfEarth)
-fprintf('\n GNSSR processing function')
+%% this function:
+% -reads location data of a GNSS-R signal receiving CubeSat, or several
+% -either computes the locattion of a GNSS-R sending satellite using a Kepler
+% propagator, or reads location data of a GNSS-R sending satellite, or several
+% -computes the location of the specular point
+% -does some basic visualization in 2D or 3D
+% does some basic statistical analysis of the specular point location data
+%% input variables
+% ns: number of CubeSat satellites [-]
+% radiusOf Earth [m]
+%% output variables
+% none
 
-plotSPlocationIn3D=1; %% works only if runSPfinder is enabled
-plotSPlocationIn2D=1; %% works only if runSPfinder is enabled
-plotStats=1;
+%% begin input section----------------------------------------------------------
+%% what visualization and statiscal analysis shall be done? 1=yes, 0=no
+plotSPlocationIn3D=1; 
+plotSPlocationIn2D=1; 
+plotStats=1;          
 
-sizeOfSpecularPoint=10; %% radius, [km]
+%% do you want to use the built-in Kepler propagator for the GNSS satellites? 1=yes, 0=no.
+%% if you don't, you need to provide the position of the GNSS satellite as input files
+useKeplerProp4GNSS=1;
+
+%% define here the size of the specular point. Here, they are only visualized as circles.
+%% typically they are ellipses though. For more information see for instance: 
+%% N. Rodriguez-Alvarez, E. Podest, K. Jensen, and K. C. McDonald, “Classifying
+%% inundation in a tropical wetlands complex with GNSS-R,” Remote Sens., vol. 11, no. 9, 2019.
+sizeOfSpecularPoint=10; %% radius of specular point, [km]
 
 %% choose constellation(s): %% 1:Galileo, 2: GPS
-%constellations=[1]; 
-constellations=[2];
-%constellations=[1 2]; 
+%constellations=[1];  %% only Galileo
+%constellations=[2];  %% only GPS
+constellations=[1 2];  %% both Galileo and GPS
+%constellations=[1 2 3];  %% both Galileo, GPS, Glonass-M
+%constellations=[1 2 3 4];  %% both Galileo, GPS, Glonass-M, Beidou-2 MEO
+%constellations=[1 2 3 4 5];  %% both Galileo, GPS, Glonass-M, Beidou-2 MEO, Beidou-2 non-MEO
 
-%% read data from file. for data format, see example files
+%% end input section------------------------------------------------------------
+
+
+fprintf('\nGNSS processing...');
+GNSScpuStartTime = posixtime(datetime('now')); % Posixtime [seconds].
+
+%% read CubeSat position data from file. for data format, see example files
 for i=1:ns+1 
   satLLR=readmatrix(strcat('sat',num2str(i-1),'_LLR.csv'));
   timeCubeSat(i,:) = satLLR(:,1);
@@ -21,53 +51,70 @@ for i=1:ns+1
   radCubeSat(i,:)  = satLLR(:,4);
 end
 
-fprintf('\nGNSS processing...');
-GNSScpuStartTime = posixtime(datetime('now')); % Posixtime [seconds].
-
-%% define initial conditions GNSS constellation
-noOfGNSSsats=0;
-noOfGNSSsatsArray=[];
-inclinationGNSS=[];
-RAANGNSS=[];
-v0GNSS=[];
-altitudeGNSS=[];
-
-for i=1:size(constellations,2)
-  [noOfGNSSsatsPC,inclinationGNSSPC,RAANGNSSPC,v0GNSSPC,altitudeGNSSPC] = GNSSConstellation(constellations(i));
-  noOfGNSSsatsArray=[noOfGNSSsatsArray; noOfGNSSsatsPC];
-  noOfGNSSsats=noOfGNSSsats+noOfGNSSsatsPC;
-  inclinationGNSS=[inclinationGNSS; inclinationGNSSPC];
-  RAANGNSS=[RAANGNSS; RAANGNSSPC];
-  v0GNSS=[v0GNSS; v0GNSSPC];
-  altitudeGNSS=[altitudeGNSS; altitudeGNSSPC];
+%% define the GNSS constellation: either propoage using the kepler function or read data file
+if useKeplerProp4GNSS %% option 1: compute GNSS location using a kepler function
+  %% define initial conditions GNSS constellation
+  noOfGNSSsats=0;
+  noOfGNSSsatsArray=[];
+  inclinationGNSS=[];
+  RAANGNSS=[];
+  v0GNSS=[];
+  altitudeGNSS=[];
+  for i=1:size(constellations,2)
+    [noOfGNSSsatsPC,inclinationGNSSPC,RAANGNSSPC,v0GNSSPC,altitudeGNSSPC,varargin] = GNSSConstellation(constellations(i));
+    noOfGNSSsatsArray=[noOfGNSSsatsArray; noOfGNSSsatsPC];
+    noOfGNSSsats=noOfGNSSsats+noOfGNSSsatsPC;
+    inclinationGNSS=[inclinationGNSS; inclinationGNSSPC];
+    RAANGNSS=[RAANGNSS; RAANGNSSPC];
+    v0GNSS=[v0GNSS; v0GNSSPC];
+    altitudeGNSS=[altitudeGNSS; altitudeGNSSPC];
+    vararginArray(i,1:3)=varargin;
+  end  
+  
+  %% propagate the postion of GNSS-R satellite constellation
+  for i=1:size(constellations,2)
+    for j=1:noOfGNSSsatsArray(i)
+      [timeGNSS(i,j,:),latGNSS(i,j,:),lonGNSS(i,j,:),radGNSS(i,j,:)]=this.keplerPropagation(timeCubeSat(1,:)',timeCubeSat(1,2)-timeCubeSat(1,1),inclinationGNSS(i,j),RAANGNSS(i,j),v0GNSS(i,j),altitudeGNSS(i,j),radiusOfEarth);
+      altGNSS(i,j,:)=radGNSS(i,j,:)-radiusOfEarth/1000;
+    end
+  end
+else %% option 2: read GNSS location from data file, this option is not tested
+%  for i=1:noOfGNSSsats
+%   GNSSsatLLR=readmatrix(strcat('GNSSsat',num2str(i-1),'_LLR.csv'));
+%   timeGNSS(i,:) = GNSSsatLLR(:,1);
+%   latGNSS(i,:)  = GNSSsatLLR(:,2);
+%   lonGNSS(i,:)  = GNSSsatLLR(:,3);
+%   altGNSS(i,:)  = GNSSsatLLR(:,4)-radiusOfEarth;  
+%  end
+  ;
 end
 
-%% propagate GNSS constellation
-for i=1:noOfGNSSsats
-  [timeGNSS(i,:),latGNSS(i,:),lonGNSS(i,:),radGNSS(i,:)]=this.keplerPropagation(timeCubeSat(1,:)',timeCubeSat(1,2)-timeCubeSat(1,1),inclinationGNSS(i),RAANGNSS(i),v0GNSS(i),altitudeGNSS(i),radiusOfEarth);
-  altGNSS(i,:)=radGNSS(i,:)-radiusOfEarth/1000;
-end
 fprintf('\nsetting up GNSS constellation time: %s seconds.',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
 
-%% compute SP location per each cubesat and per each GNSS satellite
-latSP=zeros(ns+1,noOfGNSSsats,size(timeCubeSat,2));
-lonSP=zeros(ns+1,noOfGNSSsats,size(timeCubeSat,2));
+fprintf('\ncomputing specular point location');
+
+%% compute SP location per each cubesat, per each GNSS constellation and per each GNSS satellite
+latSP=zeros(ns+1,size(constellations,2),max(noOfGNSSsatsArray),size(timeCubeSat,2));
+lonSP=zeros(ns+1,size(constellations,2),max(noOfGNSSsatsArray),size(timeCubeSat,2));
 for i=2:ns+1
-  for j=1:noOfGNSSsats
-    [latSP(i,j,:), lonSP(i,j,:)]=computeSPlocation(timeCubeSat(i,:),latCubeSat(i,:)',lonCubeSat(i,:)',radCubeSat(i,:)',latGNSS(j,:),lonGNSS(j,:),altGNSS(j,:)+radiusOfEarth/1000,radiusOfEarth/1000);
-    if i==2 && j==1
-      fprintf('\ncomputing specular points ')
-      fprintf('%4.0f/%4.0f',(i-2)*noOfGNSSsats+j,ns*noOfGNSSsats);
-    else
-      fprintf('\b\b\b\b\b\b\b\b\b');
-      fprintf('%4.0f/%4.0f',(i-2)*noOfGNSSsats+j,ns*noOfGNSSsats);
+  for j=1:size(constellations,2)
+    for k=1:noOfGNSSsatsArray(j)
+      [latSP(i,j,k,:), lonSP(i,j,k,:)]  =  computeSPlocation(timeCubeSat(i,:),latCubeSat(i,:)',lonCubeSat(i,:)',radCubeSat(i,:)',squeeze(latGNSS(j,k,:))',squeeze(lonGNSS(j,k,:))',squeeze(altGNSS(j,k,:))'+radiusOfEarth/1000,radiusOfEarth/1000);
+      if i==2 && j==1 && k==1%% screenoutput on progress
+        fprintf('\ncomputing specular points ')
+        fprintf('%4.0f/%4.0f',(i-2)*size(constellations,2)*max(noOfGNSSsatsArray) +(j-1)*max(noOfGNSSsatsArray)+k,ns*size(constellations,2)*max(noOfGNSSsatsArray));
+      else
+        %fprintf('\b\b\b\b\b\b\b\b\b');
+        fprintf('\n%4.0f/%4.0f',(i-2)*size(constellations,2)*max(noOfGNSSsatsArray) +(j-1)*max(noOfGNSSsatsArray)+k,ns*size(constellations,2)*max(noOfGNSSsatsArray));
+      end
     end
   end
 end
 fprintf('\ncomputing specular point location time: %s seconds.',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
-%latSP
-%size(latSP)
-if plotSPlocationIn3D %% 3D plot
+
+%% 3D plot: position of the CubeSat, the GNSS satellites and the specular point
+if plotSPlocationIn3D 
+  fprintf('\ndisplaying in 3D');
   %% set-up GIS
   grs80 = referenceEllipsoid('grs80','km');
   load topo
@@ -81,27 +128,35 @@ if plotSPlocationIn3D %% 3D plot
   plotm([land.Lat],[land.Lon],'Color','black')
   rivers = shaperead('worldrivers','UseGeoCoords',true);
   plotm([rivers.Lat],[rivers.Lon],'Color','blue')
-  
-  %% display position satellites
+  %% display position of the CubeSats
   for i=2:ns+1
-    plotm(latCubeSat(i,:),lonCubeSat(i,:),radCubeSat(i,:)-radiusOfEarth/1000,'Color',[1 0  0]);hold on;
+    plotm(latCubeSat(i,:),lonCubeSat(i,:),radCubeSat(i,:)-radiusOfEarth/1000,'Color',[0 0 0]);hold on;
   end
   %% display position of GNSS satellites
-  for i=1:noOfGNSSsats
-    plotm(latGNSS(i,:),lonGNSS(i,:),altGNSS(i,:),'Color',[0 1 0]);hold on;
+  for i=1:size(constellations,2)
+    for j=1:noOfGNSSsatsArray(i)
+      plotm(squeeze(latGNSS(i,j,:)),squeeze(lonGNSS(i,j,:)),squeeze(altGNSS(i,j,:)),'Color', vararginArray{i,2});hold on;
+    end
   end
   %% display location of SP
   for i=2:ns+1
-    for j=1:noOfGNSSsats
-      plotm(squeeze(latSP(i,j,:))',squeeze(lonSP(i,j,:))',ones(1,size(lonSP,3)),'.');hold on;
-      %circlem(squeeze(latSP(i,j,:)),squeeze(lonSP(i,j,:)),10000*ones(size(lonSP,3),1));hold on; %% does not work at the moment
+    for j=1:size(constellations,2)
+      for k=1:noOfGNSSsatsArray(j)
+        p1=plotm(squeeze(latSP(i,j,k,:))',squeeze(lonSP(i,j,k,:))',ones(1,size(lonSP,4)),'.','Color', vararginArray{j,2});hold on;
+        %circlem(squeeze(latSP(i,j,:)),squeeze(lonSP(i,j,:)),10000*ones(size(lonSP,3),1));hold on; %% does not work at the moment
+      end
+      plotname(j)=p1;
+      legendname(j)=vararginArray(j,3);
     end
   end
+  legend(plotname,legendname);
   view(90,0)
-  fprintf('\n displaying 3D time: %s seconds.\n',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
-end
+  fprintf('\ndisplaying 3D time: %s seconds.\n',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
+end %% plot3D
 
-if plotSPlocationIn2D %%2D plot
+%%2D plot: position of the CubeSat and the specular point
+if plotSPlocationIn2D 
+  fprintf('\ndisplaying in 2D');
   figure
   ax = worldmap('World');
   setm(ax, 'Origin', [0 0 0])
@@ -111,54 +166,58 @@ if plotSPlocationIn2D %%2D plot
   geoshow(lakes, 'FaceColor', 'blue')
   rivers = shaperead('worldrivers', 'UseGeoCoords', true);
   geoshow(rivers, 'Color', 'blue')
-  SPcolor=rand(noOfGNSSsats,3);
-  
   for i=2:ns+1
     %% plot subsatellite points
-    plotm(latCubeSat(i,:),lonCubeSat(i,:),'.');hold on;
-    for j=1:noOfGNSSsats
-      if j<=noOfGNSSsatsArray(1)
-        varargin={'EdgeColor',[1 0 0]};
-      else
-        varargin={'EdgeColor',[0 0 0]};
+    plotm(latCubeSat(i,:),lonCubeSat(i,:),'.k');hold on;
+    %% plot specular point for each GNSS constellation
+    %for j=1:noOfGNSSsats %% define color of specular point for each constellation
+    for j=1:size(constellations,2) %% define color of specular point for each constellation
+      for k=1:noOfGNSSsatsArray(j)
+        p1=circlem(squeeze(latSP(i,j,k,:))',squeeze(lonSP(i,j,k,:))',sizeOfSpecularPoint*ones(size(lonSP,4),1),{'EdgeColor',vararginArray{j,2}});hold on;
       end
-      %varargin={'EdgeColor',SPcolor(j,:)};
-      varargin=[];
-      circlem(squeeze(latSP(i,j,:))',squeeze(lonSP(i,j,:))',sizeOfSpecularPoint*ones(size(lonSP,3),1),varargin);hold on;
       if i==2 && j==1
         fprintf('\ndisplaying specular points ')
-        fprintf('%4.0f/%4.0f',(i-2)*noOfGNSSsats+j,ns*noOfGNSSsats);
+        fprintf('%4.0f/%4.0f',(i-2)*size(constellations,2)+j,ns*size(constellations,2));
       else
         fprintf('\b\b\b\b\b\b\b\b\b');
-        fprintf('%4.0f/%4.0f',(i-2)*noOfGNSSsats+j,ns*noOfGNSSsats);
+        fprintf('%4.0f/%4.0f',(i-2)*size(constellations,2)+j,ns*size(constellations,2));
       end
+      plotname(j)=p1;
+      legendname(j)=vararginArray(j,3);
     end
   end
-  fprintf('\n displaying 2D time: %s seconds.\n',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
-  
-end
+  legend(plotname,legendname);
+  fprintf('\ndisplaying 2D time: %s seconds.\n',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
+end %% plot 2D
 
+%% basic statistical analysis and visualization of the location of the specular point
 if plotStats
  % totalLat=zeros(size(latSP,1)*size(latSP,3)*size(latSP,3),1);
  % totalLon=zeros(size(latSP,1)*size(latSP,3)*size(latSP,3),1);
-  l=1;
-  for i=2:size(latSP,1)
-    for j=1:size(latSP,2)
-      for k=1:size(latSP,3)
-        totalLat(l)=latSP(i,j,k);
-        totalLon(l)=lonSP(i,j,k);        
-        l=l+1;
-      end
-    end
-  end
-figure
-hist3([totalLon' totalLat'],'Ctrs',{0:5:360 -90:5:90})
+ m=1;
+ for i=2:size(latSP,1)
+   for j=1:size(latSP,2)
+     for k=1:size(latSP,3)
+       for l=1:size(latSP,4)
+         totalLat(m)=latSP(i,j,k,l);
+         totalLon(m)=wrapTo180(lonSP(i,j,k,l));
+         m=m+1;
+       end
+     end
+   end
+ end
  
-end
-
+ figure
+ latGranularity=1; %% [deg]
+ lonGranularity=1; %% [deg]
+ hist3([totalLon' totalLat'],'Ctrs',{-180:lonGranularity:180 -90:latGranularity:90})
+end %% plot statistics
 fprintf('\n Total GNSS computation time: %s seconds.\n',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
+end %% function GNSS-R processing
 
-end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [latSP, lonSP]=computeSPlocation(time,latCubeSat,lonCubeSat,radCubeSat,latGNSS,lonGNSS,radGNSS,rC)
 %% based on:
@@ -237,8 +296,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
     
-
-function [noOfGNSSsats,inclinationGNSS,RAANGNSS,trueAnomalyGNSS,altitudeGNSS]=GNSSConstellation(constellation)
+function [noOfGNSSsats,inclinationGNSS,RAANGNSS,trueAnomalyGNSS,altitudeGNSS,varargin]=GNSSConstellation(constellation)
 %% this function defines a constellation
 %% input variables
 % n/a
@@ -257,44 +315,73 @@ function [noOfGNSSsats,inclinationGNSS,RAANGNSS,trueAnomalyGNSS,altitudeGNSS]=GN
 
 
 switch constellation
-  case 1 %% Galileo
+  case 1 %% Galileo, source: wikipedia, not accounting for spares
     noOfPlanes=3;
-    noOfGNSSsatsPerPlane=10;
+    noOfGNSSsatsPerPlane=8;
     noOfGNSSsats=noOfGNSSsatsPerPlane*noOfPlanes;
-    inclinationGNSS=55*ones(1,noOfGNSSsats); %% [deg]
-    altitudeGNSS=20e6*ones(1,noOfGNSSsats);  %% [km]
+    inclinationGNSS=56*ones(1,noOfGNSSsats); %% [deg]
+    altitudeGNSS=23.222e6*ones(1,noOfGNSSsats);  %% [km]
     RAANshift=77.632;                        %% [deg]
     trueAnomalyShift=0;                      %% [deg]
-  case 2 %% GPS
+    varargin={'constellationColor',[1 0 0],'Galileo'}; %red
+  case 2 %% GPS, source: wikipedia, not accounting for spares
     noOfPlanes=6;
-    noOfGNSSsatsPerPlane=5;
+    noOfGNSSsatsPerPlane=4;
     noOfGNSSsats=noOfGNSSsatsPerPlane*noOfPlanes;
     inclinationGNSS=55*ones(1,noOfGNSSsats); %% [deg]
-    altitudeGNSS=20e6*ones(1,noOfGNSSsats);  %% [km]
+    altitudeGNSS=20.2e6*ones(1,noOfGNSSsats);  %% [km]
     RAANshift=46.7112;                       %% [deg]
     trueAnomalyShift=0;                      %% [deg]
+    varargin={'constellationColor',[1 1 0],'GPS'}; %yellow
+  case 3 %% Glonass-M, source: wikipedia, not accounting for spares
+    noOfPlanes=3;
+    noOfGNSSsatsPerPlane=8;
+    noOfGNSSsats=noOfGNSSsatsPerPlane*noOfPlanes;
+    inclinationGNSS=64.8*ones(1,noOfGNSSsats); %% [deg]
+    altitudeGNSS=19.1e6*ones(1,noOfGNSSsats);  %% [km]
+    RAANshift=46.7112;                       %% [deg]
+    trueAnomalyShift=0;                      %% [deg]
+     varargin={'constellationColor',[0 0 1],'Glonass-M'}; %blue
+  case 4 %% Beidou-2, only MEO satellites, source: https://gssc.esa.int/navipedia/index.php/BeiDou_Space_Segment, not accounting for spares
+    noOfPlanes=3;
+    noOfGNSSsatsPerPlane=8;
+    noOfGNSSsats=noOfGNSSsatsPerPlane*noOfPlanes;
+    inclinationGNSS=55*ones(1,noOfGNSSsats); %% [deg]
+    altitudeGNSS=27.878e6*ones(1,noOfGNSSsats);  %% [km]
+    RAANshift=46.7112;                       %% [deg]
+    trueAnomalyShift=0;                      %% [deg]
+    varargin={'constellationColor',[0 1 0],'Beidou MEO'};%green 
+  case 5 %% Beidou-2, non-MEO satellites
+    %TBD
+    ;
+    varargin={'constellationColor',[0.5 0.5 0],'Beidou non-MEO'};%dirty green
+  case 6 %% Indian
+    %TBD
+    varargin={'constellationColor',[0 1 1],'Indian GNSS'}; %light blue
+  case 7 %% Japanese
+    %TBD
+    varargin={'constellationColor',[1 0 1],'Japanese GNSS'}; %purple
   otherwise
     fprintf('\nerror setting up GNSS constellation');
+    varargin={'constellationColor',[0 0.5 0.5]}; %	turquoise
 end
 
-RAANGNSS=zeros(noOfPlanes*noOfGNSSsatsPerPlane);  %% right ascension of ascending node [deg]
-trueAnomalyGNSS=zeros(noOfPlanes*noOfGNSSsatsPerPlane);    %% true anomaly[deg]
+RAANGNSS=zeros(1,noOfPlanes*noOfGNSSsatsPerPlane);  %% right ascension of ascending node [deg]
+trueAnomalyGNSS=zeros(1,noOfPlanes*noOfGNSSsatsPerPlane);    %% true anomaly[deg]
 
-%% equistant distribution of orbital planes and satellites
+%% equistant distribution of orbital planes and satellites on the planes
 for i=1:noOfPlanes
   for j=1:noOfGNSSsatsPerPlane
-    RAANGNSS((i-1)*j+j)=360/noOfPlanes*(i-1)+RAANshift;
-    trueAnomalyGNSS((i-1)*j+j)=360/noOfGNSSsatsPerPlane*(j-1)+trueAnomalyShift;
+    RAANGNSS((i-1)*noOfGNSSsatsPerPlane+j)=360/noOfPlanes*(i-1)+RAANshift;
+    trueAnomalyGNSS((i-1)*noOfGNSSsatsPerPlane+j)=360/noOfGNSSsatsPerPlane*(j-1)+trueAnomalyShift;
   end
 end
-
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
          
-
 function [h,circlelat,circlelon] = circlem(lat,lon,radius,varargin)
 %CIRCLEM draws circles on maps. 
 % 
@@ -374,19 +461,19 @@ if length(radius)<NumCircles
     assert(isscalar(radius)==1,'It seems that the inputs to circlem have too many different sizes. Lat, lon, and radius can be any combination of scalars, vectors, or 2D grids, but all nonscalar inputs must be the same size.')
     radius = radius*ones(NumCircles,1); 
 end
-%% Calculate circle coordinates:
-[circlelat,circlelon] = scircle1(lat,lon,radius,[],earthRadius(units));
-
 %% does this work?:
 % https://nl.mathworks.com/help/map/ref/ellipse1.html
 % if so implement ellipses according to:
 % "Classifying Inundation in a TropicalWetlands Complex with GNSS-R" by Nereida Rodriguez-Alvarez 1,*, Erika Podest 2, Katherine Jensen 3,4 and Kyle C. McDonald 2,3,4
+%% Calculate circle coordinates:
+[circlelat,circlelon] = scircle1(lat,lon,radius,[],earthRadius(units));
+
 
 %%  Plot and format circle(s): 
-varargin=[];
 h = patchm(circlelat,circlelon,'k','facecolor','none');
  if nargin>3 && ~isempty(varargin)
-     set(h,varargin{:})
+     %set(h,varargin{:})
+     set(h,varargin{1}{1},varargin{1}{2})
  end
 %% Clean up: 
 if nargout==0
@@ -397,4 +484,3 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
-

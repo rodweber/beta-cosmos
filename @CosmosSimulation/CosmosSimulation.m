@@ -163,7 +163,7 @@ end
 methods (Static)
   plotting(ns, meanMotionRad)
   [time,lat,lon,rad]=  keplerPropagation(cosmosTime,keplerStepSize,inclination,RAAN,v0,altitude,radiusOfEarth)
-  ECEFprocessing(this,VIZscale,ns,altitude)
+  ECEFprocessing(this,VIZscale,ns,altitude,radiusOfEarth)
   GNSSRprocessing(this,ns,radiusOfEarth)
   createListCustomClasses(filepath, workspaceFileName)
   
