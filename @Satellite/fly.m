@@ -45,14 +45,14 @@ end
 
 
 %% to-be-double-checked theory: if R is large then the control error is secondary to the minimization of the control action
-R=diag([1e13 1e13 1e13]);
+R=diag([1e12 1e12 1e12]);
 [P, IR, A, B] = this.FlightControl.riccatiequation(this.Orbit.MeanMotionRad, this.FlightControl.SSCoeff,R);
 
 % determine time elapsed since last ascending equator crossing
-time = currentOrbitSection / this.Orbit.MeanMotionDeg;
+timeSinceEqCrossing = currentOrbitSection / this.Orbit.MeanMotionDeg;
 
-% Compute desired state for this satellite.
-this.FlightControl.updateStateDesired(time, this.Orbit.MeanMotionRad);
+% Compute and update desired state for this satellite.
+this.FlightControl.updateStateDesired(timeSinceEqCrossing, this.Orbit.MeanMotionRad, i);
 
 % Get updated error between the current and desired states for this satellite.
 stateError = this.FlightControl.getStateError();

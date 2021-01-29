@@ -18,6 +18,9 @@ parpool(this.NumSatellites);
 timeStartPool = posixtime(datetime('now')); % Posixtime [seconds].
 
 % Execute parallel code on workers of parallel pool.
+%-------------------------------------------------------------------------------  
+%-------------------------------------------------------------------------------  
+%-------------------------------------------------------------------------------  
 spmd(this.NumSatellites)
   % For DEBUGGING mode:
   % 1. Comment the spmd command above and its end line.
@@ -87,6 +90,8 @@ spmd(this.NumSatellites)
   % for simulation output, set initial conditions
   sat.updSatStatesIni(uid, fc.State);
   
+%-------------------------------------------------------------------------------  
+%-------------------------------------------------------------------------------   
   % Loop for each orbit.
 	while sat.Alive % Satellites turned on, but still doing nothing.
         
@@ -116,7 +121,8 @@ spmd(this.NumSatellites)
     
     timeStep = this.OrbitSectionSize / orbit.MeanMotionDeg;    
     
-    %% Start orbit sections loop.
+%-------------------------------------------------------------------------------  
+    %% Start orbit loop
 		while this.OrbitSectionNow <= this.NumOrbitSections
 			
 			% Determine start time of this cycle, in order to subtract the 
@@ -186,11 +192,12 @@ spmd(this.NumSatellites)
 			% Increment section counter.
 			this.incrementIDX();
 			
-			% Pause #2:
-			% Pause after subtracting this section's computing time.
+			%% Pause processing until satellite is in next section
+      %% to this end: compute time of next section and subtract this section's computing time.
 			pause(this.OrbitSectionSize / orbit.MeanMotionDeg /this.AccelFactor - (now() - timeStartSection));
 			
-		end % While orbit sections loop.
+		end % While orbit loop
+%-------------------------------------------------------------------------------  
 		
 		% Check if orbit counter identifiers do not match.
 		if (orbit.OrbitCounter ~= orbit.TimeOrbitDuration(1))
@@ -213,8 +220,9 @@ spmd(this.NumSatellites)
 			sat.turnOff();
 		end
 		
-	end % While alive (main orbital loop).
-  
+	end % While alive (main loop)
+%-------------------------------------------------------------------------------  
+%-------------------------------------------------------------------------------  
   % Needed for autonomous documentation generation tool.
 	% Globally concatenate all output variables on lab index 1.
 	% Must be the last lines of code of the parallel pool.
@@ -223,6 +231,9 @@ spmd(this.NumSatellites)
   flightControlModules = gcat(fc,1,1);
   gpsModules = gcat(gps,1,1);
 end % Parallel code.
+%-------------------------------------------------------------------------------  
+%-------------------------------------------------------------------------------  
+%-------------------------------------------------------------------------------  
 
 % Needed for autonomous documentation generation tool.
 % Get the globally concatenated values stored on lab index 1.
@@ -242,3 +253,4 @@ fprintf('Total simulation time: %s seconds.\n',...
 num2str(timeDurationPool));
 
 end % Function CosmosSimulation.startSimulation
+

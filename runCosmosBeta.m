@@ -58,8 +58,11 @@ gps   = csim.GPSModules; % Aliases: gps(1) to gps(n).
 %! this should go to sim.start
 %! empty place holders for now
 csim.plotting(csim.NumSatellites, orbit(1).MeanMotionRad);
-csim.ECEFprocessing(csim,csim.VizScale,csim.NumSatellites,orbit(1).Altitude,orbit(1).MeanEarthRadius)
-csim.GNSSRprocessing(csim,csim.NumSatellites,orbit(1).MeanEarthRadius);
+%% use a Kepler propagator to compute ECEF coordinates
+%csim.ECEFprocessing(csim,csim.VizScale,csim.NumSatellites,orbit(1).Altitude,orbit(1).MeanEarthRadius)
+%% compute the location of the specular point for the GNSS-reflectometry method
+%csim.GNSSRprocessing(csim,csim.NumSatellites,orbit(1).MeanEarthRadius);
+
 %Before:
 %u = zeros(csim.NumSatellites, 3, size(csim.SatStates,3));
 %e = zeros(csim.NumSatellites, 6, size(csim.SatStates,3));
