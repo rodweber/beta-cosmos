@@ -1,6 +1,6 @@
 function plotting(ns,meanMotionRad)
 
-plotExperimentTime=0;
+plotExperimentTime=1;
 plot3D=1;
 generalVariablesPlot=1;
 controlVariablesPlot=1;
@@ -65,8 +65,13 @@ if plotExperimentTime%% condition for experiment time valid?
   hold off;
 end
 
+
+
+
+
 if generalVariablesPlot %% plot general variables
   figure
+  
   subplot(2,3,1)%% roll
   for i=1:ns
     plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(angles(i,1,:)));hold on
@@ -85,6 +90,7 @@ if generalVariablesPlot %% plot general variables
   ylabel('pitch angle [deg]');xlabel('no. of orbits');grid on;hold off;
   axis([-inf inf -10 190])
   yticks([0 45 90 135 180])
+  
   subplot(2,3,3)%%yaw
   for i=1:ns
     plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(angles(i,3,:)));hold on
@@ -92,22 +98,34 @@ if generalVariablesPlot %% plot general variables
   ylabel('yaw angle [deg]');xlabel('no. of orbits');grid on;hold off
   axis([-inf inf -10 370])
   yticks([0 45 90 135 180 225 270 315 360])
+  
   subplot(2,3,4)%%x
   for i=1:ns
     plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(sst(i,1,:)));hold on
   end
   ylabel('x [m]');xlabel('no. of orbits');grid on;hold off
+  axis([-inf inf -inf inf])  
+
   subplot(2,3,5)%%y
   for i=1:ns
     plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(sst(i,2,:)));hold on
   end
   ylabel('y [m]');xlabel('no. of orbits');grid on;hold off
+  axis([-inf inf -inf inf])  
+  
   subplot(2,3,6)%%z
   for i=1:ns
     plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(sst(i,3,:)));hold on
   end
   ylabel('z [m]');xlabel('no. of orbits');grid on;hold off
+  axis([-inf inf -inf inf])  
+
 end
+
+
+
+
+
 
  %% plot control and force
 if controlVariablesPlot
@@ -117,6 +135,7 @@ if controlVariablesPlot
     plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(controlVector(i,1,:)));hold on
   end
   ylabel('control vector x [?]');xlabel('no. of orbits');grid on;hold off
+  axis([-inf inf -inf inf])  
   title('BETA');
   
   subplot(2,3,2)%% control vector y
@@ -124,17 +143,22 @@ if controlVariablesPlot
     plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(controlVector(i,2,:)));hold on
   end
   ylabel('control vector y [?]');xlabel('no. of orbits');grid on;hold off
+  axis([-inf inf -inf inf])  
+
   subplot(2,3,3)%% control vector z
   for i=1:ns
     plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(controlVector(i,3,:)));hold on
   end
   ylabel('control vector z [?]');xlabel('no. of orbits');grid on;hold off
+  axis([-inf inf -inf inf])  
+
   subplot(2,3,4)%% force vector x direction
   for i=1:ns
     plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(forceVector(i,1,:)));hold on
     names(i)=[{strcat('sat',int2str(i))}];
   end
   ylabel('force vector x [?]');xlabel('no. of orbits');grid on;hold off;
+  axis([-inf inf -inf inf])  
   legend(names);
   
   subplot(2,3,5)%% force vector y direction
@@ -142,12 +166,14 @@ if controlVariablesPlot
     plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(forceVector(i,2,:)));hold on
   end
   ylabel('force vector y [?]');xlabel('no. of orbits');grid on;hold off;
+  axis([-inf inf -inf inf])  
   
   subplot(2,3,6)%% force vector z
   for i=1:ns
     plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(forceVector(i,3,:)));hold on
   end
   ylabel('force vector z [?]');xlabel('no. of orbits');grid on;hold off;
+  axis([-inf inf -inf inf])  
 end
 
 %% 3d plotting

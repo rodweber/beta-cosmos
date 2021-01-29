@@ -1,6 +1,6 @@
 {
-  "SelectedFormationFlightMode": 7,
-  "SimMaxNumOrbits":1,
+  "SelectedFormationFlightMode": 5,
+  "SimMaxNumOrbits":112,
   "SimAccelerationFactor": 100e3,
   "VizScale": 1,
   "Modes": [
@@ -106,7 +106,7 @@
       "ModeName": "SnTMission4Test",
       "NumSatellites": 2,
       "AttitudeResolutionDeg": 45,
-      "InitOrbitAltitude":350e3,
+      "InitOrbitAltitude":450e3,
       "SizeOrbitSectionDeg": 1,
       "InitOrbitSectionID": 1,
       "AutoResponse": true,

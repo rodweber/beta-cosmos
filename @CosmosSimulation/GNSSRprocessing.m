@@ -31,9 +31,9 @@ sizeOfSpecularPoint=10; %% radius of specular point, [km]
 %% choose constellation(s): %% 1:Galileo, 2: GPS
 %constellations=[1];  %% only Galileo
 %constellations=[2];  %% only GPS
-constellations=[1 2];  %% both Galileo and GPS
+%constellations=[1 2];  %% both Galileo and GPS
 %constellations=[1 2 3];  %% both Galileo, GPS, Glonass-M
-%constellations=[1 2 3 4];  %% both Galileo, GPS, Glonass-M, Beidou-2 MEO
+constellations=[1 2 3 4];  %% both Galileo, GPS, Glonass-M, Beidou-2 MEO
 %constellations=[1 2 3 4 5];  %% both Galileo, GPS, Glonass-M, Beidou-2 MEO, Beidou-2 non-MEO
 
 %% end input section------------------------------------------------------------

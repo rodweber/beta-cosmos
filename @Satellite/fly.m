@@ -39,15 +39,15 @@ end
 
 
 %% to-be-double-checked theory: if R is large then the control error is secondary to the minimization of the control action
-R=diag([1e13 1e13 1e13]);
+R=diag([1e12 1e12 1e12]);
 [P, IR, A, B] = this.FlightControl.riccatiequation(this.Orbit.MeanMotionRad, this.FlightControl.SSCoeff,R);
 
 % determine time elapsed since last ascending equator crossing
-time = currentOrbitSection / this.Orbit.MeanMotionDeg;
+timeSinceEqCrossing = currentOrbitSection / this.Orbit.MeanMotionDeg;
 
 % Update desired state for all satellites.
 %for i=1:this.FlightControl.NumSatellites
-  this.FlightControl.updateStateDesired(time, this.Orbit.MeanMotionRad,i);
+  this.FlightControl.updateStateDesired(timeSinceEqCrossing, this.Orbit.MeanMotionRad,i);
 %end
 
 % Set and get state error for this satellite only within array of errors of all satellites
