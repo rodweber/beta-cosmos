@@ -39,9 +39,9 @@ end
 
 properties (GetAccess = public, SetAccess = private)
   
-  Alphas % Roll.
-  Betas % Pitch.
-  Gammas % Yaw.
+  rollAngles % Roll.
+  pitchAngles % Pitch.
+  yawAngles % Yaw.
   
 end
 	
@@ -79,9 +79,9 @@ end
 			
 			% Force vector determination and angular granularity.
       this.DeltaAngle = deltaAngle; % Angular granularity.
-			this.Alphas = 0:deltaAngle:360; % Roll.
-			this.Betas  = 0:deltaAngle:180; % Pitch.
-			this.Gammas = 0:deltaAngle:360; % Yaw.
+			this.rollAngles = 0:deltaAngle:360; % Roll.
+			this.pitchAngles  = 0:deltaAngle:180; % Pitch.
+			this.yawAngles = 0:deltaAngle:360; % Yaw.
 			
 			%this.SatelliteMass = 1; % Kilogram(s).
 			this.SatelliteMass = 2; % Kilogram(s).
@@ -142,23 +142,23 @@ end
 		
 		aerototalforcevector = getWindPressureVector( ...
 			wind, panelSurface, noxpanels, noypanels, nozpanels, ...
-			alphas, betas, gammas, rho, v, Tatmos)
+			rollAngles, pitchAngles, yawAngles, rho, v, Tatmos)
 		
 		solarpressureforcevector = getSolarPressureVector( ...
 			sunlight, panelSurface, noxpanels, noypanels, nozpanels, ...
-			alphas, betas, gammas)
+			rollAngles, pitchAngles, yawAngles)
 		
 		vRot = rodriguesRotation(v, k, theta)
 		
 		[P, IR, A, B] = riccatiequation(meanMotion, SSCoeff,R)
 		
-		[forceVector, alphaOpt, betaOpt, gammaOpt] = findBestAttitude( ...
-			totalForceVector, controlVector, alphas, betas, gammas, ...
-			oldAlphaOpt, oldBetaOpt, oldGammaOpt)
+		[forceVector, rollAngleOpt, pitchAngleOpt, yawAngleOpt] = findBestAttitude( ...
+			totalForceVector, controlVector, rollAngles, pitchAngles, yawAngles, ...
+			oldRollAngleOpt, oldPitchAngleOpt, oldYawAngleOpt)
 		
 		[CD, CL] = aeroDragLiftSentman(theta, Tatmos, v, rho)
 		sunforceVector=solarDragLift(solarPressure, sunlight,normal, theta,...
-      panelSurface,noPanels,gammaSunSpecular,gammaSunDiffusive)
+      panelSurface,noPanels,yawAngleSunSpecular,yawAngleSunDiffusive)
     
   end % Static methods
   
