@@ -1,4 +1,4 @@
-function fly(this, currentOrbitSection, sizeOrbitSection)
+function fly(this, currentOrbitSection, sizeOrbitSection,plannedExperimentTime)
 %% Initialize flight control
 % ______________________________________________________________________________
 %
@@ -101,8 +101,7 @@ for i=1:this.FlightControl.NumSatellites %% transform error for each satellite
   this.controlVector(i,:)              = this.FlightControl.rodriguesRotation(controlVectorTransformed(i,:)',axisErrorRotation',-angleErrorRotation/180*pi);
 end
 
-experimentTime=0;
-if  experimentTime
+if  not(plannedExperimentTime)
   %% find force vector for this satellite only
   if norm(this.controlVector(this.FlightControl.SatID,:))==0
     this.forceVector(this.FlightControl.SatID,:) = [0 0 0]'; rollAngleOpt=0; pitchAngleOpt=0; yawAngleOpt=0;
@@ -111,12 +110,12 @@ if  experimentTime
       usedTotalForceVector, this.controlVector(this.FlightControl.SatID,:),...
       this.FlightControl.rollAngles, this.FlightControl.pitchAngles, this.FlightControl.yawAngles, ...
       oldRollAngles, oldPitchAngles, oldYawAngles);
-    %% rollAngle is roll, pitchAngle is pitch, yawAngle is yaw
   end
   if 2*norm(this.controlVector(this.FlightControl.SatID,:))<norm(this.forceVector(this.FlightControl.SatID,:))
     this.forceVector(this.FlightControl.SatID,:)=[0 0 0]'; rollAngleOpt=0; pitchAngleOpt=0; yawAngleOpt=0;
   end
 else %% do this if experiment time
+  this.forceVector(this.FlightControl.SatID,:) = [0 0 0]'; rollAngleOpt=0; pitchAngleOpt=0; yawAngleOpt=0; %% this is not correct because solar radiation causes a force during experiment time
   %%check: are satellites within their mutual cones at all angles=0?
   %% if not: 1 abort experiment 2 align satellites(what is the condition?)
   %% option 1
