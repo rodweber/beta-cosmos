@@ -79,6 +79,7 @@ spmd(this.NumSatellites)
                                               sat.FlightControl.Panels(3), sat.FlightControl.Alphas, sat.FlightControl.Betas,...
                                               sat.FlightControl.Gammas, sat.Orbit.Rho, sat.Orbit.V, sat.Orbit.TempAtmos);
 
+  %sat.FlightControl.WindPressureVectorUncertainty=0;                                            
 
   % define nominal solar radiation pressure magnitude and direction
   sat.FlightControl.initialSolarPressure = this.SolarFactor * 2 * 4.5e-6 * [0 -1 0]';
@@ -137,10 +138,122 @@ spmd(this.NumSatellites)
 %be more clear and avoid bugs/errors later.
 
       currentOrbitSection = this.OrbitSections(this.OrbitSectionNow);
+
+      
       % run the formation flight algorithm
       %%% THIS SHOULD GO TO SATELLITE OR SATELLITE.FLIGHTCONTROL
-      sat.fly(currentOrbitSection, this.OrbitSectionSize);
-      
+%{
+%% 2x10 min experiment time per day for 7 days
+plannedExperimentTimes=[21300	21900;
+  107700	108300;
+  194100	194700;
+  280500	281100;
+  366900	367500;
+  453300	453900;
+  539700	540300;
+  64500	65100;
+  150900	151500;
+  237300	237900;
+  323700	324300;
+  410100	410700;
+  496500	497100;
+  582900	583500];
+%}
+%{
+%% 2x40 min experiment time per day for 7 days
+plannedExperimentTimes=[20400	22800;
+106800	109200;
+193200	195600;
+279600	282000;
+366000	368400;
+452400	454800;
+538800	541200;
+63600	66000;
+150000	152400;
+236400	238800;
+322800	325200;
+409200	411600;
+495600	498000;
+582000	584400];
+%}
+%{      
+%% 2x240 min experiment time per day for 7 days
+plannedExperimentTimes=[14400	28800;
+100800	115200;
+187200	201600;
+273600	288000;
+360000	374400;
+446400	460800;
+532800	547200;
+57600	72000;
+144000	158400;
+230400	244800;
+316800	331200;
+403200	417600;
+489600	504000;
+576000	590400];
+%}
+%{      
+%% every day 6 30 mins experiment times
+plannedExperimentTimes=[36900	38700;
+42300	44100;
+47700	49500;
+58500	60300;
+63900	65700;
+69300	71100;
+123300	125100;
+128700	130500;
+134100	135900;
+144900	146700;
+150300	152100;
+155700	157500;
+209700	211500;
+215100	216900;
+220500	222300;
+231300	233100;
+236700	238500;
+242100	243900;
+296100	297900;
+301500	303300;
+306900	308700;
+317700	319500;
+323100	324900;
+328500	330300;
+382500	384300;
+387900	389700;
+393300	395100;
+404100	405900;
+409500	411300;
+414900	416700;
+468900	470700;
+474300	476100;
+479700	481500;
+490500	492300;
+495900	497700;
+501300	503100;
+555300	557100;
+560700	562500;
+566100	567900;
+576900	578700;
+582300	584100;
+587700	589500];
+%}      
+
+      plannedExperimentTime=0;
+%{
+      for i=1:size(plannedExperimentTimes,1)
+        if lastTime>plannedExperimentTimes(i,1) && lastTime<plannedExperimentTimes(i,2)
+          plannedExperimentTime=1;
+        end
+      end
+%}        
+      if (not(plannedExperimentTime))
+        sat.fly(currentOrbitSection, this.OrbitSectionSize);
+      else
+        sat.FlightControl.State=sat.FlightControl.StateOld;
+        sat.Orbit.updateOrbitDuration();
+      end
+
       %%%%%%%%THIS SHOULD GO TO AN ISL COM MODULE
       %% currently, the reference position change is communicated to the other sats
       %% this needs to be rethought towards exchange of Hill coordinates/distances

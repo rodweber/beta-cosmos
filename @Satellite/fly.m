@@ -26,6 +26,8 @@ sizeGammas = size(this.FlightControl.Gammas, 2);
 % Check if vector sizes are equal? Or they dont need to be equal?
 % ...
 
+
+
 % Vector of size 3 x sizeAlphas x sizeBetas x sizeGammas.
 usedTotalForceVector = zeros(3, sizeAlphas, sizeBetas, sizeGammas);
 

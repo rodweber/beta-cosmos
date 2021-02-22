@@ -1,6 +1,6 @@
 {
-  "SelectedFormationFlightMode": 5,
-  "SimMaxNumOrbits":112,
+  "SelectedFormationFlightMode": 9,
+  "SimMaxNumOrbits":1,
   "SimAccelerationFactor": 100e3,
   "VizScale": 1,
   "Modes": [
@@ -177,7 +177,7 @@
 ,
     {
       "ModeID": 8,
-      "ModeName": "SuperFormation",
+      "ModeName": "MegaFormation",
       "NumSatellites": 36,
       "AttitudeResolutionDeg": 45,
       "InitOrbitAltitude": 350e3,
@@ -224,7 +224,7 @@
         [-3400, 0, 0, 0, 0, 0, 0, 0, 0],
         [-3500, 0, 0, 0, 0, 0, 0, 0, 0]
       ],
-      "FFPSFolder": "SuperFormation",
+      "FFPSFolder": "MegaFormation",
       "FFPSValues": [
         {"ffp1":0,"ffp2":0,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
         {"ffp1":0,"ffp2":-100,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
@@ -284,7 +284,7 @@
         [0, 400000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
         [0, 500000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000]
       ],
-      "FFPSFolder": "ProposalSmallSuperFormation",
+      "FFPSFolder": "SmallSuperFormation",
       "FFPSValues": [
         {"ffp1": 0,"ffp2": 0,"ffp3":   0 ,"ffp4": 0,"ffp5":  0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
         {"ffp1": 0,"ffp2": 0,"ffp3": 100000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7":0,"ffp8": 0},
