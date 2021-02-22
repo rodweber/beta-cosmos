@@ -1,11 +1,11 @@
 function  solarpressureforcevector = getSolarPressureVector(sunlight,panelSurface,...
-          noxpanels,noypanels,nozpanels,alphas,betas,gammas)
+          noxpanels,noypanels,nozpanels,rollAngles,pitchAngles,yawAngles)
 %%  computes the experienced force caused by solar pressure for all satellite attitudes (pitch, yaw, roll)
 %%  input variables
 %%  -sunlight
 %%  -panelSurface
 %%  -noxpanels,noypanels,nozpanels
-%%  -alphas,betas,gammas
+%%  -rollAngles,pitchAngles,yawAngles
 %%  output variables
 %%  -solarpressureforcevector  array     [F]
 %%  local variables
@@ -19,19 +19,20 @@ function  solarpressureforcevector = getSolarPressureVector(sunlight,panelSurfac
   %% by Meike List, Stefanie Bremer, Benny Rievers, and Hanns Selig
   %% Equation 6
   %% beginning of life (BOL)  
-  gammaSunSpecular=0.072;
-  gammaSunDiffusive=0.007;
+  yawAngleSunSpecular=0.072;
+  yawAngleSunDiffusive=0.007;
   %% end of life (EOL)
-  %gammaSunSpecular=0.05;
-  %gammaSunDiffusive=0.03;
+  %yawAngleSunSpecular=0.05;
+  %yawAngleSunDiffusive=0.03;
 
-  %gammaSunSpecular=0.268; %% average value for 50% BOL value and 50% 1
-  %gammaSunDiffusive=0.00175; %% average value for 50% BOL value and 50% 1
+  %yawAngleSunSpecular=0.268; %% average value for 50% BOL value and 50% 1
+  %yawAngleSunDiffusive=0.00175; %% average value for 50% BOL value and 50% 1
 
-  %gammaSunSpecular=0.168; %% average value for 50% BOL value and 50% 1
-  %gammaSunDiffusive=0.00475; %% average value for 50% BOL value and 50% 1
+  %yawAngleSunSpecular=0.168; %% average value for 50% BOL value and 50% 1
+  %yawAngleSunDiffusive=0.00475; %% average value for 50% BOL value and 50% 1
 
-  solarpressureforcevector=zeros(3,size(alphas,2),size(betas,2),size(gammas,2));
+
+  solarpressureforcevector=zeros(3,size(rollAngles,2),size(pitchAngles,2),size(yawAngles,2));
 
   if norm(sunlight)==0
     return
@@ -52,20 +53,20 @@ function  solarpressureforcevector = getSolarPressureVector(sunlight,panelSurfac
   pz1  = [axislength*0.9,axislength*0.9,0];pz2 = [axislength*0.9,-axislength*0.9,0];pz3 = [-axislength*0.9,-axislength*0.9,0];pz4 = [-axislength*0.9,axislength*0.9,0];
   pz12 = 0.33*pz1; pz22 = 0.33*pz2; pz32 = 0.33*pz3; pz42 = 0.33*pz4;
   pz13 = 0.66*pz1; pz23 = 0.66*pz2; pz33 = 0.66*pz3; pz43 = 0.66*pz4;
-  thetasun=zeros(size(gammas,2),size(betas,2),size(alphas,2));
-  phisun=zeros(size(gammas,2),size(betas,2),size(alphas,2));
-  sundragcoef=zeros(size(gammas,2),size(betas,2),size(alphas,2));
-  sunliftcoef=zeros(size(gammas,2),size(betas,2),size(alphas,2));
+  thetasun=zeros(size(yawAngles,2),size(pitchAngles,2),size(rollAngles,2));
+  phisun=zeros(size(yawAngles,2),size(pitchAngles,2),size(rollAngles,2));
+  sundragcoef=zeros(size(yawAngles,2),size(pitchAngles,2),size(rollAngles,2));
+  sunliftcoef=zeros(size(yawAngles,2),size(pitchAngles,2),size(rollAngles,2));
   sunforcevectorZ=[0 0 0]';
   sunforcevectorX=[0 0 0]';
   sunforcevectorY=[0 0 0]';
-  for k=1:size(gammas,2) %% yaw
-    for j=1:size(betas,2) %% pitch
-      for i=1:size(alphas,2) %% roll
+  for k=1:size(yawAngles,2) %% yaw
+    for j=1:size(pitchAngles,2) %% pitch
+      for i=1:size(rollAngles,2) %% roll
         %% rotation matrizes
-        RzY=[cosd(gammas(k)) -sind(gammas(k)) 0; sind(gammas(k)) cosd(gammas(k)) 0; 0 0 1];        %%yaw
-        Ry =[cosd(betas(j))  0 sind(betas(j))  ; 0 1 0                            ; -sind(betas(j)) 0 cosd(betas(j))]; %% pitch
-        RzR=[cosd(alphas(i)) -sind(alphas(i)) 0; sind(alphas(i)) cosd(alphas(i)) 0; 0 0 1];        %% roll
+        RzY=[cosd(yawAngles(k)) -sind(yawAngles(k)) 0; sind(yawAngles(k)) cosd(yawAngles(k)) 0; 0 0 1];        %%yaw
+        Ry =[cosd(pitchAngles(j))  0 sind(pitchAngles(j))  ; 0 1 0                            ; -sind(pitchAngles(j)) 0 cosd(pitchAngles(j))]; %% pitch
+        RzR=[cosd(rollAngles(i)) -sind(rollAngles(i)) 0; sind(rollAngles(i)) cosd(rollAngles(i)) 0; 0 0 1];        %% roll
         if nozpanels %% zpanel
           normalZ=RzY*Ry*RzR*Iz; %% determine the normal vector of a z panel for yaw,pitch, roll
           [thetasun(i,j,k),phisun(i,j,k),normalZ2]=thetaphi1(sunlight,normalZ);       %% determine theta and phi of the normal wrt sunlight vector
@@ -79,7 +80,7 @@ function  solarpressureforcevector = getSolarPressureVector(sunlight,panelSurfac
           %end            
           %%% determine lift vector
           %sunforcevectorZ=nozpanels*(-liftvector  *sunliftcoef(i,j,k)*solarPressure*panelSurface  +  sunforcevectorZ)
-          sunforcevectorZ=FlightControl.solarDragLift(solarPressure, sunlight,normalZ/norm(normalZ), thetasun(i,j,k),panelSurface,nozpanels,gammaSunSpecular,gammaSunDiffusive);
+          sunforcevectorZ=FlightControl.solarDragLift(solarPressure, sunlight,normalZ/norm(normalZ), thetasun(i,j,k),panelSurface,nozpanels,yawAngleSunSpecular,yawAngleSunDiffusive);
         end
         if noxpanels %% xpanel
           normalX=RzY*Ry*RzR*Ix;
@@ -93,7 +94,7 @@ function  solarpressureforcevector = getSolarPressureVector(sunlight,panelSurfac
           %  liftvector = [0 0 0]';
           %end
           %sunforcevectorX=noxpanels*(-liftvector         *  sunliftcoef(i,j,k)*solarPressure*panelSurface  +  sunforcevectorX);
-          sunforcevectorX=FlightControl.solarDragLift(solarPressure, sunlight,normalX/norm(normalX), thetasun(i,j,k),panelSurface,noxpanels,gammaSunSpecular,gammaSunDiffusive);
+          sunforcevectorX=FlightControl.solarDragLift(solarPressure, sunlight,normalX/norm(normalX), thetasun(i,j,k),panelSurface,noxpanels,yawAngleSunSpecular,yawAngleSunDiffusive);
         end
         if noypanels %% ypanel
           normalY=RzY*Ry*RzR*Iy;
@@ -107,7 +108,7 @@ function  solarpressureforcevector = getSolarPressureVector(sunlight,panelSurfac
           %  liftvector = [0 0 0]';
           %end                        
           %sunforcevectorY=noypanels*(-liftvector   *    sunliftcoef(i,j,k)*solarPressure*panelSurface+sunforcevectorY);
-          sunforcevectorY=FlightControl.solarDragLift(solarPressure, sunlight,normalY/norm(normalY), thetasun(i,j,k),panelSurface,noypanels,gammaSunSpecular,gammaSunDiffusive);
+          sunforcevectorY=FlightControl.solarDragLift(solarPressure, sunlight,normalY/norm(normalY), thetasun(i,j,k),panelSurface,noypanels,yawAngleSunSpecular,yawAngleSunDiffusive);
         end
         solarpressureforcevector(:,i,j,k)=sunforcevectorZ+sunforcevectorX+sunforcevectorY;
         %% compute here the derivative TBC

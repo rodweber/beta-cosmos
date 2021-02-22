@@ -15,22 +15,20 @@ totalPressureDirection=this.FlightControl.WindPressure+this.FlightControl.SolarP
 this.FlightControl.SolarPressureVector = this.FlightControl.getSolarPressureVector( ...
                                              this.FlightControl.SolarPressure, this.FlightControl.SurfacePanel, ...
  				                                     this.FlightControl.Panels(1), this.FlightControl.Panels(2), this.FlightControl.Panels(3), ...
- 				                                     this.FlightControl.Alphas, this.FlightControl.Betas, this.FlightControl.Gammas);
+ 				                                     this.FlightControl.rollAngles, this.FlightControl.pitchAngles, this.FlightControl.yawAngles);
 
-
-
-% Vector of size 3 x sizeAlphas x sizeBetas x sizeGammas.
+% Vector of size 3 x sizeRollAngles x sizePitchAngles x sizeYawAngles.
 usedTotalForceVector = zeros(3,...
-  size(this.FlightControl.Alphas, 2),...
-  size(this.FlightControl.Betas , 2),...
-  size(this.FlightControl.Gammas, 2));
+  size(this.FlightControl.rollAngles, 2),...
+  size(this.FlightControl.pitchAngles , 2),...
+  size(this.FlightControl.yawAngles, 2));
 
 masterSatellite = 0;
 if masterSatellite == 0
 % If no master satellite.
-	for k = 1 : size(this.FlightControl.Gammas,2)
-		for j = 1 : size(this.FlightControl.Betas,2)
-			for i = 1 : size(this.FlightControl.Alphas,2)
+	for k = 1 : size(this.FlightControl.yawAngles,2)
+		for j = 1 : size(this.FlightControl.pitchAngles,2)
+			for i = 1 : size(this.FlightControl.rollAngles,2)
 				usedTotalForceVector(:,i,j,k) = this.FlightControl.WindPressureVector(:,i,j,k) + this.FlightControl.SolarPressureVector(:,i,j,k);
 			end
 		end
@@ -67,9 +65,9 @@ deltaTime = sizeOrbitSection / this.Orbit.MeanMotionDeg;
 
 this.FlightControl.StateOld = this.FlightControl.State;
 
-oldAlphas = this.FlightControl.State(7); %% roll
-oldBetas  = this.FlightControl.State(8); %% pitch
-oldGammas = this.FlightControl.State(9); %% yaw
+oldRollAngles = this.FlightControl.State(7); %% roll
+oldPitchAngles  = this.FlightControl.State(8); %% pitch
+oldYawAngles = this.FlightControl.State(9); %% yaw
 
 % Compute control vector for all satellites.
 for i=1:this.FlightControl.NumSatellites
@@ -101,21 +99,31 @@ end
 %% retransform control force for all satellites
 for i=1:this.FlightControl.NumSatellites %% transform error for each satellite
   this.controlVector(i,:)              = this.FlightControl.rodriguesRotation(controlVectorTransformed(i,:)',axisErrorRotation',-angleErrorRotation/180*pi);
-end 
-   
-%% find force vector for this satellite only    
-if norm(this.controlVector(this.FlightControl.SatID,:))==0
-  this.forceVector(this.FlightControl.SatID,:) = [0 0 0]'; alphaOpt=0; betaOpt=0; gammaOpt=0;
-else
-  [this.forceVector(this.FlightControl.SatID,:), alphaOpt, betaOpt, gammaOpt] = this.FlightControl.findBestAttitude(...
-        usedTotalForceVector, this.controlVector(this.FlightControl.SatID,:),...
-        this.FlightControl.Alphas, this.FlightControl.Betas, this.FlightControl.Gammas, ...
-        oldAlphas, oldBetas, oldGammas);
-  %% alpha is roll, beta is pitch, gamma is yaw
 end
-if 2*norm(this.controlVector(this.FlightControl.SatID,:))<norm(this.forceVector(this.FlightControl.SatID,:))
-    this.forceVector(this.FlightControl.SatID,:)=[0 0 0]'; alphaOpt=0; betaOpt=0; gammaOpt=0;
-end
+
+experimentTime=0;
+if  experimentTime
+  %% find force vector for this satellite only
+  if norm(this.controlVector(this.FlightControl.SatID,:))==0
+    this.forceVector(this.FlightControl.SatID,:) = [0 0 0]'; rollAngleOpt=0; pitchAngleOpt=0; yawAngleOpt=0;
+  else
+    [this.forceVector(this.FlightControl.SatID,:), rollAngleOpt, pitchAngleOpt, yawAngleOpt] = this.FlightControl.findBestAttitude(...
+      usedTotalForceVector, this.controlVector(this.FlightControl.SatID,:),...
+      this.FlightControl.rollAngles, this.FlightControl.pitchAngles, this.FlightControl.yawAngles, ...
+      oldRollAngles, oldPitchAngles, oldYawAngles);
+    %% rollAngle is roll, pitchAngle is pitch, yawAngle is yaw
+  end
+  if 2*norm(this.controlVector(this.FlightControl.SatID,:))<norm(this.forceVector(this.FlightControl.SatID,:))
+    this.forceVector(this.FlightControl.SatID,:)=[0 0 0]'; rollAngleOpt=0; pitchAngleOpt=0; yawAngleOpt=0;
+  end
+else %% do this if experiment time
+  %%check: are satellites within their mutual cones at all angles=0?
+  %% if not: 1 abort experiment 2 align satellites(what is the condition?)
+  %% option 1
+  %% compute force of all angles=0;
+  %this.forceVector(this.FlightControl.SatID,:)] = this.FlightControl.findBestAttitude(usedTotalForceVector)
+  %% option 2: to be implemented
+end %% if noExperimentTime
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% vehicle translational dynamics, this part will not be used in flight software for this satellite
@@ -124,7 +132,7 @@ this.FlightControl.State(1:6) = (A * this.FlightControl.StateOld(1:6) + B * ...
                                 deltaTime + this.FlightControl.StateOld(1:6);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-this.FlightControl.State(7:9) = [alphaOpt betaOpt gammaOpt]'; %% roll, pitch, yaw
+this.FlightControl.State(7:9) = [rollAngleOpt pitchAngleOpt yawAngleOpt]'; %% roll, pitch, yaw
 
 
 % Update duration of the current orbit.

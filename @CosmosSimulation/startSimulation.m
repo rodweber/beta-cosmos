@@ -26,8 +26,8 @@ timeStartPool = posixtime(datetime('now')); % Posixtime [seconds].
 spmd(this.NumSatellites)
   
   %! JT: most of what is done here in the parallel loop needs to go to Satellite.fly
-  %! JT: process in runCosmosBeta could go to the constructor of CosmoSimulation or
-  % CosmosSimulation.start. Then, maybe runCosmosBeta could be become a function of
+  %! JT: process in runCosmospitchAngle could go to the constructor of CosmoSimulation or
+  % CosmosSimulation.start. Then, maybe runCosmospitchAngle could be become a function of
   % CosmosSimulation. Maybe we could get rid of the aliases(they are neat from programming pov,
   % but confusing sometimes
   
@@ -61,8 +61,8 @@ spmd(this.NumSatellites)
   sat.FlightControl.WindPressureVector = FlightControl.getWindPressureVector(...
                                               sat.FlightControl.WindPressure, sat.FlightControl.SurfacePanel, ...
 	                                            sat.FlightControl.Panels(1), sat.FlightControl.Panels(2), ...
-                                              sat.FlightControl.Panels(3), sat.FlightControl.Alphas, sat.FlightControl.Betas,...
-                                              sat.FlightControl.Gammas, sat.Orbit.Rho, sat.Orbit.V, sat.Orbit.TempAtmos);
+                                              sat.FlightControl.Panels(3), sat.FlightControl.rollAngles, sat.FlightControl.pitchAngles,...
+                                              sat.FlightControl.yawAngles, sat.Orbit.Rho, sat.Orbit.V, sat.Orbit.TempAtmos);
 
   %sat.FlightControl.WindPressureVectorUncertainty=0;                                            
 

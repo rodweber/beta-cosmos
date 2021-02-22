@@ -1,6 +1,6 @@
-function aerototalforcevector = getWindPressureVector(wind,panelSurface,noxpanels,noypanels,nozpanels,alphas,betas,gammas,rho,v,Tatmos)
+function aerototalforcevector = getWindPressureVector(wind,panelSurface,noxpanels,noypanels,nozpanels,rollAngles,pitchAngles,yawAngles,rho,v,Tatmos)
   
-	aerototalforcevector =zeros(3,size(alphas,2),size(betas,2),size(gammas,2));
+	aerototalforcevector =zeros(3,size(rollAngles,2),size(pitchAngles,2),size(yawAngles,2));
  
   if norm(wind)==0
     return
@@ -21,20 +21,20 @@ function aerototalforcevector = getWindPressureVector(wind,panelSurface,noxpanel
   pz1  = [axislength*0.9,axislength*0.9,0];pz2 = [axislength*0.9,-axislength*0.9,0];pz3 = [-axislength*0.9,-axislength*0.9,0];pz4 = [-axislength*0.9,axislength*0.9,0];
   pz12 = 0.33*pz1; pz22 = 0.33*pz2; pz32 = 0.33*pz3; pz42 = 0.33*pz4;
   pz13 = 0.66*pz1; pz23 = 0.66*pz2; pz33 = 0.66*pz3; pz43 = 0.66*pz4;
-  thetaaero=zeros(size(gammas,2),size(betas,2),size(alphas,2));
-  phiaero=zeros(size(gammas,2),size(betas,2),size(alphas,2));
-  CD=zeros(size(gammas,2),size(betas,2),size(alphas,2));
-  CL=zeros(size(gammas,2),size(betas,2),size(alphas,2));
+  thetaaero=zeros(size(yawAngles,2),size(pitchAngles,2),size(rollAngles,2));
+  phiaero=zeros(size(yawAngles,2),size(pitchAngles,2),size(rollAngles,2));
+  CD=zeros(size(yawAngles,2),size(pitchAngles,2),size(rollAngles,2));
+  CL=zeros(size(yawAngles,2),size(pitchAngles,2),size(rollAngles,2));
   aeroforcevectorz=[0 0 0]';
   aeroforcevectorx=[0 0 0]';
   aeroforcevectory=[0 0 0]';
-  for k=1:size(gammas,2) %% yaw
-    for j=1:size(betas,2) %% pitch
-      for i=1:size(alphas,2) %% roll
+  for k=1:size(yawAngles,2) %% yaw
+    for j=1:size(pitchAngles,2) %% pitch
+      for i=1:size(rollAngles,2) %% roll
         %% rotation matrizes
-        RzY =[cosd(gammas(k)) -sind(gammas(k)) 0; sind(gammas(k)) cosd(gammas(k)) 0; 0 0 1]; %%yaw
-        Ry =[cosd(betas(j))  0 sind(betas(j))  ; 0 1 0                          ; -sind(betas(j)) 0 cosd(betas(j))]; %% pitch
-        RzR=[cosd(alphas(i)) -sind(alphas(i)) 0; sind(alphas(i)) cosd(alphas(i)) 0; 0 0 1]; %% roll
+        RzY =[cosd(yawAngles(k)) -sind(yawAngles(k)) 0; sind(yawAngles(k)) cosd(yawAngles(k)) 0; 0 0 1]; %%yaw
+        Ry =[cosd(pitchAngles(j))  0 sind(pitchAngles(j))  ; 0 1 0                          ; -sind(pitchAngles(j)) 0 cosd(pitchAngles(j))]; %% pitch
+        RzR=[cosd(rollAngles(i)) -sind(rollAngles(i)) 0; sind(rollAngles(i)) cosd(rollAngles(i)) 0; 0 0 1]; %% roll
         if nozpanels %% zpanel
           Igz=RzY*Ry*RzR*Iz;
           [thetaaero(i,j,k),phiaero(i,j,k),Igz2]=thetaphi1(wind, Igz);

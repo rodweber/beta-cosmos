@@ -1,20 +1,20 @@
-function [forceVector,alphaOpt,betaOpt,gammaOpt]=findBestAttitude(totalForceVector,u,alphas,betas,...
-                                                 gammas,oldAlphaOpt,oldBetaOpt,oldGammaOpt) 
+function [forceVector,rollAngleOpt,pitchAngleOpt,yawAngleOpt]=findBestAttitude(totalForceVector,u,rollAngles,pitchAngles,...
+                                                 yawAngles,oldRollAngleOpt,oldPitchAngleOpt,oldYawAngleOpt) 
 %findBestAerodynamicAngles to find best angle
 %%%%%%% input variables
 %% totalforcevector
 %% controlvector
-%% alphas
-%% betas
-%% gammas
-%% oldAlphaOpt
-%% oldBetaOpt
-%% oldGammaOpt
+%% rollAngles
+%% pitchAngles
+%% yawAngles
+%% oldRollAngleOpt
+%% oldPitchAngleOpt
+%% oldYawAngleOpt
 %%%%%%% output variables
 %% forcevector
-%% alphaOpt
-%% betaOpt
-%% gammaOpt
+%% rollAngleOpt
+%% pitchAngleOpt
+%% yawAngleOpt
 
 %u=[-3e-6 -15e-6 -2e-5]'
 
@@ -24,17 +24,17 @@ function [forceVector,alphaOpt,betaOpt,gammaOpt]=findBestAttitude(totalForceVect
   %% Do we need a formula like 1.5xgranularity,
   %% or a check that thetaRange is larger than granularity?
   
-  theta=zeros(size(gammas,2),size(betas,2),size(alphas,2));
-  phi=zeros(size(gammas,2),size(betas,2),size(alphas,2));
+  theta=zeros(size(yawAngles,2),size(pitchAngles,2),size(rollAngles,2));
+  phi=zeros(size(yawAngles,2),size(pitchAngles,2),size(rollAngles,2));
 
   l=1;
   
-  for k=1:size(gammas,2) %% yaw
-    for j=1:size(betas,2) %% pitch
-      for i=1:size(alphas,2) %% roll
-        %alphas(i)
-        %betas(j)
-        %gammas(k)
+  for k=1:size(yawAngles,2) %% yaw
+    for j=1:size(pitchAngles,2) %% pitch
+      for i=1:size(rollAngles,2) %% roll
+        %rollAngles(i)
+        %pitchAngles(j)
+        %yawAngles(k)
         %norm(totalForceVector(:,i,j,k))
         %input('XXX')
         if norm(totalForceVector(:,i,j,k))~=0 
@@ -45,11 +45,11 @@ function [forceVector,alphaOpt,betaOpt,gammaOpt]=findBestAttitude(totalForceVect
           if theta(i,j,k)<=thetaRange %% find all force vectors that have theta<thetarange deg
               goodTheta(l)=theta(i,j,k);
               goodThetai(l)=i; goodThetaj(l)=j; goodThetak(l)=k;
-              goodAlpha(l)=alphas(i); goodBeta(l)=betas(j); goodGamma(l)=gammas(k);
+              goodRollAngle(l)=rollAngles(i); goodPitchAngle(l)=pitchAngles(j); goodYawAngle(l)=yawAngles(k);
               %! some proper weighting factors are needed
-              %meritFactor(l)=1000/(  (1e-5+abs(theta(i,j,k))) * (1+wrapTo360(oldAlphaOpt-alphas(i))) * (1+wrapTo360(oldBetaOpt-betas(j))) * (1+wrapTo360(oldGammaOpt-gammas(k))) );
-              mTheta=1e-7;mAlpha=1000;mBeta=1000;mGamma=1000;
-              %meritFactor(l)=1/(mTheta+4*abs(theta(i,j,k))) + 1/(mAlpha+wrapTo360(oldAlphaOpt-alphas(i))) +1/(mBeta+2*wrapTo360(oldBetaOpt-betas(j))) + 1/(mGamma+wrapTo360(oldGammaOpt-gammas(k)));
+              %meritFactor(l)=1000/(  (1e-5+abs(theta(i,j,k))) * (1+wrapTo360(oldRollAngleOpt-rollAngles(i))) * (1+wrapTo360(oldPitchAngleOpt-pitchAngles(j))) * (1+wrapTo360(oldYawAngleOpt-yawAngles(k))) );
+              mTheta=1e-7;mRollAngle=1000;mPitchAngle=1000;mYawAngle=1000;
+              %meritFactor(l)=1/(mTheta+4*abs(theta(i,j,k))) + 1/(mRollAngle+wrapTo360(oldRollAngleOpt-rollAngles(i))) +1/(mPitchAngle+2*wrapTo360(oldPitchAngleOpt-pitchAngles(j))) + 1/(mYawAngle+wrapTo360(oldYawAngleOpt-yawAngles(k)));
               meritFactorInverse(l)=theta(i,j,k);
               l=l+1;
               %vectarrow([0 0 0],u/norm(u));hold on;
@@ -64,24 +64,24 @@ function [forceVector,alphaOpt,betaOpt,gammaOpt]=findBestAttitude(totalForceVect
   end
   if not(exist('meritFactorInverse')) %% enter if meritFactor does not exist
 
-%    alphaOpt=oldAlphaOpt;
-%    betaOpt=oldBetaOpt;
-%    gammaOpt=oldGammaOpt;
-%    ii=find(alphas==oldAlphaOpt);
-%    jj=find(betas==oldBetaOpt);
-%    kk=find(gammas==oldGammaOpt);
+%    rollAngleOpt=oldRollAngleOpt;
+%    pitchAngleOpt=oldPitchAngleOpt;
+%    yawAngleOpt=oldYawAngleOpt;
+%    ii=find(rollAngles==oldRollAngleOpt);
+%    jj=find(pitchAngles==oldPitchAngleOpt);
+%    kk=find(yawAngles==oldYawAngleOpt);
 %    forceVector=squeeze(totalForceVector(:,ii,jj,kk));
  
-    alphaOpt=0; betaOpt=0; gammaOpt=0;
+    rollAngleOpt=0; pitchAngleOpt=0; yawAngleOpt=0;
     forceVector=[0 0 0]';
     %u'
     %fprintf('\n findBestAerodynamicAngles: problem with theta\n')
     %input('XXX')
-  elseif 0 %oldAlphaOpt==0 && oldBetaOpt==0 && oldGammaOpt==0
+  elseif 0 %oldRollAngleOpt==0 && oldPitchAngleOpt==0 && oldYawAngleOpt==0
     [~,optIndex]=max(goodTheta);
-    alphaOpt=goodAlpha(optIndex);
-    betaOpt=goodBeta(optIndex);
-    gammaOpt=goodGamma(optIndex);
+    rollAngleOpt=goodRollAngle(optIndex);
+    pitchAngleOpt=goodPitchAngle(optIndex);
+    yawAngleOpt=goodYawAngle(optIndex);
     forceVector=squeeze(totalForceVector(:,goodThetai(optIndex),goodThetaj(optIndex),goodThetak(optIndex)));
     %fprintf('\nfindbestAerodynamicAngles - elseif\n');
   else
@@ -90,16 +90,21 @@ function [forceVector,alphaOpt,betaOpt,gammaOpt]=findBestAttitude(totalForceVect
     %a=min(meritFactorInverse)
     %idx=find(meritFactorInverse==a)
     %goodTheta
-    alphaOpt=goodAlpha(optIndex);
-    betaOpt=goodBeta(optIndex);
-    gammaOpt=goodGamma(optIndex);
+    rollAngleOpt=goodRollAngle(optIndex);
+    pitchAngleOpt=goodPitchAngle(optIndex);
+    yawAngleOpt=goodYawAngle(optIndex);
     forceVector=squeeze(totalForceVector(:,goodThetai(optIndex),goodThetaj(optIndex),goodThetak(optIndex)));
     %fprintf('\nfindbestAerodynamicAngles - else\n');
       %figure
       %histogram(meritFactor)
 
   end  
-%hold off;
+  %!compute force for uncertain angles
+  uncertainty=0;
+  uncertaintyX=uncertainty;   uncertaintyY=uncertainty;  uncertaintyZ=uncertainty;
+  variation=[(1+uncertaintyX*(1-2*rand)); (1+uncertaintyY*(1-2*rand)); (1+uncertaintyZ*(1-2*rand))];
+  forceVector=forceVector.*variation;
+  %hold off;
     %magcv=sqrt(controlvector(1)^2+controlvector(2)^2+controlvector(3)^2);
     %fprintf('\n %1.1e %1.3f %1.3f %1.3f',magcv,controlvector(1)/magcv,controlvector(2)/magcv,controlvector(3)/magcv);
     %magfv=sqrt(forcevector(1)^2+forcevector(2)^2+forcevector(3)^2);
@@ -125,9 +130,9 @@ function [forceVector,alphaOpt,betaOpt,gammaOpt]=findBestAttitude(totalForceVect
     Iz=[0 0 1]';
     figure
       for n=1:l-1
-        RzY =[cosd(goodgamma(n)) -sind(goodgamma(n)) 0; sind(goodgamma(n)) cosd(goodgamma(n)) 0; 0 0 1]; %%roll
-        Ry =[cosd(goodbeta(n))  0 sind(goodbeta(n))  ; 0 1 0                          ; -sind(goodbeta(n)) 0 cosd(goodbeta(n))]; %% pitch
-        RzR=[cosd(goodalpha(n)) -sind(goodalpha(n)) 0; sind(goodalpha(n)) cosd(goodalpha(n)) 0; 0 0 1]; %% yaw
+        RzY =[cosd(goodyawAngle(n)) -sind(goodyawAngle(n)) 0; sind(goodyawAngle(n)) cosd(goodyawAngle(n)) 0; 0 0 1]; %%roll
+        Ry =[cosd(goodpitchAngle(n))  0 sind(goodpitchAngle(n))  ; 0 1 0                          ; -sind(goodpitchAngle(n)) 0 cosd(goodpitchAngle(n))]; %% pitch
+        RzR=[cosd(goodrollAngle(n)) -sind(goodrollAngle(n)) 0; sind(goodrollAngle(n)) cosd(goodrollAngle(n)) 0; 0 0 1]; %% yaw
         Ig=RzY*Ry*RzR*Iz;
         vectarrow([0 0 0],Ig);
         hold on;axis equal;
@@ -145,23 +150,23 @@ end
  OLD FUNCTION
 
 
-function [forceVector,alphaOpt,betaOpt,gammaOpt]=findBestAttitude(totalForceVector,controlVector,alphas,betas,...
-                                                 gammas,oldAlphaOpt,oldBetaOpt,oldGammaOpt)
+function [forceVector,rollAngleOpt,pitchAngleOpt,yawAngleOpt]=findBestAttitude(totalForceVector,controlVector,rollAngles,pitchAngles,...
+                                                 yawAngles,oldRollAngleOpt,oldPitchAngleOpt,oldYawAngleOpt)
 %findBestAerodynamicAngles to find best angle
 %%%%%%% input variables
 %% totalforcevector
 %% controlvector
-%% alphas
-%% betas
-%% gammas
-%% oldAlphaOpt
-%% oldBetaOpt
-%% oldGammaOpt
+%% rollAngles
+%% pitchAngles
+%% yawAngles
+%% oldRollAngleOpt
+%% oldPitchAngleOpt
+%% oldYawAngleOpt
 %%%%%%% output variables
 %% forcevector
-%% alphaOpt
-%% betaOpt
-%% gammaOpt
+%% rollAngleOpt
+%% pitchAngleOpt
+%% yawAngleOpt
 
   thetaRange=45;
   %% is this a universally good thetaRange?
@@ -169,12 +174,12 @@ function [forceVector,alphaOpt,betaOpt,gammaOpt]=findBestAttitude(totalForceVect
   %% Do we need a formula like 1.5xgranularity,
   %% or a check that thetaRange is larger than granularity?
   
-  theta=zeros(size(gammas,2),size(betas,2),size(alphas,2));
-  phi=zeros(size(gammas,2),size(betas,2),size(alphas,2));
+  theta=zeros(size(yawAngles,2),size(pitchAngles,2),size(rollAngles,2));
+  phi=zeros(size(yawAngles,2),size(pitchAngles,2),size(rollAngles,2));
   l=1;
-  for k=1:size(gammas,2) %% yaw
-    for j=1:size(betas,2) %% pitch
-      for i=1:size(alphas,2) %% roll
+  for k=1:size(yawAngles,2) %% yaw
+    for j=1:size(pitchAngles,2) %% pitch
+      for i=1:size(rollAngles,2) %% roll
         
         %totalForceVector(:,i,j,k)'/norm(totalForceVector(:,i,j,k))
         %controlVector'/norm(controlVector)
@@ -187,11 +192,11 @@ function [forceVector,alphaOpt,betaOpt,gammaOpt]=findBestAttitude(totalForceVect
           goodThetai(l)=i;
           goodThetaj(l)=j;
           goodThetak(l)=k;
-          goodAlpha(l)=alphas(i);
-          goodBeta(l)=betas(j);
-          goodGamma(l)=gammas(k);
+          goodRollAngle(l)=rollAngles(i);
+          goodPitchAngle(l)=pitchAngles(j);
+          goodYawAngle(l)=yawAngles(k);
           %! some proper weighting factors are needed
-          meritFactor(l)=1000/(  (1e-5+abs(theta(i,j,k)))  *    (1+wrapTo360(oldAlphaOpt-alphas(i)))  *(1+wrapTo360(oldBetaOpt-betas(j))) * (1+wrapTo360(oldGammaOpt-gammas(k))) );
+          meritFactor(l)=1000/(  (1e-5+abs(theta(i,j,k)))  *    (1+wrapTo360(oldRollAngleOpt-rollAngles(i)))  *(1+wrapTo360(oldPitchAngleOpt-pitchAngles(j))) * (1+wrapTo360(oldYawAngleOpt-yawAngles(k))) );
           l=l+1;
         end
         %input('xxx')
@@ -199,29 +204,29 @@ function [forceVector,alphaOpt,betaOpt,gammaOpt]=findBestAttitude(totalForceVect
     end
   end
   if not(exist('meritFactor'))
-    alphaOpt=oldAlphaOpt;
-    betaOpt=oldBetaOpt;
-    gammaOpt=oldGammaOpt;
-    ii=find(alphas==oldAlphaOpt);
-    jj=find(betas==oldBetaOpt);
-    kk=find(gammas==oldGammaOpt);
+    rollAngleOpt=oldRollAngleOpt;
+    pitchAngleOpt=oldPitchAngleOpt;
+    yawAngleOpt=oldYawAngleOpt;
+    ii=find(rollAngles==oldRollAngleOpt);
+    jj=find(pitchAngles==oldPitchAngleOpt);
+    kk=find(yawAngles==oldYawAngleOpt);
     ii=1;jj=1;kk=1;
     forceVector=squeeze(totalForceVector(:,ii,jj,kk));
     %controlVector/norm(controlVector)
     %forceVector/norm(forceVector)
     %fprintf('\n findBestAerodynamicAngles: problem with theta\n')
     %input('')
-  elseif oldAlphaOpt==0 && oldBetaOpt==0 && oldGammaOpt==0
+  elseif oldRollAngleOpt==0 && oldPitchAngleOpt==0 && oldYawAngleOpt==0
     [~,optIndex]=min(goodTheta);
-    alphaOpt=goodAlpha(optIndex);
-    betaOpt=goodBeta(optIndex);
-    gammaOpt=goodGamma(optIndex);
+    rollAngleOpt=goodRollAngle(optIndex);
+    pitchAngleOpt=goodPitchAngle(optIndex);
+    yawAngleOpt=goodYawAngle(optIndex);
     forceVector=squeeze(totalForceVector(:,goodThetai(optIndex),goodThetaj(optIndex),goodThetak(optIndex)));
   else
     [~,optIndex]=max(meritFactor);
-    alphaOpt=goodAlpha(optIndex);
-    betaOpt=goodBeta(optIndex);
-    gammaOpt=goodGamma(optIndex);
+    rollAngleOpt=goodRollAngle(optIndex);
+    pitchAngleOpt=goodPitchAngle(optIndex);
+    yawAngleOpt=goodYawAngle(optIndex);
     forceVector=squeeze(totalForceVector(:,goodThetai(optIndex),goodThetaj(optIndex),goodThetak(optIndex)));
   end  
 
@@ -250,9 +255,9 @@ function [forceVector,alphaOpt,betaOpt,gammaOpt]=findBestAttitude(totalForceVect
     Iz=[0 0 1]';
     figure
       for n=1:l-1
-        RzY =[cosd(goodgamma(n)) -sind(goodgamma(n)) 0; sind(goodgamma(n)) cosd(goodgamma(n)) 0; 0 0 1]; %%roll
-        Ry =[cosd(goodbeta(n))  0 sind(goodbeta(n))  ; 0 1 0                          ; -sind(goodbeta(n)) 0 cosd(goodbeta(n))]; %% pitch
-        RzR=[cosd(goodalpha(n)) -sind(goodalpha(n)) 0; sind(goodalpha(n)) cosd(goodalpha(n)) 0; 0 0 1]; %% yaw
+        RzY =[cosd(goodyawAngle(n)) -sind(goodyawAngle(n)) 0; sind(goodyawAngle(n)) cosd(goodyawAngle(n)) 0; 0 0 1]; %%roll
+        Ry =[cosd(goodpitchAngle(n))  0 sind(goodpitchAngle(n))  ; 0 1 0                          ; -sind(goodpitchAngle(n)) 0 cosd(goodpitchAngle(n))]; %% pitch
+        RzR=[cosd(goodrollAngle(n)) -sind(goodrollAngle(n)) 0; sind(goodrollAngle(n)) cosd(goodrollAngle(n)) 0; 0 0 1]; %% yaw
         Ig=RzY*Ry*RzR*Iz;
         vectarrow([0 0 0],Ig);
         hold on;axis equal;
