@@ -13,3 +13,5 @@ visualization/work/cache/**
 workspace.mat
 tempUML*
 *.zip
+
+5gcase/CosmosParameters.json
