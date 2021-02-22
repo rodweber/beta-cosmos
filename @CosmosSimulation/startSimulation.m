@@ -193,7 +193,7 @@ plannedExperimentTimes=[14400	28800;
 489600	504000;
 576000	590400];
 %}
-%{      
+%%{      
 %% every day 6 30 mins experiment times
 plannedExperimentTimes=[36900	38700;
 42300	44100;
@@ -237,22 +237,17 @@ plannedExperimentTimes=[36900	38700;
 576900	578700;
 582300	584100;
 587700	589500];
-%}      
+%%}      
 
       plannedExperimentTime=0;
-%{
+%%{
       for i=1:size(plannedExperimentTimes,1)
         if lastTime>plannedExperimentTimes(i,1) && lastTime<plannedExperimentTimes(i,2)
           plannedExperimentTime=1;
         end
       end
-%}        
-      if (not(plannedExperimentTime))
-        sat.fly(currentOrbitSection, this.OrbitSectionSize);
-      else
-        sat.FlightControl.State=sat.FlightControl.StateOld;
-        sat.Orbit.updateOrbitDuration();
-      end
+%%}        
+      sat.fly(currentOrbitSection, this.OrbitSectionSize,plannedExperimentTime);
 
       %%%%%%%%THIS SHOULD GO TO AN ISL COM MODULE
       %% currently, the reference position change is communicated to the other sats

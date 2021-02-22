@@ -82,7 +82,7 @@ classdef Satellite < handle
 		
 		initialize(this, id, commChannel, iniConditions)
 		comm(this, msg)
-		fly(this, currentOrbitSection, sizeOrbitSection)
+		fly(this, currentOrbitSection, sizeOrbitSection,plannedExperimentTime)
 		broadcastSend(this, msg)
 		msg = broadcastReceive(this)
 		turnOff(this)
