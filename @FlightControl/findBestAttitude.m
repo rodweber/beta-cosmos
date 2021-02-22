@@ -99,7 +99,12 @@ function [forceVector,rollAngleOpt,pitchAngleOpt,yawAngleOpt]=findBestAttitude(t
       %histogram(meritFactor)
 
   end  
-%hold off;
+  %!compute force for uncertain angles
+  uncertainty=0;
+  uncertaintyX=uncertainty;   uncertaintyY=uncertainty;  uncertaintyZ=uncertainty;
+  variation=[(1+uncertaintyX*(1-2*rand)); (1+uncertaintyY*(1-2*rand)); (1+uncertaintyZ*(1-2*rand))];
+  forceVector=forceVector.*variation;
+  %hold off;
     %magcv=sqrt(controlvector(1)^2+controlvector(2)^2+controlvector(3)^2);
     %fprintf('\n %1.1e %1.3f %1.3f %1.3f',magcv,controlvector(1)/magcv,controlvector(2)/magcv,controlvector(3)/magcv);
     %magfv=sqrt(forcevector(1)^2+forcevector(2)^2+forcevector(3)^2);
