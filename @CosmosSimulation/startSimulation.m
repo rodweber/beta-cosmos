@@ -240,13 +240,13 @@ plannedExperimentTimes=[36900	38700;
 %%}      
 
       plannedExperimentTime=0;
-%%{
+%{
       for i=1:size(plannedExperimentTimes,1)
         if lastTime>plannedExperimentTimes(i,1) && lastTime<plannedExperimentTimes(i,2)
           plannedExperimentTime=1;
         end
       end
-%%}        
+%}        
       sat.fly(currentOrbitSection, this.OrbitSectionSize,plannedExperimentTime);
 
       %%%%%%%%THIS SHOULD GO TO AN ISL COM MODULE
