@@ -77,6 +77,9 @@ function aerototalforcevector = getWindPressureVector(wind,panelSurface,noxpanel
           end            
           aeroforcevectory=noypanels*(-liftvector  *  CL(i,j,k)*windPressure*panelSurface + aeroforcevectory);
         end
+        aerototalforcevector(:,i,j,k)=aeroforcevectorz+aeroforcevectorx+aeroforcevectory;
+        %%compute here the derivative TBC
+        
         %%draw
         if draw
           vectarrow([0 0 0],wind*windPressure*panelSurface);hold on;text(wind(1)*windPressure*panelSurface,wind(2)*windPressure*panelSurface,wind(3)*windPressure*panelSurface,"wind",'HorizontalAlignment','left','FontSize',6);
@@ -119,7 +122,6 @@ function aerototalforcevector = getWindPressureVector(wind,panelSurface,noxpanel
           hold off;
           pause(1/rotspeed);
         end
-        aerototalforcevector(:,i,j,k)=aeroforcevectorz+aeroforcevectorx+aeroforcevectory;
       end
       %input('qaz')
     end

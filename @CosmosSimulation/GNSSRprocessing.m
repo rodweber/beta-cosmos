@@ -212,6 +212,11 @@ if plotStats
  lonGranularity=1; %% [deg]
  hist3([totalLon' totalLat'],'Ctrs',{-180:lonGranularity:180 -90:latGranularity:90})
 end %% plot statistics
+
+
+%% selection of sp, e.g.: 1) one point per geosurface (world, land, europe), compute results/effort 2) compute EO campaign optimcally distributed over formation members
+
+
 fprintf('\n Total GNSS computation time: %s seconds.\n',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
 end %% function GNSS-R processing
 

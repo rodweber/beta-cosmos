@@ -31,8 +31,6 @@ function  solarpressureforcevector = getSolarPressureVector(sunlight,panelSurfac
   %gammaSunSpecular=0.168; %% average value for 50% BOL value and 50% 1
   %gammaSunDiffusive=0.00475; %% average value for 50% BOL value and 50% 1
 
-
-
   solarpressureforcevector=zeros(3,size(alphas,2),size(betas,2),size(gammas,2));
 
   if norm(sunlight)==0
@@ -111,6 +109,9 @@ function  solarpressureforcevector = getSolarPressureVector(sunlight,panelSurfac
           %sunforcevectorY=noypanels*(-liftvector   *    sunliftcoef(i,j,k)*solarPressure*panelSurface+sunforcevectorY);
           sunforcevectorY=FlightControl.solarDragLift(solarPressure, sunlight,normalY/norm(normalY), thetasun(i,j,k),panelSurface,noypanels,gammaSunSpecular,gammaSunDiffusive);
         end
+        solarpressureforcevector(:,i,j,k)=sunforcevectorZ+sunforcevectorX+sunforcevectorY;
+        %% compute here the derivative TBC
+        
         %%draw
         if draw
           vectarrow([0 0 0],sunlight*solarPressure*panelSurface);hold on;text(sunlight(1)*solarPressure*panelSurface,sunlight(2)*solarPressure*panelSurface,sunlight(3)*solarPressure*panelSurface,"sunlight",'HorizontalAlignment','left','FontSize',6);
@@ -141,7 +142,6 @@ function  solarpressureforcevector = getSolarPressureVector(sunlight,panelSurfac
           hold off;
           pause(1/rotSpeed);
         end
-        solarpressureforcevector(:,i,j,k)=sunforcevectorZ+sunforcevectorX+sunforcevectorY;
       end
     end
   end

@@ -34,7 +34,114 @@ if plotExperimentTime%% condition for experiment time valid?
   TAngle=zeros(size(cosmosTime,1),1);
   SAngle=zeros(size(cosmosTime,1),1);
   experimentTime=zeros(size(cosmosTime,1),1);
+  plannedExperimentTime=zeros(size(cosmosTime,1),1);
   directionAngle=zeros(size(cosmosTime,1),1);
+  
+  %% 2x10 min experiment time per day for 7 days
+%{
+plannedExperimentTimes=[21300	21900;
+  107700	108300;
+  194100	194700;
+  280500	281100;
+  366900	367500;
+  453300	453900;
+  539700	540300;
+  64500	65100;
+  150900	151500;
+  237300	237900;
+  323700	324300;
+  410100	410700;
+  496500	497100;
+  582900	583500];
+%}
+%{
+%% 2x40 min experiment time per day for 7 days
+plannedExperimentTimes=[20400	22800;
+106800	109200;
+193200	195600;
+279600	282000;
+366000	368400;
+452400	454800;
+538800	541200;
+63600	66000;
+150000	152400;
+236400	238800;
+322800	325200;
+409200	411600;
+495600	498000;
+582000	584400];
+%}
+ %{     
+%% 2x240 min experiment time per day for 7 days
+plannedExperimentTimes=[14400	28800;
+  100800	115200;
+  187200	201600;
+  273600	288000;
+  360000	374400;
+  446400	460800;
+  532800	547200;
+  57600	72000;
+  144000	158400;
+  230400	244800;
+  316800	331200;
+  403200	417600;
+  489600	504000;
+  576000	590400];
+%}
+%% every day 6 30 mins experiment times
+
+plannedExperimentTimes=[36900	38700;
+42300	44100;
+47700	49500;
+58500	60300;
+63900	65700;
+69300	71100;
+123300	125100;
+128700	130500;
+134100	135900;
+144900	146700;
+150300	152100;
+155700	157500;
+209700	211500;
+215100	216900;
+220500	222300;
+231300	233100;
+236700	238500;
+242100	243900;
+296100	297900;
+301500	303300;
+306900	308700;
+317700	319500;
+323100	324900;
+328500	330300;
+382500	384300;
+387900	389700;
+393300	395100;
+404100	405900;
+409500	411300;
+414900	416700;
+468900	470700;
+474300	476100;
+479700	481500;
+490500	492300;
+495900	497700;
+501300	503100;
+555300	557100;
+560700	562500;
+566100	567900;
+576900	578700;
+582300	584100;
+587700	589500];
+
+%% create function for when an experiment time is defined  
+for i=1:size(cosmosTime,1)
+  for j=1:size(plannedExperimentTimes,1)
+    if cosmosTime(i,1)>plannedExperimentTimes(j,1) && cosmosTime(i,1)<plannedExperimentTimes(j,2)
+      plannedExperimentTime(i)=1;
+    end
+  end
+end
+  
   for i=1:size(cosmosTime,1)
     %% compute angle
     directionAngle(i)= atan2d( (sst(2,3,i)-sst(1,3,i)) , sqrt((sst(2,1,i)-sst(1,1,i))^2+(sst(2,2,i)-sst(1,2,i))^2) );
@@ -58,10 +165,11 @@ if plotExperimentTime%% condition for experiment time valid?
   axis([-inf inf -10 190])
   yticks([0 45 90 135 180])
   yyaxis right;
-  plot(cosmosTime(:,1)/2/pi*meanMotionRad,experimentTime,'-k','LineWidth',3);
+  plot(cosmosTime(:,1)/2/pi*meanMotionRad,experimentTime,'-k','LineWidth',2);
+  plot(cosmosTime(:,1)/2/pi*meanMotionRad,plannedExperimentTime,'-g','LineWidth',2);
   axis([0 inf -.1 1.1])
-  title('BETA: experiment time');
-  legend('TAngle','SAngle','directionAngle','experiment time (right)');
+  %title('BETA: experiment time');
+  legend('TAngle','SAngle','directionAngle','experiment time achieved (right)','experiment time defined (right)');
   hold off;
 end
 
@@ -81,7 +189,7 @@ if generalVariablesPlot %% plot general variables
   legend(names);
   axis([-inf inf -10 370])
   yticks([0 45 90 135 180 225 270 315 360])
-  title('BETA');
+  %title('BETA');
   
   subplot(2,3,2)%% pitch
   for i=1:ns
@@ -136,7 +244,7 @@ if controlVariablesPlot
   end
   ylabel('control vector x [?]');xlabel('no. of orbits');grid on;hold off
   axis([-inf inf -inf inf])  
-  title('BETA');
+  %title('BETA');
   
   subplot(2,3,2)%% control vector y
   for i=1:ns
@@ -199,7 +307,7 @@ if plot3D
   %view([1 -0.5 0.5]);
   %set(gcf, 'InvertHardCopy', 'off');
   %title('3d');
-  title('BETA');
+  %title('BETA');
   hold off;
   
   %savefig('sst3d.fig');
@@ -216,7 +324,7 @@ if 0
       plot(cosmosTime(:,j)/2/pi*meanMotionRad,squeeze(e(j,i,:)));hold on;
     end
     legend;
-    title(strcat('BETA: error coordinate',num2str(i)))
+    %title(strcat('BETA: error coordinate',num2str(i)))
   end
   hold off;
 end
@@ -227,7 +335,7 @@ if 0
   figure
   plot(cosmosTime(:,1),refPosChange(1,:),cosmosTime(:,1),refPosChange(2,:),cosmosTime(:,1),refPosChange(3,:));
   legend('x','y','z');
-  title('BETA: reference position change')
+  %title('BETA: reference position change')
   hold off;
 end
 
@@ -247,7 +355,7 @@ if 0 %% 2d printing
   set(gca,'units','centimeters','position',[5.5 3 20 15]);
   set(gca,'FontSize',fontSize);
   print('-painters','-dmeta','sst2d.emf')
-  title('BETA');
+  %title('BETA');
 end
 end
 
