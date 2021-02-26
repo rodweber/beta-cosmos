@@ -9,7 +9,7 @@ delete(gcp('nocreate'));
 close all; clc; % Do not clear variables, it makes the project unstable.
 
 % Set parameter to automatically run Simulink visualization.
-AUTORUN = 1; % [true: 1 | false: 0]
+AUTORUN = 0; % [true: 1 | false: 0]
 
 % Set parameter to automatically smooth changes in satellite orientations.
 AUTOSMOOTH = 1; % [true: 1 | false: 0]
@@ -27,7 +27,7 @@ INCLINATION = 0; % Inclination of the satellite orbits, in degrees.
 
 % Set flag to look for coordinate files in a specific folder.
 COORD_FOLDER_FLAG = 1; % [true: 1 | false: 0]
-coordfolder = strcat('coordinates',filesep,'data4_CLUSTER350km52degViz10000');
+coordfolder = strcat('coordinates',filesep,'20201117ClusterReferenceIncl00');
 
 % In case COORD_FOLDER_FLAG is set to FALSE, define names of coordinate files:
 % Files with coordinates data for satellites.

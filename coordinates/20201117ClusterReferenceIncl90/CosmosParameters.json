@@ -1,0 +1,301 @@
+{
+  "SelectedFormationFlightMode": 1,
+  "SimMaxNumOrbits":30,
+  "SimAccelerationFactor": 100e3,
+  "VizScale": 5000,
+  "Modes": [
+
+    {
+      "ModeID": 1,
+      "ModeName": "ClusterReference",
+      "NumSatellites": 3,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude": 350e3,
+      "SizeOrbitSectionDeg": 0.2,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "Cluster",
+      "FFPSValues": [
+        {"ffp1": 0 ,"ffp2": 0    ,"ffp3": 0 ,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 50,"ffp2": -115,"ffp3": 50,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0 ,"ffp2": -230,"ffp3": 0 ,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+      ]
+    }
+,
+    {
+      "ModeID": 2,
+      "ModeName": "Cluster2",
+      "NumSatellites": 3,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude": 453e3,
+      "SizeOrbitSectionDeg": 1,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "Cluster2",
+      "FFPSValues": [
+        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 30,"ffp2": -115,"ffp3": 30,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": -230,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+      ]
+    }
+,
+    {
+      "ModeID": 3,
+      "ModeName": "Cluster4Testing",
+      "NumSatellites": 4,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude": 453e3,
+      "SizeOrbitSectionDeg": 0.5,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "Cluster4Testing",
+      "FFPSValues": [
+        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 30,"ffp2": -115,"ffp3": 30,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 30,"ffp2": -115,"ffp3": 30,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 30,"ffp2": -115,"ffp3": 30,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+      ]
+    }
+,
+    {
+      "ModeID": 4,
+      "ModeName": "SnTMission",
+      "NumSatellites": 2,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude": 453e3,
+      "SizeOrbitSectionDeg": 0.2,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "ffpsSnTMission",
+      "FFPSValues": [
+        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+      ]
+    }
+,
+    {
+      "ModeID": 5,
+      "ModeName": "SnTMission4Test",
+      "NumSatellites": 2,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude":400e3,
+      "SizeOrbitSectionDeg": 0.1,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-15, 0, 0, 0, 0, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "SnTMission4Test",
+      "FFPSValues": [
+        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": -10,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+      ]
+    }
+,
+    {
+      "ModeID": 6,
+      "ModeName": "JapanMission",
+      "NumSatellites": 6,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude": 350e3,
+      "SizeOrbitSectionDeg": 5,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
+        [9.998477, 9.998477, 0.087262, -0.000200, -0.000200, 0.005728, 0.000000, 0.000000, 0.000000],
+        [19.996954, 19.996954, 0.174524, -0.000400, -0.000400, 0.011456, 0.000000, 0.000000, 0.000000],
+        [29.995431, 29.995431, 0.261786, -0.000600, -0.000600, 0.017185, 0.000000, 0.000000, 0.000000],
+        [39.993908, 39.993908, 0.349048, -0.000800, -0.000800, 0.022913, 0.000000, 0.000000, 0.000000],
+        [49.992385, 49.992385, 0.436310, -0.001000, -0.001000, 0.028641, 0.000000, 0.000000, 0.000000]
+      ],
+      "FFPSFolder": "ProposalSmallSuperFormation",
+      "FFPSValues": [
+        {"ffp1": 0 ,"ffp2": 0,"ffp3": 0 ,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 10,"ffp2": 0,"ffp3": 10,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 20,"ffp2": 0,"ffp3": 20,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 30,"ffp2": 0,"ffp3": 30,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 40,"ffp2": 0,"ffp3": 40,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 50,"ffp2": 0,"ffp3": 50,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+      ]
+    }
+,
+    {
+      "ModeID": 7,
+      "ModeName": "SPlocationFinderTest",
+      "NumSatellites": 2,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude": 350e3,
+      "SizeOrbitSectionDeg": 0.2,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-2000, 0, 0, 0, 0, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "SPlocationFinderTest",
+      "FFPSValues": [
+        {"ffp1":0,"ffp2":0,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-2000,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0}
+      ]
+    }
+,
+    {
+      "ModeID": 8,
+      "ModeName": "SuperFormation",
+      "NumSatellites": 36,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude": 350e3,
+      "SizeOrbitSectionDeg": 0.2,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0,  0, 0, 0, 0, 0, 0],
+        [-100, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-200, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-300, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-400, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-500, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-600, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-700, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-800, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-900, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-1000, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-1100, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-1200, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-1300, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-1400, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-1500, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-1600, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-1700, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-1800, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-1900, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-2000, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-2100, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-2200, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-2300, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-2400, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-2500, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-2600, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-2700, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-2800, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-2900, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-3000, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-3100, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-3200, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-3300, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-3400, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-3500, 0, 0, 0, 0, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "SuperFormation",
+      "FFPSValues": [
+        {"ffp1":0,"ffp2":0,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-100,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-200,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-300,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-400,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-500,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-600,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-700,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-800,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-900,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-1000,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-1100,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-1200,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-1300,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-1400,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-1500,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-1600,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-1700,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-1800,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-1900,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-2000,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-2100,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-2200,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-2300,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-2400,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-2500,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-2600,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-2700,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-2800,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-2900,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-3000,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-3100,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-3200,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-3300,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-3400,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0},
+        {"ffp1":0,"ffp2":-3500,"ffp3":0,"ffp4":0,"ffp5":0,"ffp6":0,"ffp7":0,"ffp8":0}
+      ]
+    }
+,
+    {
+      "ModeID": 9,
+      "ModeName": "ProposalSmallSuperFormation",
+      "NumSatellites": 6,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude": 350e3,
+      "SizeOrbitSectionDeg": 5,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0,   0, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
+        [0, 10000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
+        [0, 20000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
+        [0, 30000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
+        [0, 40000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000],
+        [0, 50000, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000]
+      ],
+      "FFPSFolder": "ProposalSmallSuperFormation",
+      "FFPSValues": [
+        {"ffp1": 0,"ffp2": 0,"ffp3":   0 ,"ffp4": 0,"ffp5":  0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 0,"ffp3": 10000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 0,"ffp3": 20000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 0,"ffp3": 30000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 0,"ffp3": 40000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 0,"ffp3": 50000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+      ]
+    }
+
+
+  ],
+  "_Comment": "Field for comment of any kind. Leave it to use when needed."
+}
