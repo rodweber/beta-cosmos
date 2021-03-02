@@ -15,3 +15,5 @@ tempUML*
 *.zip
 
 5gcase/CosmosParameters.json
+latSP.mat
+lonSP.mat

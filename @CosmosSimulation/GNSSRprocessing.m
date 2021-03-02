@@ -15,7 +15,7 @@ function   GNSSRprocessing(this,ns,radiusOfEarth)
 %% begin input section----------------------------------------------------------
 %% what visualization and statiscal analysis shall be done? 1=yes, 0=no
 plotSPlocationIn3D=1; 
-plotSPlocationIn2D=1; 
+plotSPlocationIn2D=0; 
 plotStats=1;          
 
 %% do you want to use the built-in Kepler propagator for the GNSS satellites? 1=yes, 0=no.
@@ -110,6 +110,9 @@ for i=2:ns+1
     end
   end
 end
+
+save('latSP.mat','latSP');
+save('lonSP.mat','lonSP');
 fprintf('\ncomputing specular point location time: %s seconds.',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
 
 %% 3D plot: position of the CubeSat, the GNSS satellites and the specular point
