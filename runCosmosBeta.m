@@ -51,7 +51,8 @@ csim.plotting(csim.NumSatellites, orbit(1).MeanMotionRad);
 %% use a Kepler propagator to compute ECEF coordinates
 csim.ECEFprocessing(csim,csim.VizScale,csim.NumSatellites,orbit(1).Altitude,orbit(1).MeanEarthRadius)
 %% compute the location of the specular point for the GNSS-reflectometry method
-GNSSRprocessing=0; %% this switch shall go to the json inputfile
+%% this switch shall go to the json inputfile
+GNSSRprocessing=0; 
 if GNSSRprocessing
   csim.GNSSRprocessing(csim,csim.NumSatellites,orbit(1).MeanEarthRadius);
 end
