@@ -12,6 +12,9 @@ function   GNSSRprocessing(this,ns,radiusOfEarth)
 %% output variables
 % none
 
+
+%% all input paramater shall go to GNSSR json file
+
 %% begin input section----------------------------------------------------------
 %% what visualization and statiscal analysis shall be done? 1=yes, 0=no
 plotSPlocationIn3D=1; 
