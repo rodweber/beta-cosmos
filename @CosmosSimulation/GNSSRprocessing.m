@@ -39,6 +39,12 @@ sizeOfSpecularPoint=10; %% radius of specular point, [km]
 constellations=[1 2 3 4];  %% both Galileo, GPS, Glonass-M, Beidou-2 MEO
 %constellations=[1 2 3 4 5];  %% both Galileo, GPS, Glonass-M, Beidou-2 MEO, Beidou-2 non-MEO
 
+
+%% some settings:
+land = shaperead('landareas','UseGeoCoords',true);
+rivers = shaperead('worldrivers','UseGeoCoords',true);
+lakes = shaperead('worldlakes', 'UseGeoCoords', true);
+
 %% end input section------------------------------------------------------------
 
 
@@ -130,9 +136,7 @@ if plotSPlocationIn3D
   axis equal off
   geoshow(topo,topolegend,'DisplayType','texturemap')
   demcmap(topo)
-  land = shaperead('landareas','UseGeoCoords',true);
   plotm([land.Lat],[land.Lon],'Color','black')
-  rivers = shaperead('worldrivers','UseGeoCoords',true);
   plotm([rivers.Lat],[rivers.Lon],'Color','blue')
   %% display position of the CubeSats
   for i=2:ns+1
@@ -166,11 +170,8 @@ if plotSPlocationIn2D
   figure
   ax = worldmap('World');
   setm(ax, 'Origin', [0 0 0])
-  land = shaperead('landareas', 'UseGeoCoords', true);
   geoshow(ax, land, 'FaceColor', [0.5 0.7 0.5])
-  lakes = shaperead('worldlakes', 'UseGeoCoords', true);
   geoshow(lakes, 'FaceColor', 'blue')
-  rivers = shaperead('worldrivers', 'UseGeoCoords', true);
   geoshow(rivers, 'Color', 'blue')
   for i=2:ns+1
     %% plot subsatellite points

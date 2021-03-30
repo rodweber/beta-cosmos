@@ -22,7 +22,7 @@ RAAN=0; %%RAAN    = input(' Right Ascension of Ascendent Node    [  0,360[    RA
 %v0=225;   %%v0      = input(' True anomaly at the departure        [  0,360[    v0     [deg] = ');
 v0=0;   %%v0      = input(' True anomaly at the departure        [  0,360[    v0     [deg] = ');
 %% this is the timestep used in the following, also for the GNSSR processing.
-keplerStepSize=1; %% [s]
+keplerStepSize=0.5 %% [s]
 
 
 fprintf('\nECEF processing...');

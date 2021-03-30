@@ -1,0 +1,195 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (malloc) failed to allocate 56685 bytes for AllocateHeap
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (memory/allocation.inline.hpp:61), pid=15728, tid=0x0000000000003958
+#
+# JRE version:  (8.0_202-b08) (build )
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (25.202-b08 mixed mode windows-amd64 )
+# Failed to write core dump. Minidumps are not enabled by default on client versions of Windows
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread is native thread
+
+Stack: [0x000000e04dd00000,0x000000e051d00000]
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+
+
+---------------  P R O C E S S  ---------------
+
+VM state:not at safepoint (not fully initialized)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+
+Dynamic libraries:
+0x00007ff70ba60000 - 0x00007ff70ba92000 	C:\Program Files\MATLAB\R2020a\bin\win64\MATLAB.exe
+0x00007ffbad570000 - 0x00007ffbad765000 	C:\WINDOWS\SYSTEM32\ntdll.dll
+0x00007ffbacf50000 - 0x00007ffbad00d000 	C:\WINDOWS\System32\KERNEL32.DLL
+0x00007ffbaae30000 - 0x00007ffbab0f7000 	C:\WINDOWS\System32\KERNELBASE.dll
+0x00007ffba8370000 - 0x00007ffba8400000 	C:\WINDOWS\SYSTEM32\apphelp.dll
+0x00007ffbab370000 - 0x00007ffbab470000 	C:\WINDOWS\System32\ucrtbase.dll
+0x00007ffb87570000 - 0x00007ffb87771000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwi18n.dll
+0x00007ffbacd50000 - 0x00007ffbacdfa000 	C:\WINDOWS\System32\ADVAPI32.dll
+0x00007ffbacc30000 - 0x00007ffbaccce000 	C:\WINDOWS\System32\msvcrt.dll
+0x00007ffbaceb0000 - 0x00007ffbacf4b000 	C:\WINDOWS\System32\sechost.dll
+0x00007ffbac7f0000 - 0x00007ffbac914000 	C:\WINDOWS\System32\RPCRT4.dll
+0x00007ffbab5a0000 - 0x00007ffbab5c7000 	C:\WINDOWS\System32\bcrypt.dll
+0x00007ffb95900000 - 0x00007ffb9599b000 	C:\Program Files\MATLAB\R2020a\bin\win64\MSVCP140.dll
+0x00007ffb58880000 - 0x00007ffb58d28000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwservices.dll
+0x00007ffbab630000 - 0x00007ffbab7d0000 	C:\WINDOWS\System32\USER32.dll
+0x00007ffbab470000 - 0x00007ffbab492000 	C:\WINDOWS\System32\win32u.dll
+0x00007ffbac920000 - 0x00007ffbac94a000 	C:\WINDOWS\System32\GDI32.dll
+0x00007ffbab260000 - 0x00007ffbab369000 	C:\WINDOWS\System32\gdi32full.dll
+0x00007ffbaad90000 - 0x00007ffbaae2d000 	C:\WINDOWS\System32\msvcp_win.dll
+0x00007ffbab900000 - 0x00007ffbac041000 	C:\WINDOWS\System32\SHELL32.dll
+0x00007ffb617b0000 - 0x00007ffb61bbf000 	C:\Program Files\MATLAB\R2020a\bin\win64\mvm.dll
+0x00007ffbac780000 - 0x00007ffbac7eb000 	C:\WINDOWS\System32\WS2_32.dll
+0x00007ffba2980000 - 0x00007ffba2998000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwcpp11compat.dll
+0x00007ffb9ba30000 - 0x00007ffb9ba50000 	C:\Program Files\MATLAB\R2020a\bin\win64\mwboost_filesystem-vc141-mt-x64-1_70.dll
+0x00007ffb9b9e0000 - 0x00007ffb9b9fd000 	C:\Program Files\MATLAB\R2020a\bin\win64\mwboost_thread-vc141-mt-x64-1_70.dll
+0x00007ffba6990000 - 0x00007ffba69a6000 	C:\Program Files\MATLAB\R2020a\bin\win64\VCRUNTIME140.dll
+0x00007ffba6a10000 - 0x00007ffba6a19000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwresource_core.dll
+0x00007ffb9bb30000 - 0x00007ffb9bb42000 	C:\Program Files\MATLAB\R2020a\bin\win64\mwboost_date_time-vc141-mt-x64-1_70.dll
+0x00007ffb92990000 - 0x00007ffb929ad000 	C:\WINDOWS\SYSTEM32\MPR.dll
+0x00007ffb901c0000 - 0x00007ffb90248000 	C:\Program Files\MATLAB\R2020a\bin\win64\libexpat.dll
+0x00000000557e0000 - 0x0000000055a3d000 	C:\Program Files\MATLAB\R2020a\bin\win64\icuin64.dll
+0x0000000055640000 - 0x00000000557d1000 	C:\Program Files\MATLAB\R2020a\bin\win64\icuuc64.dll
+0x00007ffb9b8f0000 - 0x00007ffb9b902000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwcapabilities.dll
+0x00007ffb7fb40000 - 0x00007ffb7fc17000 	C:\Program Files\MATLAB\R2020a\bin\win64\libut.dll
+0x00007ffbab7d0000 - 0x00007ffbab8f9000 	C:\WINDOWS\System32\ole32.dll
+0x00007ffbac340000 - 0x00007ffbac695000 	C:\WINDOWS\System32\combase.dll
+0x00007ffbac9b0000 - 0x00007ffbaca7d000 	C:\WINDOWS\System32\OLEAUT32.dll
+0x00007ffb68370000 - 0x00007ffb68607000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwfl.dll
+0x00007ffb7ac40000 - 0x00007ffb7add0000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmx.dll
+0x00007ffb948d0000 - 0x00007ffb94931000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwlivecode.dll
+0x00007ffb8cd40000 - 0x00007ffb8cdb9000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwcppmicroservices.dll
+0x00007ffbaacb0000 - 0x00007ffbaad10000 	C:\WINDOWS\System32\WINTRUST.dll
+0x00007ffbab100000 - 0x00007ffbab25d000 	C:\WINDOWS\System32\CRYPT32.dll
+0x00007ffb8d810000 - 0x00007ffb8d862000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwsearch_path_utilities.dll
+0x00007ffb64440000 - 0x00007ffb645de000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwflstoragevfs.dll
+0x00007ffb89230000 - 0x00007ffb8929f000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwcwf_interface.dll
+0x00007ffb9b970000 - 0x00007ffb9b97e000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwmatlabstoragesystem.dll
+0x00007ffb67cb0000 - 0x00007ffb67dc3000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwflstorageprovider.dll
+0x00007ffb9b450000 - 0x00007ffb9b45f000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwflstorageutility.dll
+0x00007ffb73a90000 - 0x00007ffb73ded000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwms.dll
+0x00007ffb8d210000 - 0x00007ffb8d25b000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwrelease_info.dll
+0x00007ffb58030000 - 0x00007ffb58877000 	C:\Program Files\MATLAB\R2020a\bin\win64\mlutil.dll
+0x00007ffb57b00000 - 0x00007ffb5802d000 	C:\Program Files\MATLAB\R2020a\bin\win64\settingscore.dll
+0x00007ffb805d0000 - 0x00007ffb8065b000 	C:\Program Files\MATLAB\R2020a\bin\win64\opccore.dll
+0x00007ffb64100000 - 0x00007ffb642b6000 	C:\Program Files\MATLAB\R2020a\bin\win64\opcmodel.dll
+0x00007ffb958c0000 - 0x00007ffb958fb000 	C:\Program Files\MATLAB\R2020a\bin\win64\opczippackage.dll
+0x00007ffb98a10000 - 0x00007ffb98a4c000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwfoundation_usm.dll
+0x00007ffb92b10000 - 0x00007ffb92b4f000 	C:\Program Files\MATLAB\R2020a\bin\win64\string_matrix.dll
+0x00007ffb9b0c0000 - 0x00007ffb9b0d8000 	C:\Program Files\MATLAB\R2020a\bin\win64\mwboost_iostreams-vc141-mt-x64-1_70.dll
+0x00007ffb894f0000 - 0x00007ffb895a1000 	C:\Program Files\MATLAB\R2020a\bin\win64\mwboost_log-vc141-mt-x64-1_70.dll
+0x00007ffb75a00000 - 0x00007ffb75af8000 	C:\Program Files\MATLAB\R2020a\bin\win64\mwboost_regex-vc141-mt-x64-1_70.dll
+0x00007ffb974b0000 - 0x00007ffb974f0000 	C:\Program Files\MATLAB\R2020a\bin\win64\mwboost_serialization-vc141-mt-x64-1_70.dll
+0x00007ffb66910000 - 0x00007ffb66a34000 	C:\Program Files\MATLAB\R2020a\bin\win64\CppMicroServices3.dll
+0x00007ffbac950000 - 0x00007ffbac9a5000 	C:\WINDOWS\System32\SHLWAPI.dll
+0x00007ffb949b0000 - 0x00007ffb949f4000 	C:\Program Files\MATLAB\R2020a\bin\win64\tbb.dll
+0x00007ffb7fc20000 - 0x00007ffb7fdb6000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwmst.dll
+0x00007ffb9b220000 - 0x00007ffb9b247000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwthreadpool.dll
+0x00007ffb68a90000 - 0x00007ffb68c48000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwfoundation_matlabdata.dll
+0x00007ffb9b830000 - 0x00007ffb9b84c000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwstartupplugin.dll
+0x00007ffba2a30000 - 0x00007ffba2a3f000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmvmtransportapi.dll
+0x00007ffb71180000 - 0x00007ffb712e8000 	C:\Program Files\MATLAB\R2020a\bin\win64\matlab_toolbox_events.dll
+0x00007ffb66a40000 - 0x00007ffb66cd9000 	C:\Program Files\MATLAB\R2020a\bin\win64\execution_events.dll
+0x00007ffb7cd40000 - 0x00007ffb7ce35000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwstartup_plugin_initializer.dll
+0x00007ffb9ba20000 - 0x00007ffb9ba2e000 	C:\Program Files\MATLAB\R2020a\bin\win64\mwboost_chrono-vc141-mt-x64-1_70.dll
+0x00007ffb9b310000 - 0x00007ffb9b31e000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwflstrings.dll
+0x0000000055620000 - 0x0000000055631000 	C:\Program Files\MATLAB\R2020a\bin\win64\icuio64.dll
+0x00007ffb960e0000 - 0x00007ffb962c4000 	C:\WINDOWS\SYSTEM32\dbghelp.dll
+0x00007ffbaab10000 - 0x00007ffbaab5b000 	C:\WINDOWS\SYSTEM32\POWRPROF.dll
+0x00007ffb8cc30000 - 0x00007ffb8cc67000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwmfl_permute.dll
+0x00007ffb965e0000 - 0x00007ffb965f3000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwindexingapimethods.dll
+0x00007ffb8b080000 - 0x00007ffb8b0c4000 	C:\Program Files\MATLAB\R2020a\bin\win64\tbbmalloc.dll
+0x0000000055600000 - 0x000000005561a000 	C:\Program Files\MATLAB\R2020a\bin\win64\zlib1.dll
+0x00007ffb7faa0000 - 0x00007ffb7fb3a000 	C:\Program Files\MATLAB\R2020a\bin\win64\opcmwservices.dll
+0x00007ffb62360000 - 0x00007ffb6267a000 	C:\Program Files\MATLAB\R2020a\bin\win64\xerces-c_3_2.dll
+0x00007ffb95b90000 - 0x00007ffb95baa000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwsearch_path_interfaces.dll
+0x00007ffb7f8f0000 - 0x00007ffb7f996000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwstoragefilefolderobserver.dll
+0x00007ffb63e00000 - 0x00007ffb64071000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwflnetwork.dll
+0x00007ffb95b20000 - 0x00007ffb95b3e000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwflstorageevents.dll
+0x00007ffb9b0b0000 - 0x00007ffb9b0be000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwmatlabdata_boost_serialization.dll
+0x00007ffb7cb40000 - 0x00007ffb7cbc0000 	C:\Program Files\MATLAB\R2020a\bin\win64\xmlcore.dll
+0x00007ffb64350000 - 0x00007ffb6443e000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwfoundation_matlabdata_standalone.dll
+0x00007ffb86c70000 - 0x00007ffb86cc5000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwfoundation_json.dll
+0x00007ffb62770000 - 0x00007ffb62885000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwfoundation_matlabdata_json.dll
+0x00007ffb94aa0000 - 0x00007ffb94ac9000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwnativedialogs.dll
+0x00007ffb8af50000 - 0x00007ffb8af99000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwflcrypto.dll
+0x00007ffb94c60000 - 0x00007ffb94c7b000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwflcryptoutils.dll
+0x00007ffb615b0000 - 0x00007ffb617aa000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwflcryptocryptopp.dll
+0x00007ffb867b0000 - 0x00007ffb86800000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwflcertificates.dll
+0x00007ffb94b50000 - 0x00007ffb94b61000 	C:\Program Files\MATLAB\R2020a\bin\win64\libminizip.dll
+0x00007ffb7ca50000 - 0x00007ffb7cad6000 	C:\Program Files\MATLAB\R2020a\bin\win64\mcos.dll
+0x00007ffba2bd0000 - 0x00007ffba2bdc000 	C:\WINDOWS\SYSTEM32\Secur32.dll
+0x00007ffb8d3f0000 - 0x00007ffb8d430000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwmsr.dll
+0x00007ffbaa3d0000 - 0x00007ffbaa43a000 	C:\WINDOWS\SYSTEM32\MSWSOCK.dll
+0x00007ffb94a20000 - 0x00007ffb94a36000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwdtoa.dll
+0x00007ffb9b040000 - 0x00007ffb9b04e000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwfoundation_matlabjson_frontend.dll
+0x00007ffb60500000 - 0x00007ffb607bf000 	C:\Program Files\MATLAB\R2020a\bin\win64\libcrypto-1_1-x64.dll
+0x00007ffb75810000 - 0x00007ffb758bb000 	C:\Program Files\MATLAB\R2020a\bin\win64\libssl-1_1-x64.dll
+0x00007ffbaab60000 - 0x00007ffbaab9c000 	C:\WINDOWS\SYSTEM32\SSPICLI.DLL
+0x00000273f29b0000 - 0x00000273f43f4000 	C:\Program Files\MATLAB\R2020a\bin\win64\icudt64.dll
+0x00007ffbaaaf0000 - 0x00007ffbaab02000 	C:\WINDOWS\SYSTEM32\UMPDC.dll
+0x00007ffbac750000 - 0x00007ffbac780000 	C:\WINDOWS\System32\IMM32.DLL
+0x00007ffbaa7d0000 - 0x00007ffbaa7e2000 	C:\WINDOWS\SYSTEM32\MSASN1.dll
+0x00007ffbaa5c0000 - 0x00007ffbaa5cc000 	C:\WINDOWS\SYSTEM32\CRYPTBASE.DLL
+0x00007ffbaad10000 - 0x00007ffbaad8f000 	C:\WINDOWS\System32\bcryptPrimitives.dll
+0x00007ffb60070000 - 0x00007ffb60176000 	C:\Program Files\MATLAB\R2020a\bin\win64\cppmicroservices_compendium\foundation\cppmicroservices\declarativeservicesimpl\mwServiceComponentImpl.dll
+0x00007ffb944e0000 - 0x00007ffb944fc000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwServiceComponent.dll
+0x00007ffb9ac50000 - 0x00007ffb9ac57000 	C:\Program Files\MATLAB\R2020a\bin\win64\libmwLogService.dll
+0x00007ffb92aa0000 - 0x00007ffb92abb000 	C:\Program Files\MATLAB\R2020a\bin\win64\cppmicroservices_compendium\foundation\cppmicroservices\logserviceimpl\mwLogServiceImpl.dll
+0x00007ffb901a0000 - 0x00007ffb901bc000 	C:\Program Files\MATLAB\R2020a\bin\win64\matlab_startup_plugins\connector\openssl_initializer\libmwconnectoropensslinitializer.dll
+0x00007ffb60410000 - 0x00007ffb604fd000 	C:\Program Files\MATLAB\R2020a\bin\win64\PocoNet64.dll
+0x00007ffb8b9e0000 - 0x00007ffb8ba1a000 	C:\Program Files\MATLAB\R2020a\bin\win64\PocoNetSSL64.dll
+0x00007ffbaa0c0000 - 0x00007ffbaa0fb000 	C:\WINDOWS\SYSTEM32\IPHLPAPI.DLL
+0x00007ffb5ff00000 - 0x00007ffb6006a000 	C:\Program Files\MATLAB\R2020a\bin\win64\PocoFoundation64.dll
+0x00007ffb8fdf0000 - 0x00007ffb8fe20000 	C:\Program Files\MATLAB\R2020a\bin\win64\PocoCrypto64.dll
+0x00007ffb813a0000 - 0x00007ffb81405000 	C:\Program Files\MATLAB\R2020a\bin\win64\PocoUtil64.dll
+0x00007ffb75620000 - 0x00007ffb756ae000 	C:\Program Files\MATLAB\R2020a\bin\win64\PocoXML64.dll
+0x00007ffb891f0000 - 0x00007ffb8922d000 	C:\Program Files\MATLAB\R2020a\bin\win64\PocoJSON64.dll
+0x00007ffbaa5a0000 - 0x00007ffbaa5b8000 	C:\WINDOWS\SYSTEM32\CRYPTSP.dll
+
+VM Arguments:
+jvm_args: -Xms64m -XX:NewRatio=3 -Xmx768m -XX:MaxDirectMemorySize=2147400000 -Dsun.java2d.noddraw=true -Dsun.awt.nopixfmt=true -Xshare:off -Djava.ext.dirs=C:\Program Files\MATLAB\R2020a\sys\java\jre\win64\jre\lib\ext -Djogamp.gluegen.UseTempJarCache=false -Djogl.disable.opengles=1 -Djogl.windows.cpu_affinity_mode=0 -Xrs 
+java_command: <unknown>
+java_class_path (initial): <not set>
+Launcher Type: generic
+
+Environment Variables:
+PATH=C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\Webex\Plugins;C:\Program Files\MATLAB\R2020a\runtime\win64;C:\Program Files\MATLAB\R2020a\bin;C:\Program Files (x86)\STMicroelectronics\STM32 ST-LINK Utility\ST-LINK Utility;C:\Program Files\Microsoft SQL Server\120\Tools\Binn\;C:\Users\jan.thoemel\AppData\Local\Microsoft\WindowsApps;C:\Users\jan.thoemel\AppData\Local\GitHubDesktop\bin
+USERNAME=jan.thoemel
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 158 Stepping 10, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows 10.0 , 64 bit Build 19041 (10.0.19041.292)
+
+CPU:total 6 (initial active 0) 
+
+Memory: 4k page, physical 8213928k(166744k free), swap 21031424k(59544k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (25.202-b08) for windows-amd64 JRE (1.8.0_202-b08), built on Dec 15 2018 19:54:30 by "java_re" with MS VC++ 10.0 (VS2010)
+
+time: Thu Mar 25 16:15:42 2021
+timezone: Coordinated Universal Time
+elapsed time: 0 seconds (0d 0h 0m 0s)
+

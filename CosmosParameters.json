@@ -1,6 +1,11 @@
 {
+<<<<<<< Updated upstream
   "SelectedFormationFlightMode": 5,
   "SimMaxNumOrbits":120,
+=======
+  "SelectedFormationFlightMode": 9,
+  "SimMaxNumOrbits":8,
+>>>>>>> Stashed changes
   "SimAccelerationFactor": 100e3,
   "VizScale": 1,
   "Modes": [
