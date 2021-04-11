@@ -1,6 +1,6 @@
 {
-  "SelectedFormationFlightMode": 5,
-  "SimMaxNumOrbits": 112,
+  "SelectedFormationFlightMode": 6,
+  "SimMaxNumOrbits": 16,
   "SimAccelerationFactor": 100e3,
   "Modes": [
 
@@ -124,6 +124,28 @@
 ,
     {
       "ModeID": 6,
+      "ModeName": "SnTMission4Test",
+      "NumSatellites": 2,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude":450e3,
+      "SizeOrbitSectionDeg": 1,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-15, 0, 0, 0, 0, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "SnTMission4Test",
+      "FFPSValues": [
+        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 5,"ffp2": -10,"ffp3": 0,"ffp4": 10,"ffp5": 5,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+      ]
+    }
+,
+    {
+      "ModeID": 7,
       "ModeName": "JapanMission",
       "NumSatellites": 6,
       "AttitudeResolutionDeg": 45,
@@ -153,7 +175,7 @@
     }
 ,
     {
-      "ModeID": 7,
+      "ModeID": 8,
       "ModeName": "SPlocationFinderTest",
       "NumSatellites": 2,
       "AttitudeResolutionDeg": 45,
@@ -175,7 +197,7 @@
     }
 ,
     {
-      "ModeID": 8,
+      "ModeID": 9,
       "ModeName": "MegaFormation",
       "NumSatellites": 36,
       "AttitudeResolutionDeg": 45,
@@ -265,7 +287,7 @@
     }
 ,
     {
-      "ModeID": 9,
+      "ModeID": 10,
       "ModeName": "SmallSuperFormation",
       "NumSatellites": 6,
       "AttitudeResolutionDeg": 45,
