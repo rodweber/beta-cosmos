@@ -76,8 +76,8 @@ XYZ_MODE = vis.ModeXYZ;
 
 
 % Set parameters to reduce timesteps of original simulation.
-%COARSE_ENABLE = vis.TimeCompressionEnable;
-%COARSE_FACTOR = vis.TimeCompressionFactor;
+COARSE_ENABLE = vis.TimeCompressionEnable;
+COARSE_FACTOR = vis.TimeCompressionFactor;
 
 
 
@@ -153,7 +153,7 @@ for n = 1:numsats
   roll  = coord(:,5); % [degrees]
   inclinationDeg = coord(1,8); % [degrees]
   
-  % Interpolation for a coarser data sample.
+  %% Interpolation for a coarser data sample.
   
   
   
@@ -165,7 +165,7 @@ for n = 1:numsats
   
   
   
-  % Smoothing of the satellite position data.
+  %% Smoothing of the satellite position data.
   
   
   
@@ -808,19 +808,19 @@ end
 b3DWorld = 'VR Sink1/';
 
 % Open x3D file for writing and discard all contents ('w' option).
-fid_main = fopen([pathVisualization,filesep,'simulation',filesep,...
+file3DWorld = fopen([pathVisualization,filesep,'simulation',filesep,...
   'cosmosSimulation.x3d'],'w');
 
 % Write initial structure before satellites section.
 % Open file with initial structure.
-fid_struct1 = fopen([pathVisualization,filesep,'simulation',filesep,...
+file3DWorld_part1 = fopen([pathVisualization,filesep,'simulation',filesep,...
   'cosmosSimulation_struct1.x3d'],'r');
-while ~feof(fid_struct1)
-  sline = fgetl(fid_struct1);
-  fprintf(fid_main,'%s\n',sline);
+while ~feof(file3DWorld_part1)
+  sline = fgetl(file3DWorld_part1);
+  fprintf(file3DWorld,'%s\n',sline);
 end
 % Close file.
-fclose(fid_struct1);
+fclose(file3DWorld_part1);
 
 % Write N satellite structures.
 for n=1:(numsats-1)
@@ -881,7 +881,7 @@ for n=1:(numsats-1)
   };
   
   % Write structure to X3D file.
-  fprintf(fid_main,'%s\n',structSat{:});
+  fprintf(file3DWorld,'%s\n',structSat{:});
 end
 
 % Define final structure after satellites section.
@@ -892,10 +892,10 @@ structFinal = {
 };
 
 % Write structure to X3D file.
-fprintf(fid_main,'%s\n',structFinal{:});
+fprintf(file3DWorld,'%s\n',structFinal{:});
 
 % Close x3D file.
-fclose(fid_main);
+fclose(file3DWorld);
 
 % Help!
 % VR block input ports - To see structure of the input ports:
