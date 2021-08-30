@@ -1,0 +1,181 @@
+ @startuml
+ skinparam titleBorderRoundCorner 1
+ skinparam titleBorderThickness 2
+ skinparam titleBorderColor White 'DarkRed
+ skinparam titleBackgroundColor White '#FEFECE
+
+ title
+   <size:5> </size>
+   == <b>UML Class Diagram for Cosmos Software</b>
+   <size:10>Last updated on 30-Aug-2021 at 13:31:36</size>
+   <size:5> </size>
+ end title
+
+         class CosmosSimulation << (H,#E6FFE6)  >>  {
+             {field} + AccelFactor 
+             {field} + AllParams 
+             {field} + CommModules 
+             {field} + FlightControlModules 
+             {field} + GPSModules 
+             {field} + InitConditions 
+             {field} + MaxNumOrbits 
+             {field} + ModeName 
+             {field} + NumOrbitSections 
+             {field} + NumSatellites 
+             {field} + Orbits 
+             {field} + OrbitSectionInitial 
+             {field} + OrbitSectionNow 
+             {field} + OrbitSections 
+             {field} + OrbitSectionSize 
+             {field} + Satellites 
+             {field} + SatPositions 
+             {field} + SatPositionsLengths 
+             {field} + SolarFactor 
+             {field} + TelemetryPath 
+             {field} + WindFactor 
+            ____
+             + CosmosSimulation() 
+             + getPosECEF() 
+             + GNSSRprocessing() 
+             + ECEFprocessing() 
+             + plotting() 
+             + setIDX() 
+             + incrementIDX() 
+             + startSimulation() 
+             + updateIDX() 
+             + createListCustomClasses() 
+             + keplerPropagation() 
+         }
+         class Satellite << (H,#E6FFE6)  >>  {
+             {field} + Alive 
+             {field} + CommModule 
+             {field} + controlVector 
+             {field} + controlVectorTM 
+             {field} + FlightControl 
+             {field} + forceVector 
+             {field} + forceVectorTM 
+             {field} + GPSModule 
+             {field} + Name 
+             {field} + Orbit 
+             {field} + SatPositionsTM 
+             {field} + SatPositionsTMLengths 
+             {field} + SatStatesTM 
+             {field} + SatStatesTMLengths 
+             {field} + TimeVectorTM 
+             {field} + TimeVectorTMLengths 
+            ____
+             + Satellite() 
+             + writeAndResetMissionTM() 
+             + deleteTelemetryFiles() 
+             + updSatStatesIni() 
+             + updSatStatesTM() 
+             + updTimeVectorTM() 
+             + updSatPositionsTM() 
+             + updForceVectorTM() 
+             + updControlVectorTM() 
+             + turnOff() 
+             + fly() 
+             + initialize() 
+         }
+         class FlightControl << (H,#E6FFE6)  >>  {
+             {field} + DeltaAngle 
+             {field} + FFPS 
+             {field} + FFPSFilePath 
+             {field} + FormationMode 
+             {field} + initialSolarPressure 
+             {field} + NumSatellites 
+             {field} + Panels 
+             {field} + SatelliteMass 
+             {field} + SatID 
+             {field} + SolarPressure 
+             {field} + SolarPressureVector 
+             {field} + SSCoeff 
+             {field} + State 
+             {field} + StateDesired 
+             {field} + StateErrors 
+             {field} + StateErrorsAvg 
+             {field} + StateOld 
+             {field} + SurfacePanel 
+             {field} + SurfaceRef 
+             {field} + TelemetryPath 
+             {field} + WindPressure 
+             {field} + WindPressureVector 
+             {field} - pitchAngles 
+             {field} - rollAngles 
+             {field} - yawAngles 
+            ____
+             + FlightControl() 
+             + getFormationMode() 
+             + setFormationMode() 
+             + updateSatelliteID() 
+             + shiftState() 
+             + updateStateDesired() 
+             + getStateError() 
+             + updateStateErrors() 
+             + getStateErrorAverage() 
+             + updateStateErrorsAvg() 
+             + solarDragLift() 
+             + aeroDragLiftSentman() 
+             + findBestAttitude() 
+             + riccatiequation() 
+             + rodriguesRotation() 
+             + getSolarPressureVector() 
+             + getWindPressureVector() 
+             + updState_OLD2() 
+         }
+         class Orbit << (H,#E6FFE6)  >>  {
+             {field} + Altitude 
+             {field} + Inclination 
+             {field} + MeanAnomalyFromAN 
+             {field} + MeanMotionDeg 
+             {field} + MeanMotionRad 
+             {field} + R0 
+             {field} + Rho 
+             {field} + SemiMajorAxis 
+             {field} + TempAtmos 
+             {field} + V 
+             {field} - AvailableGPS 
+             {field} - AvailableTLE 
+             {field} - F 
+             {field} - J2 
+             {field} - MeanEarthRadius 
+             {field} - Mu 
+             {field} - OrbitCounter 
+             {field} - RhoArray 
+             {field} - TimeOrbitDuration 
+             {field} - TimeOrbitStart 
+            ____
+             + Orbit() 
+             + updateOrbitDuration() 
+             + updateOrbitalParams() 
+         }
+         class Navigation << (H,#E6FFE6)  >>  {
+             {field} + MeanAnomalyFromAN 
+             {field} + OrbitCounter 
+            ____
+             + Navigation() 
+             + getOrbitCounter() 
+             + getMeanAnomalyFromAN() 
+             + incrementOrbitCounter() 
+             + incrementMeanAnomalyFromAN() 
+         }
+         class Communication << (H,#E6FFE6)  >>  {
+             {field} + AutoResponse 
+             {field} + CommChannel 
+             {field} + NumSats 
+             {field} + SatID 
+             {field} + SatName 
+            ____
+             + Communication() 
+             + broadcastReceive() 
+             + broadcastSend() 
+             + groundSend() 
+         }
+     CosmosSimulation "1" --> "1..*" Satellite
+     Satellite "1" *-- "1" FlightControl
+     Satellite "1" *-- "1" Orbit
+     Satellite "1" *-- "1" Navigation
+     Satellite "1" *-- "1" Communication
+ @enduml
+
+' 30-Aug-2021 13:31:35
