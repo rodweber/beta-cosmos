@@ -39,7 +39,15 @@ end
 
 
 %% to-be-double-checked theory: if R is large then the control error is secondary to the minimization of the control action
-R=diag([1e12 1e12 1e12]);
+%J=int(eQe+uRu)
+%R=diag([1e12 1e12 1e12]);
+%R=diag([1e13 1e13 1e13]);
+%R=diag([1e14 1e14 1e14]);
+R=diag([1e15 1e15 1e15]);
+%R=diag([1e16 1e16 1e16]);
+%R=diag([1e17 1e17 1e17]);
+%R=diag([1e18 1e18 1e18]);
+%R=diag([1e19 1e19 1e19]);
 [P, IR, A, B] = this.FlightControl.riccatiequation(this.Orbit.MeanMotionRad, this.FlightControl.SSCoeff,R);
 
 % determine time elapsed since last ascending equator crossing
@@ -107,6 +115,7 @@ for i=1:this.FlightControl.NumSatellites %% transform error for each satellite
 end
 
 if  not(plannedExperimentTime)
+%if  0
   %% find force vector for this satellite only
   if norm(this.controlVector(this.FlightControl.SatID,:))==0
     this.forceVector(this.FlightControl.SatID,:) = [0 0 0]'; rollAngleOpt=0; pitchAngleOpt=0; yawAngleOpt=0;
@@ -121,6 +130,7 @@ if  not(plannedExperimentTime)
   end
 else %% do this if experiment time
   this.forceVector(this.FlightControl.SatID,:) = [0 0 0]'; rollAngleOpt=0; pitchAngleOpt=0; yawAngleOpt=0; %% this is not correct because solar radiation causes a force during experiment time
+  %forceVector=squeeze(totalForceVector(:,goodThetai(optIndex),goodThetaj(optIndex),goodThetak(optIndex)));
   %%check: are satellites within their mutual cones at all angles=0?
   %% if not: 1 abort experiment 2 align satellites(what is the condition?)
   %% option 1
@@ -129,6 +139,8 @@ else %% do this if experiment time
   %% option 2: to be implemented
 end %% if noExperimentTime
 
+
+%this.forceVector(this.FlightControl.SatID,:)=[0 0 0]';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% vehicle translational dynamics, this part will not be used in flight software for this satellite
 this.FlightControl.State(1:6) = (A * this.FlightControl.StateOld(1:6) + B * ...

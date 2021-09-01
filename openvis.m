@@ -27,7 +27,7 @@ INCLINATION = 0; % Inclination of the satellite orbits, in degrees.
 
 % Set flag to look for coordinate files in a specific folder.
 COORD_FOLDER_FLAG = 1; % [true: 1 | false: 0]
-coordfolder = strcat('coordtracked',filesep,'20210405TestTwoSats');
+coordfolder = strcat('LLR-RPY',filesep,'2021-09-01-1600_case10R15sp35_rpyEQ0');
 
 % In case COORD_FOLDER_FLAG is set to FALSE, define names of coordinate files:
 % Files with coordinates data for satellites.

@@ -27,11 +27,11 @@ D=sqrt(3*SSC^2-2); %% if SSC==1 then D=1
 % based on the ids, set different desired states for each satellite?
 
 
-%ffp1 for x and z sin/cos
+%ffp1 for x cos and z sin
 %ffp2 x-direction constant [m]
-%ffp3 for y  sin/cos [m]
-%ffp4 for y  sin/cos [m]
-%ffp5 for x and z  sin/cos [m]
+%ffp3 for y cos [m]
+%ffp4 for y sin [m]
+%ffp5 for x sin and z cos [m]
 %ffp6 for x linear
 %ffp7 mean anomaly offset x,z [which dimension?]
 %ffp8 mean anomaly offset y   [which dimension?]
@@ -43,6 +43,8 @@ sstDesired(3,:)= this.FFPS.ffp6                                       + this.FFP
 sstDesired(4,:)=                  B*meanMotionRad*this.FFPS.ffp6      - this.FFPS.ffp1* sin( sqrt(2*SSC/A)*meanMotionRad* time + this.FFPS.ffp7/180*pi ) *sqrt(2*SSC/A)*meanMotionRad  - this.FFPS.ffp5 *sqrt( 2*SSC*A)*  cos( sqrt(2*SSC/A)*meanMotionRad* time + this.FFPS.ffp7/180*pi ) *sqrt(2*SSC/A)*meanMotionRad;
 sstDesired(5,:)=                                                      - this.FFPS.ffp3* sin( D*meanMotionRad*             time + this.FFPS.ffp8/180*pi ) *D*meanMotionRad              + this.FFPS.ffp4 /D/meanMotionRad* cos( D*meanMotionRad*             time + this.FFPS.ffp8/180*pi ) *D*meanMotionRad;
 sstDesired(6,:)=                                                      - this.FFPS.ffp5* sin( sqrt(2*SSC/A)*meanMotionRad* time + this.FFPS.ffp7/180*pi ) *sqrt(2*SSC/A)*meanMotionRad  + this.FFPS.ffp1 /sqrt(2*SSC*A)*   cos( sqrt(2*SSC/A)*meanMotionRad* time + this.FFPS.ffp7/180*pi ) *sqrt(2*SSC/A)*meanMotionRad;
+
+%sstDesired
 
 %%^^^^^^ Re-implement formation mode selection...
 % Implement based on switches

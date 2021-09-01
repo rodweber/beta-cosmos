@@ -83,11 +83,19 @@ end
 			this.pitchAngles  = 0:deltaAngle:180; % Pitch.
 			this.yawAngles = 0:deltaAngle:360; % Yaw.
 			
+            %% GoldCrest type
 			%this.SatelliteMass = 1; % Kilogram(s).
-			this.SatelliteMass = 2; % Kilogram(s).
 			%this.Panels = [0 0 2];
-			this.Panels = [0 0 6];
-			this.SurfacePanel = 0.01; % Squared meters.
+
+            %% SnT 5G mission type
+            this.SatelliteMass = 2; % Kilogram(s).
+			this.Panels = [0 0 3.5];
+
+            %% Opssat type
+            %this.SatelliteMass = 5; % Kilogram(s).
+            %this.Panels = [0 0 14];
+
+            this.SurfacePanel = 0.01; % Squared meters.
 			this.SurfaceRef = this.SurfacePanel * this.Panels(3);
 						
 		end

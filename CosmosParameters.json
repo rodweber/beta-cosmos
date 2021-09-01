@@ -1,5 +1,5 @@
 {
-  "SelectedFormationFlightMode": 6,
+  "SelectedFormationFlightMode": 10,
   "SimMaxNumOrbits": 16,
   "SimAccelerationFactor": 100e3,
   "Modes": [
@@ -9,7 +9,7 @@
       "ModeName": "ClusterReference",
       "NumSatellites": 3,
       "AttitudeResolutionDeg": 45,
-      "InitOrbitAltitude": 350e3,
+      "InitOrbitAltitude": 450e3,
       "SizeOrbitSectionDeg": 0.2,
       "InitOrbitSectionID": 1,
       "AutoResponse": true,
@@ -102,7 +102,7 @@
 ,
     {
       "ModeID": 5,
-      "ModeName": "SnTMission4Test",
+      "ModeName": "SnTMissionTrailingDeployment",
       "NumSatellites": 2,
       "AttitudeResolutionDeg": 45,
       "InitOrbitAltitude":450e3,
@@ -113,18 +113,18 @@
       "AvailableTLE": false,
       "InitialConditions": [
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [-15, 0, 0, 0, 0, 0, 0, 0, 0]
+        [-10, 0, 0, 0, 0, 0, 0, 0, 0]
       ],
-      "FFPSFolder": "SnTMission4Test",
+      "FFPSFolder": "SnTMissionTrailingDeployment",
       "FFPSValues": [
         {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
-        {"ffp1": 0,"ffp2": -10,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+        {"ffp1": 0,"ffp2": -1000,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
       ]
     }
 ,
     {
       "ModeID": 6,
-      "ModeName": "SnTMission4Test",
+      "ModeName": "SnTMissionTrailingMaintenance",
       "NumSatellites": 2,
       "AttitudeResolutionDeg": 45,
       "InitOrbitAltitude":450e3,
@@ -135,17 +135,105 @@
       "AvailableTLE": false,
       "InitialConditions": [
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [-15, 0, 0, 0, 0, 0, 0, 0, 0]
+        [-10, 0, 0, 0, 0, 0, 0, 0, 0]
       ],
-      "FFPSFolder": "SnTMission4Test",
+      "FFPSFolder": "SnTMissionTrailingMaintenance",
       "FFPSValues": [
         {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
-        {"ffp1": 5,"ffp2": -10,"ffp3": 0,"ffp4": 10,"ffp5": 5,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+        {"ffp1": 0,"ffp2": -15,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
       ]
     }
 ,
     {
       "ModeID": 7,
+      "ModeName": "SnTMissionSideBySideCrossingDeployment",
+      "NumSatellites": 2,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude":450e3,
+      "SizeOrbitSectionDeg": 0.1,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-10, 0, 0, 0, 0, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "SnTMissionSideBySideCrossingDeployment",
+      "FFPSValues": [
+        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": -10,"ffp3": 1000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+      ]
+    }
+,
+    {
+      "ModeID": 8,
+      "ModeName": "SnTMissionSideBySideCrossingMaintenance",
+      "NumSatellites": 2,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude":450e3,
+      "SizeOrbitSectionDeg": 0.1,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-10, 1000, 0, 0, -0.002, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "SnTMissionSideBySideCrossingMaintenance",
+      "FFPSValues": [
+        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": -10,"ffp3": 1000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+      ]
+    }
+,
+    {
+      "ModeID": 9,
+      "ModeName": "SnTMissionSideBySideCirclingDeployment",
+      "NumSatellites": 2,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude":450e3,
+      "SizeOrbitSectionDeg": 0.1,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-10, 1000, 0, 0, -0.02, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "SnTMissionSideBySideCirclingDeployment",
+      "FFPSValues": [
+        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": -10,"ffp3": 1000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+      ]
+    }
+,
+    {
+      "ModeID": 10,
+      "ModeName": "SnTMissionSideBySideCirclingMaintenance",
+      "NumSatellites": 2,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude":450e3,
+      "SizeOrbitSectionDeg": 0.1,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-110, 1000, -0.0873, 0.0002, -0.002, -0.056, 0, 0, 0]
+      ],
+      "FFPSFolder": "SnTMissionSideBySideCirclingMaintenance",
+      "FFPSValues": [
+        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": -100,"ffp2": -10,"ffp3": 1000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+      ]
+    }
+,
+    {
+      "ModeID": 11,
       "ModeName": "JapanMission",
       "NumSatellites": 6,
       "AttitudeResolutionDeg": 45,
@@ -175,7 +263,7 @@
     }
 ,
     {
-      "ModeID": 8,
+      "ModeID": 12,
       "ModeName": "SPlocationFinderTest",
       "NumSatellites": 2,
       "AttitudeResolutionDeg": 45,
@@ -197,7 +285,7 @@
     }
 ,
     {
-      "ModeID": 9,
+      "ModeID": 13,
       "ModeName": "MegaFormation",
       "NumSatellites": 36,
       "AttitudeResolutionDeg": 45,
@@ -287,7 +375,7 @@
     }
 ,
     {
-      "ModeID": 10,
+      "ModeID": 14,
       "ModeName": "SmallSuperFormation",
       "NumSatellites": 6,
       "AttitudeResolutionDeg": 45,
@@ -313,6 +401,28 @@
         {"ffp1": 0,"ffp2": 0,"ffp3": 300000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7":0,"ffp8": 0},
         {"ffp1": 0,"ffp2": 0,"ffp3": 400000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7":0,"ffp8": 0},
         {"ffp1": 0,"ffp2": 0,"ffp3": 500000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7":0,"ffp8": 0}
+      ]
+    }
+,
+    {
+      "ModeID": 15,
+      "ModeName": "SailorTrailingDeployment",
+      "NumSatellites": 2,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude":520e3,
+      "SizeOrbitSectionDeg": 1,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-10, 0, 0, 0, 0, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "SailorTrailingDeployment",
+      "FFPSValues": [
+        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": -1000,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
       ]
     }
 

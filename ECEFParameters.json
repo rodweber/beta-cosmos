@@ -1,9 +1,9 @@
 {
-  "inclination": 0,
+  "inclination": 97,
   "RAAN": 0,
   "v0": 0,
   "keplerStepSize": 1,
-  "vizScale": 10000,
+  "vizScale": 10,
   "plotLatLonIn2D": 1,
   "writeLLRRPYData": 1
 }
