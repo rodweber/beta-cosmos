@@ -115,7 +115,6 @@ for i=1:this.FlightControl.NumSatellites %% transform error for each satellite
 end
 
 if  not(plannedExperimentTime)
-%if  0
   %% find force vector for this satellite only
   if norm(this.controlVector(this.FlightControl.SatID,:))==0
     this.forceVector(this.FlightControl.SatID,:) = [0 0 0]'; rollAngleOpt=0; pitchAngleOpt=0; yawAngleOpt=0;
@@ -129,7 +128,33 @@ if  not(plannedExperimentTime)
     this.forceVector(this.FlightControl.SatID,:)=[0 0 0]'; rollAngleOpt=0; pitchAngleOpt=0; yawAngleOpt=0;
   end
 else %% do this if experiment time
-  this.forceVector(this.FlightControl.SatID,:) = [0 0 0]'; rollAngleOpt=0; pitchAngleOpt=0; yawAngleOpt=0; %% this is not correct because solar radiation causes a force during experiment time
+  if plannedExperimentTime
+    %this.Orbit.R0
+    %this.Orbit.Altitude
+    alpha=acosd((this.Orbit.R0- this.Orbit.Altitude)/this.Orbit.R0);
+    beta=asind((this.Orbit.R0- this.Orbit.Altitude)/this.Orbit.R0);
+    
+    orbitalPeriod=360/this.Orbit.MeanMotionDeg;
+    omegaRS=(90-beta)/orbitalPeriod/alpha*360;
+    
+    %sectionTime=currentOrbitSection/this.Orbit.MeanMotionDeg;
+    %orsst=omegaRS*plannedExperimentTime
+    %plannedExperimentTime
+    
+    if labindex==1
+      rollAngleOpt=90;
+      %pitchAngleOpt=wrapTo180(beta+omegaRS*sectionTime);
+      pitchAngleOpt=beta+omegaRS*plannedExperimentTime;
+    else
+      rollAngleOpt=270;
+      %pitchAngleOpt=wrapTo180(-(beta+omegaRS*sectionTime));
+      pitchAngleOpt=-(beta+omegaRS*plannedExperimentTime);
+    end
+    
+    yawAngleOpt=0;
+  end
+  
+  this.forceVector(this.FlightControl.SatID,:) = [0 0 0]'; %% this is not correct
   %forceVector=squeeze(totalForceVector(:,goodThetai(optIndex),goodThetaj(optIndex),goodThetak(optIndex)));
   %%check: are satellites within their mutual cones at all angles=0?
   %% if not: 1 abort experiment 2 align satellites(what is the condition?)
@@ -139,8 +164,6 @@ else %% do this if experiment time
   %% option 2: to be implemented
 end %% if noExperimentTime
 
-
-%this.forceVector(this.FlightControl.SatID,:)=[0 0 0]';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% vehicle translational dynamics, this part will not be used in flight software for this satellite
 this.FlightControl.State(1:6) = (A * this.FlightControl.StateOld(1:6) + B * ...

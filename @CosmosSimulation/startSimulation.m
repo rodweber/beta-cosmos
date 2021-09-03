@@ -5,6 +5,11 @@ function startSimulation(this)
 % Details here.
 % ______________________________________________________________________________
 
+%plannedExperimentTimes=readmatrix('2times20minperdayfor7days.csv');
+%plannedExperimentTimes=readmatrix('2times40minperdayfor7days.csv');
+%plannedExperimentTimes=readmatrix('2times240minperdayfor7days.csv');
+plannedExperimentTimes=readmatrix('everyday6times30minperdayfor7daysTBC.csv');
+
 % Create data queue for parallel pool.
 dq = parallel.pool.DataQueue;
 
@@ -138,15 +143,19 @@ spmd(this.NumSatellites)
 %be more clear and avoid bugs/errors later.
 
       currentOrbitSection = this.OrbitSections(this.OrbitSectionNow);
-
       
       % run the formation flight algorithm
       %%% THIS SHOULD GO TO SATELLITE OR SATELLITE.FLIGHTCONTROL
 
-      if 0
-        plannedExperimentTimes=readmatrix('everyday6times30minperdayfor7daysTBC.csv');
-      else
-        plannedExperimentTime=0;
+      plannedExperimentTime=0;
+      
+      if 1
+        for i=1:size(plannedExperimentTimes,1)
+          if (lastTime+timeStep)>plannedExperimentTimes(i,1) && (lastTime+timeStep)<plannedExperimentTimes(i,2)
+            plannedExperimentTime=(lastTime+timeStep-plannedExperimentTimes(i,1));
+            break;        
+          end
+        end
       end
 %{
       for i=1:size(plannedExperimentTimes,1)

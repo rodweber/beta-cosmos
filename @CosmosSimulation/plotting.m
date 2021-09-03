@@ -9,6 +9,14 @@ controlVariablesPlot=1;
 % Get path to telemetry files from CosmosSimulation object.
 tmFolderPath = this.TelemetryPath;
 
+antennaConeHalfAngle=60; %%[deg]
+%plannedExperimentTimes=readmatrix('2times20minperdayfor7days.csv');
+%plannedExperimentTimes=readmatrix('2times40minperdayfor7days.csv');
+%plannedExperimentTimes=readmatrix('2times240minperdayfor7days.csv');
+%plannedExperimentTimes=readmatrix('everyday6times30minperdayfor7daysTBC.csv');
+plannedExperimentTimes=readmatrix('everyday6times30minperdayfor7daysTBC.csv');
+
+
 %% read data from telemetry files
 for i=1:ns
   fileControlVectorTM = strcat(tmFolderPath,filesep,'ControlVectorTM',num2str(i),'.csv');
@@ -40,18 +48,12 @@ for i=1:ns
 end
 
 if plotExperimentTime%% condition for experiment time valid?
-  antennaConeHalfAngle=60; %%[deg]
   TAngle=zeros(size(cosmosTime,1),1);
   SAngle=zeros(size(cosmosTime,1),1);
   experimentTime=zeros(size(cosmosTime,1),1);
   plannedExperimentTime=zeros(size(cosmosTime,1),1);
   directionAngle=zeros(size(cosmosTime,1),1);
   
-%plannedExperimentTimes=readmatrix('2times20minperdayfor7days.csv');
-%plannedExperimentTimes=readmatrix('2times40minperdayfor7days.csv');
-%plannedExperimentTimes=readmatrix('2times240minperdayfor7days.csv');
-%plannedExperimentTimes=readmatrix('everyday6times30minperdayfor7daysTBC.csv');
-plannedExperimentTimes=readmatrix('everyday6times30minperdayfor7daysTBC.csv');
 
 %% create function for when an experiment time is defined  
 for i=1:size(cosmosTime,1)
