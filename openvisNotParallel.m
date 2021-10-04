@@ -72,14 +72,9 @@ AUTORUN = vis.AutoRun; % [true: 1 | false: 0]
 % the other satellites.
 COORD_FOLDER = strcat(vis.ParentCoordFolder,filesep,vis.CoordFolder);
 COORD_FOLDER = fullfile(pathCosmos,COORD_FOLDER);
-XYZ_MODE = vis.ModeXYZ;
 
 % Set struct for selected camera mode.
 CAM_MODE = struct('time',0,'signals',struct('dimensions',0,'values',0));
-
-% Set parameters to reduce timesteps of original simulation.
-COARSE_ENABLE = vis.TimeCompressionEnable;
-COARSE_FACTOR = vis.TimeCompressionFactor;
 
 % Set parameter to automatically smooth changes in satellite orientations.
 SMOOTH_ENABLE = vis.SmoothSatOrientationChanges; % [true: 1 | false: 0]
@@ -157,32 +152,14 @@ timeReadStart = posixtime(datetime('now')); % Posixtime [seconds].
 for n = 1:numsats
   coord = readmatrix(strcat(COORD_FOLDER,filesep,coordfiles{n}));
   timestamps = coord(:,1); % [seconds]
-  if(XYZ_MODE)
-    x = coord(:,2); % [m]
-    y = coord(:,3); % [m]
-    z = coord(:,4); % [m]
-  else
-    latDeg  = coord(:,2); % [degrees]
-    longDeg = coord(:,3); % [degrees]
-    smaKm   = coord(:,4); % [km]
-  end
+  x = coord(:,2); % [m]
+  y = coord(:,3); % [m]
+  z = coord(:,4); % [m]
   pitch = coord(:,6); % [degrees]
   yaw   = coord(:,7); % [degrees]
   roll  = coord(:,5); % [degrees]
   inclinationDeg = coord(1,8); % [degrees]
   orbitLANDeg = coord(1,9); % [degrees]
-  
-  % Interpolate to a coarser data sample.
-  if (COARSE_ENABLE && XYZ_MODE)
-    timestamps = timestamps(1:COARSE_FACTOR:end, 1);
-    x = x(1:COARSE_FACTOR:end, 1);
-    y = y(1:COARSE_FACTOR:end, 1);
-    z = z(1:COARSE_FACTOR:end, 1);
-    pitch = pitch(1:COARSE_FACTOR:end, 1);
-    yaw = yaw(1:COARSE_FACTOR:end, 1);
-    roll = roll(1:COARSE_FACTOR:end, 1);
-    inclinationDeg = inclinationDeg(1:COARSE_FACTOR:end, 1);
-  end
   
   % Get length of data samples.
   dataLength = length(timestamps);
@@ -241,13 +218,6 @@ for n = 1:numsats
   end
   
   % Convert data to SI units.
-  if(XYZ_MODE)
-    % Already in meters.
-  else
-    latRad  = latDeg  * (pi/180); % [rad]
-    longRad = longDeg * (pi/180); % [rad]
-    smaMeters = smaKm * 1000; % [m]
-  end
   pitch = pitch * (pi/180); % [rad]
   yaw   = yaw   * (pi/180); % [rad]
   roll  = roll  * (pi/180); % [rad]
@@ -255,35 +225,21 @@ for n = 1:numsats
   orbitLANRad = orbitLANDeg * (pi/180); % [rad]
   
   % Place data into satellite struct.
-  if(XYZ_MODE)
-    simsat(n).x.time = timestamps;
-    simsat(n).x.signals.dimensions = 1;
-    simsat(n).x.signals.values = x; % [m] [TIMEx1 vector]
-
-    simsat(n).y.time = timestamps;
-    simsat(n).y.signals.dimensions = 1;
-    simsat(n).y.signals.values = y; % [m] [TIMEx1 vector]
-
-    simsat(n).z.time = timestamps;
-    simsat(n).z.signals.dimensions = 1;
-    simsat(n).z.signals.values = z; % [m] [TIMEx1 vector]
-
-    simsat(n).xyz.time = timestamps;
-    simsat(n).xyz.signals.dimensions = 3;
-    simsat(n).xyz.signals.values = [x y z]; % [TIMEx3 vector]
-  else
-    simsat(n).lat.time = timestamps;
-    simsat(n).lat.signals.dimensions = 1;
-    simsat(n).lat.signals.values = latRad;
-
-    simsat(n).long.time = timestamps;
-    simsat(n).long.signals.dimensions = 1;
-    simsat(n).long.signals.values = longRad;
-
-    simsat(n).sma.time = timestamps;
-    simsat(n).sma.signals.dimensions = 1;
-    simsat(n).sma.signals.values = smaMeters;
-  end
+  simsat(n).x.time = timestamps;
+  simsat(n).x.signals.dimensions = 1;
+  simsat(n).x.signals.values = x; % [m] [TIMEx1 vector]
+  
+  simsat(n).y.time = timestamps;
+  simsat(n).y.signals.dimensions = 1;
+  simsat(n).y.signals.values = y; % [m] [TIMEx1 vector]
+  
+  simsat(n).z.time = timestamps;
+  simsat(n).z.signals.dimensions = 1;
+  simsat(n).z.signals.values = z; % [m] [TIMEx1 vector]
+  
+  simsat(n).xyz.time = timestamps;
+  simsat(n).xyz.signals.dimensions = 3;
+  simsat(n).xyz.signals.values = [x y z]; % [TIMEx3 vector]
   
   simsat(n).pos.time = timestamps;
   simsat(n).pos.signals.dimensions = 3;
@@ -351,23 +307,10 @@ spmd(numsats)
     time = parsat(n).time(i);
     
     % Get coordinate values for the current time.
-    if(XYZ_MODE)
-      x = parsat(n).x.signals.values(i);
-      y = parsat(n).y.signals.values(i);
-      z = parsat(n).z.signals.values(i);
-      lat  = 0;
-      long = 0;
-      sma  = 0;
-    else
-      lat  = parsat(n).lat.signals.values(i);
-      long = parsat(n).long.signals.values(i);
-      sma  = parsat(n).sma.signals.values(i);
-      % From latitude-longitude, calculate position in ECEF.
-      base = sma * cos(lat);
-      z = sma * sin(lat);
-      x = base * cos(long);
-      y = base * sin(long);
-    end
+    x = parsat(n).x.signals.values(i);
+    y = parsat(n).y.signals.values(i);
+    z = parsat(n).z.signals.values(i);
+    
     parsat(n).pos.signals.values(i,1) = x;
     parsat(n).pos.signals.values(i,2) = y;
     parsat(n).pos.signals.values(i,3) = z;

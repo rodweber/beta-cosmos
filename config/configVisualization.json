@@ -1,10 +1,12 @@
 {
-  "AutoRun": 0,
+  "AutoRun": false,
 
   "ParentCoordFolder": "COORD-runtime",
   "CoordFolder": "XYZ-RPY-scaled",
 
   "VizScale": 150,
+  "VizTimeStep": 1,
+  "V0": 0,
 
   "SelectedCameraMode": 1,
   "CameraModes": [
@@ -16,22 +18,11 @@
     "06-Rotating-180deg-with-pauses"
   ],
 
-  "V0": 0,
-  "KeplerStepSize": 1,
-  "PlotLatLonIn2D": false,
-  "WriteLLRRPYData": 1,
-
-
-
-
-  "ModeXYZ": true,
-  "TimeCompressionEnable": 0,
-  "TimeCompressionFactor": 50,
-
-  "SmoothSatOrientationChanges": 1,
+  "SmoothSatOrientationChanges": true,
   "SmoothingDataSpan": 51,
   "SmoothingMethodChosen": 1,
   "SmoothingMethodList": [ "moving" ],
-  "OverrideLLR": 0,
-  "OverrideRPY": 0
+
+  "OverrideLLR": false,
+  "OverrideRPY": false
 }
