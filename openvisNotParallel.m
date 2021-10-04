@@ -74,6 +74,9 @@ COORD_FOLDER = strcat(vis.ParentCoordFolder,filesep,vis.CoordFolder);
 COORD_FOLDER = fullfile(pathCosmos,COORD_FOLDER);
 XYZ_MODE = vis.ModeXYZ;
 
+% Set struct for selected camera mode.
+CAM_MODE = struct('time',0,'signals',struct('dimensions',0,'values',0));
+
 % Set parameters to reduce timesteps of original simulation.
 COARSE_ENABLE = vis.TimeCompressionEnable;
 COARSE_FACTOR = vis.TimeCompressionFactor;
@@ -187,6 +190,11 @@ for n = 1:numsats
   zeroArray = zeros(dataLength,1); % [TIMEx1 vector]
   % Set column array of ones with length of data samples.
   onesArray = ones(dataLength,1); % [TIMEx1 vector]
+  
+  % Update camera mode struct.
+  CAM_MODE.time = timestamps;
+  CAM_MODE.signals.dimensions = 1;
+  CAM_MODE.signals.values = vis.SelectedCameraMode*onesArray; % [TIMEx1 vector]
   
   if(OVERRIDE_LLR)
     % Values to override for each of the satellites.

@@ -3,8 +3,18 @@
 
   "ParentCoordFolder": "COORD-runtime",
   "CoordFolder": "XYZ-RPY-scaled",
-  
+
   "VizScale": 150,
+
+  "SelectedCameraMode": 1,
+  "CameraModes": [
+    "01-Behind-satellites",
+    "02-Sideways-at-45deg",
+    "03-Sideways-at-90deg",
+    "04-Rotating-360deg",
+    "05-Rotating-180deg-non-stop",
+    "06-Rotating-180deg-with-pauses"
+  ],
 
   "V0": 0,
   "KeplerStepSize": 1,
