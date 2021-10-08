@@ -15,7 +15,7 @@ function ECEFprocessing(this, altitude, inclination, orbitLAN, vizScale, ...
 % however, files are written that are used by cosmosVIZ
 
 %% Start
-fprintf('\nECEF processing...');
+fprintf('\nECEF processing ... ');
 
 % Set some parameters.
 ns = this.NumSatellites;
@@ -222,7 +222,7 @@ if writeLLRRPYData
   % Create inclination vector to write to output file.
   incVec = inclination * ones(size(vizTime));
   lanVec = orbitLAN * ones(size(vizTime));
-  fprintf('Writing ECEF files...');
+  fprintf('Writing ECEF files ... ');
   for i=1:ns+1
     llrFileName = strcat(llrNotScaledFolderPath,filesep,'sat',num2str(i-1),'_LLR.csv');
     llrrpyScaledFileName = strcat(llrScaledFolderPath,filesep,'sat',num2str(i-1),'_LLR_RPY_Scaled.csv');

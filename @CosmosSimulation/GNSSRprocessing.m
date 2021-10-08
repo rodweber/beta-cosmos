@@ -44,7 +44,7 @@ constellations=[1];  %% only Galileo
 %% end input section------------------------------------------------------------
 
 
-fprintf('\nGNSS processing...');
+fprintf('\nGNSS processing ... ');
 GNSScpuStartTime = posixtime(datetime('now')); % Posixtime [seconds].
 
 %% read CubeSat position data from file. for data format, see example files
@@ -97,7 +97,7 @@ end
 
 fprintf('\nSetting up GNSS constellation time: %s seconds.',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
 
-fprintf('\nComputing specular point location...');
+fprintf('\nComputing specular point location ... ');
 
 %% compute SP location per each cubesat, per each GNSS constellation and per each GNSS satellite
 latSP=zeros(ns+1,size(constellations,2),max(noOfGNSSsatsArray),size(timeCubeSat,2));
@@ -123,7 +123,7 @@ fprintf('\nComputing time for specular points location: %s seconds.',num2str(pos
 
 %% 3D plot: position of the CubeSat, the GNSS satellites and the specular point
 if plotSPlocationIn3D 
-  fprintf('\nDisplaying in 3D...');
+  fprintf('\nDisplaying in 3D ... ');
   %% set-up GIS
   grs80 = referenceEllipsoid('grs80','km');
   load topo
@@ -165,7 +165,7 @@ end %% plot3D
 
 %%2D plot: position of the CubeSat and the specular point
 if plotSPlocationIn2D 
-  fprintf('\nDisplaying in 2D...');
+  fprintf('\nDisplaying in 2D ... ');
   figure
   ax = worldmap('World');
   setm(ax, 'Origin', [0 0 0])

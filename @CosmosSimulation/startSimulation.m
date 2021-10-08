@@ -25,7 +25,7 @@ dq = parallel.pool.DataQueue;
 afterEach(dq, @disp);
 
 % Set the start time for the parallel pool.
-disp('Starting CosmosBeta simulation...');
+disp('Starting CosmosBeta simulation ...');
 timeStartPool = posixtime(datetime('now')); % Posixtime [seconds].
 
 % Execute parallel code on workers of parallel pool.

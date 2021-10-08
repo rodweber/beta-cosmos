@@ -22,7 +22,7 @@ else % If handle is found, close all figures with exception of 3D visualization.
 end
 
 % Set timer start time.
-disp('Preparing MATLAB environment...');
+disp('Preparing MATLAB environment ...');
 timeMatlabStart = posixtime(datetime('now')); % Posixtime [seconds].
 
 % Inform the name of this file without the extension "m".

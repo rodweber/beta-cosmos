@@ -146,7 +146,7 @@ afterEach(dq, @disp);
 
 
 %% Read data from coordinate files
-fprintf('%s','Reading data from coordinate files...');
+fprintf('%s','Reading data from coordinate files ... ');
 % Set timer start time.
 timeReadStart = posixtime(datetime('now')); % Posixtime [seconds].
 for n = 1:numsats
@@ -292,14 +292,14 @@ fprintf('%s%d.\n','Data length of each coordinate file: ',dataLength);
 parsat = simsat;
 
 % Get each time-coordinate-orientation triple for each satellite.
-fprintf('%s\n','Processing data from coordinate files...');
+fprintf('%s\n','Processing data from coordinate files ... ');
 spmd(numsats)
   
   n = labindex;
   
   % Set timer start time.
   timeProcStart = posixtime(datetime('now')); % Posixtime [seconds].
-  msg = sprintf('%3.d/%d...processing...',n,numsats);
+  msg = sprintf('%3.d/%d ... processing ...',n,numsats);
   send(dq, msg);
   for i = 1:dataLength
     
@@ -742,7 +742,7 @@ spmd(numsats)
   % Set timer stop time.
   timeProcStop = posixtime(datetime('now')); % Posixtime [seconds].
   timeProcDuration = timeProcStop - timeProcStart;
-  msg = sprintf('%3.d/%d...done. (%.2f seconds)',n,numsats,timeProcDuration);
+  msg = sprintf('%3.d/%d ... done. (%.2f seconds)',n,numsats,timeProcDuration);
   send(dq, msg);
   
   % Globally concatenate all output variables on lab index 1.
@@ -758,7 +758,9 @@ end
 
 %% Simulink
 % Model names.
-fprintf('%s','Preparing Simulink models...');
+fprintf('\n%s','Preparing Simulink models ... ');
+% Set timer start time.
+timeProcStart = posixtime(datetime('now')); % Posixtime [seconds].
 modelMain = 'asbCubeSat';
 model3DWorld = 'asbCubeSat/Visualization/Virtual Reality World/';
 
@@ -990,7 +992,10 @@ end
 
 % Save model.
 save_system(modelMain);
-fprintf('%s\n','done.');
+% Set timer stop time.
+timeProcStop = posixtime(datetime('now')); % Posixtime [seconds].
+timeProcDuration = timeProcStop - timeProcStart;
+fprintf('done. (%.2f seconds)\n',timeProcDuration);
 
 
 %% Check and Run
