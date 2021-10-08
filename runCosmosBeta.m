@@ -1,6 +1,6 @@
 %% File to run Cosmos software
 % Use code line below only for performance tests.
-% proj = currentProject; close(proj); close all; clear all;
+try proj = currentProject; close(proj); catch; end; close all; clear all;
 
 % JT Notes
 % this.SolarFactor,this.WindFactor, this.SatelliteMass ,this.Panels,

@@ -1,6 +1,6 @@
 {
   "SelectedFormationFlightMode": 4,
-  "NumberOfOrbitsForMode": 2,
+  "NumberOfOrbitsForMode": 5,
   "Modes": [
     {
       "ModeID": 1,
@@ -97,14 +97,14 @@
     {
       "ModeID": 4,
       "ModeName": "SnTMission",
-      "NumSatellites": 4,
+      "NumSatellites": 7,
       "SatelliteMass": 1,
       "PanelArea": 0.01,
       "PanelQuantity": [0, 0, 3],
       "AttitudeResolutionDeg": 45,
       "OrbitInitAltitude": 300e3,
-      "OrbitInclinationDeg": 97,
-      "OrbitLANDeg": 180,
+      "OrbitInclinationDeg": 33,
+      "OrbitLANDeg": 0,
       "OrbitSectionSizeDeg": 1,
       "OrbitInitSectionID": 1,
       "RMatrixDiagonal": [1e15, 1e15, 1e15],
@@ -115,14 +115,20 @@
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [1, 0, 0, 0, 0, 0, 0, 0, 0],
         [2, 0, 0, 0, 0, 0, 0, 0, 0],
-        [3, 0, 0, 0, 0, 0, 0, 0, 0]
+        [3, 0, 0, 0, 0, 0, 0, 0, 0],
+        [4, 0, 0, 0, 0, 0, 0, 0, 0],
+        [5, 0, 0, 0, 0, 0, 0, 0, 0],
+        [6, 0, 0, 0, 0, 0, 0, 0, 0]
       ],
       "FFPSFolder": "ffpsSnTMission",
       "FFPSValues": [
         {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
         {"ffp1": 0,"ffp2": 1,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
         {"ffp1": 0,"ffp2": 2,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
-        {"ffp1": 0,"ffp2": 3,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+        {"ffp1": 0,"ffp2": 3,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 4,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 5,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 6,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
       ]
     }
 ,
