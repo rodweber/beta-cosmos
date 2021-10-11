@@ -21,6 +21,9 @@ else % If handle is found, close all figures with exception of 3D visualization.
   cab(cosmosVisHandle);
 end
 
+% Bring command window to front.
+commandwindow;
+
 % Set timer start time.
 disp('Preparing MATLAB environment ...');
 timeMatlabStart = posixtime(datetime('now')); % Posixtime [seconds].
