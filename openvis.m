@@ -436,20 +436,31 @@ spmd(numsats)
     % Correct local body axes.
     adeg = a * 180/pi; % [deg]
     rotInc = rotx(adeg);
-    localYaw   = rotInc*localYaw;   % [3x1 U-vector]
     localRoll  = rotInc*localRoll;  % [3x1 U-vector]
     localPitch = rotInc*localPitch; % [3x1 U-vector]
+    localYaw   = rotInc*localYaw;   % [3x1 U-vector]
     
     
     %% Total Earth rotation since beginning of simulation
-    rotEarthRad = EARTH_ROT * time; % [rad]
-    rotEarthDeg = rotEarthRad * 180/pi; % [deg]
+    aEarthRad = EARTH_ROT * time; % [rad]
+    aEarthDeg = aEarthRad * 180/pi; % [deg]
     % Correct for orbit longitude of ascending node (LAN).
-    rotEarthRad = rotEarthRad - parsat(n).lanRad; % [rad]
-    rotEarthDeg = rotEarthDeg - parsat(n).lanDeg; % [deg]
+    aEarthRad = aEarthRad - parsat(n).lanRad; % [rad]
+    aEarthDeg = aEarthDeg - parsat(n).lanDeg; % [deg]
     
     
-    %% Normal unit vector of the orbital plane
+    %% Satellite correction for Earth rotation
+    % Negative rotation on ECEF's Z-axis.
+    a = -aEarthRad; % [rad]
+    rotEarthFix = [cos(a/2), 0, 0, sin(a/2)]; % [quaternion]
+    rot = quatmultiply(rotEarthFix, rot);
+    % Correct local body axes.
+    localRoll  = rotz(-aEarthDeg)*localRoll;  % [3x1 U-vector]
+    localPitch = rotz(-aEarthDeg)*localPitch; % [3x1 U-vector]
+    localYaw   = rotz(-aEarthDeg)*localYaw;   % [3x1 U-vector]
+    
+    
+    %% Normal vector of the orbital plane
     % Set unit vector pointing towards ECEF's +Z-axis.
     %   unitVector = [0; 0; 1];
     % Rotate unit vector on ECEF's X-axis, with angle equal to the orbital
@@ -460,12 +471,12 @@ spmd(numsats)
     normalOrbitVector = rotx(angX)*[0;0;1]; % [3x1 U-vector]
     % Consider retrograde motion of the orbit.
     % Rotate normal orbit vector around Z-axis.
-    normalOrbitVector = rotz(-rotEarthDeg)*normalOrbitVector; % [3x1 U-vector]
+    normalOrbitVector = rotz(-aEarthDeg)*normalOrbitVector; % [3x1 U-vector]
     
     
     %% Angle from Equator line to current orbital position
     % Equator point considering orbit retrograde motion.
-    v1 = rotz(-rotEarthDeg)*[1;0;0]; % [3x1 U-vector]
+    v1 = rotz(-aEarthDeg)*[1;0;0]; % [3x1 U-vector]
     % Current orbit position.
     v2 = xyzUnit; % [3x1 U-vector]
     % Normal vector of plane between Equator point and current position.
@@ -491,9 +502,9 @@ spmd(numsats)
     pitchCorrection = rotm2quat(rodriguesRotMatrix);
     rot = quatmultiply(pitchCorrection, rot);
     % Correct local body axes.
-    localYaw   = rodriguesRotMatrix*localYaw;   % [3x1 U-vector]
     localRoll  = rodriguesRotMatrix*localRoll;  % [3x1 U-vector]
     localPitch = rodriguesRotMatrix*localPitch; % [3x1 U-vector]
+    localYaw   = rodriguesRotMatrix*localYaw;   % [3x1 U-vector]
     
     
     %% Roll
@@ -532,11 +543,6 @@ spmd(numsats)
     rot = quatmultiply(rodriguesQuat, rot);
     
     
-    %% Satellite correction for Earth rotation
-    % Negative rotation on ECEF's Z-axis.
-    a = -rotEarthRad; % [rad]
-    rotEarthFix = [cos(a/2), 0, 0, sin(a/2)]; % [quaternion]
-    rot = quatmultiply(rotEarthFix, rot);
     
     
     
@@ -1051,8 +1057,8 @@ end
 % Clear composites.
 % Needed to close active spmd.
 % See: https://nl.mathworks.com/matlabcentral/answers/223939-how-to-specify-the-number-of-labs-in-smpd
-clear a adeg angPos angX c I lat localPitch localRoll localYaw long msg ...
+clear a adeg aEarthDeg aEarthRad angPos angX c I lat localPitch localRoll localYaw long msg ...
   normalOrbitVector normalVector pitchAngle pitchCorrection rodriguesQuat ...
-  rodriguesRotMatrix rollAngle rot rotEarthDeg rotEarthFix rotEarthRad rotInc ...
+  rodriguesRotMatrix rollAngle rot rotEarthFix rotInc ...
   sma time timeProcDuration timeProcStart timeProcStop u v1 v2 W x xyzUnit ...
   y yawAngle z satellites parsat;
