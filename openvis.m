@@ -401,16 +401,9 @@ spmd(numsats)
     
     
     %% Pitch correction for orbital position
-    % Use corrected pitch axis as axis for pitch rotation.
-    u = localPitch;
     % Rotate with an angle equal to the angle of the current orbital position.
-    a = angPos; % [rad]
-    % Compute Rodrigues rotation matrix.
-    W = [  0  -u(3)  u(2);
-         u(3)   0   -u(1);
-        -u(2)  u(1)   0 ];
-    I = eye(3); % identity matrix 3x3
-    rodriguesRotMatrix = I + sin(a)*W + (2*sin(a/2)^2)*(W^2);
+    % Use corrected pitch axis as axis for pitch rotation.
+    rodriguesRotMatrix = rotrodrigues(angPos,localPitch);
     % Convert Rodrigues rotation matrix to quaternions.
     pitchCorrection = rotm2quat(rodriguesRotMatrix);
     rot = quatmultiply(pitchCorrection, rot);
@@ -421,37 +414,19 @@ spmd(numsats)
     
     
     %% Roll
-    u = localRoll; % Set axis for rotation.
-    a = rollAngle; % [rad]
-    W = [  0  -u(3)  u(2);
-         u(3)   0   -u(1);
-        -u(2)  u(1)   0 ];
-    I = eye(3); % identity matrix 3x3
-    rodriguesRotMatrix = I + sin(a)*W + (2*sin(a/2)^2)*(W^2);
+    rodriguesRotMatrix = rotrodrigues(rollAngle,localRoll);
     rodriguesQuat = rotm2quat(rodriguesRotMatrix);
     rot = quatmultiply(rodriguesQuat, rot);
     
     
     %% Pitch
-    u = localPitch; % Set axis for rotation.
-    a = pitchAngle; % [rad]
-    W = [  0  -u(3)  u(2);
-         u(3)   0   -u(1);
-        -u(2)  u(1)   0 ];
-    I = eye(3); % identity matrix 3x3
-    rodriguesRotMatrix = I + sin(a)*W + (2*sin(a/2)^2)*(W^2);
+    rodriguesRotMatrix = rotrodrigues(pitchAngle,localPitch);
     rodriguesQuat = rotm2quat(rodriguesRotMatrix);
     rot = quatmultiply(rodriguesQuat, rot);
     
     
     %% Yaw
-    u = localYaw; % Set axis for rotation.
-    a = yawAngle; % [rad]
-    W = [  0  -u(3)  u(2);
-         u(3)   0   -u(1);
-        -u(2)  u(1)   0 ];
-    I = eye(3); % identity matrix 3x3
-    rodriguesRotMatrix = I + sin(a)*W + (2*sin(a/2)^2)*(W^2);
+    rodriguesRotMatrix = rotrodrigues(yawAngle,localYaw);
     rodriguesQuat = rotm2quat(rodriguesRotMatrix);
     rot = quatmultiply(rodriguesQuat, rot);
     
