@@ -195,17 +195,17 @@ for n = 1:numsats
   if(OVERRIDE_RPY)
     % Values to override for each of the satellites.
     if n == 1
-      pitch = onesArray * 0;
-      yaw   = onesArray * 0;
       roll  = onesArray * 45;
+      pitch = onesArray * 45;
+      yaw   = onesArray * 45;
     elseif n == 2
-      pitch = onesArray * 0;
-      yaw   = onesArray * 90;
-      roll  = onesArray * 45;
-    elseif n == 3
+      roll  = onesArray * 0;
       pitch = onesArray * 45;
       yaw   = onesArray * 0;
-      roll  = onesArray * 90;
+    elseif n == 3
+      roll  = onesArray * 0;
+      pitch = onesArray * 0;
+      yaw   = onesArray * 45;
     else
       % Reference (n == 4).
     end

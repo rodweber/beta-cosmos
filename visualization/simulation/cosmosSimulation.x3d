@@ -178,6 +178,58 @@
       </Viewpoint>
     </Transform>
   </Transform>
+  <Transform DEF="Satellite3"  scale="0.05 0.05 0.05" rotation="0.50838 0.84409 -0.08794 2">
+    <Shape DEF="SatelliteBus3" >
+      <Appearance>
+        <ImageTexture url='"texture/cubesat.jpg" '>
+        </ImageTexture>
+        <Material specularColor="1 1 1" shininess="1" emissiveColor="0.2 0.2 0.2" diffuseColor="0.2 0.2 0.2" ambientIntensity="0.6">
+        </Material>
+      </Appearance>
+      <Box size="0.3 0.3 0.3">
+      </Box>
+    </Shape>
+    <Transform DEF="SolarPanelTwo3"  translation="0 0.16 -0.3">
+      <Shape>
+        <Appearance>
+          <ImageTexture url='"texture/solarpanel.jpg" '>
+          </ImageTexture>
+          <Material shininess="1" diffuseColor="0.9 0.76733 0.61963" ambientIntensity="0">
+          </Material>
+        </Appearance>
+        <Box size="0.3 0.02 0.3">
+        </Box>
+      </Shape>
+    </Transform>
+    <Transform DEF="SolarPanelOne3"  translation="0 0.16 0.3">
+      <Shape>
+        <Appearance>
+          <ImageTexture url='"texture/solarpanel.jpg" '>
+          </ImageTexture>
+          <Material shininess="1" diffuseColor="0.9 0.76733 0.61963" ambientIntensity="0">
+          </Material>
+        </Appearance>
+        <Box size="0.3 0.02 0.3">
+        </Box>
+      </Shape>
+    </Transform>
+    <Transform DEF="Antenna3" >
+      <Transform DEF="AntennaDish3"  translation="0 -0.15 0">
+        <Shape>
+          <Appearance>
+            <Material specularColor="1 1 1" shininess="1" diffuseColor="0.9 0.65504 0.31917">
+            </Material>
+          </Appearance>
+          <Cone height="0.07" bottomRadius="0.06">
+          </Cone>
+        </Shape>
+      </Transform>
+    </Transform>
+    <Transform DEF="FollowSat3"  translation="-5.5 2 0" rotation="-0.0923 -0.7011 -0.0923 1.5878">
+      <Viewpoint DEF="FollowSatView3"  fieldOfView="0.7854" description="Lock Satellite-3" position="0 0 0">
+      </Viewpoint>
+    </Transform>
+  </Transform>
 </Transform>
 </Scene>
 </X3D>
