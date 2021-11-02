@@ -414,7 +414,7 @@ spmd(numsats)
     
     
     %% Roll
-    rodriguesRotMatrix = rotrodrigues(rollAngle,localRoll);
+    rodriguesRotMatrix = rotrodrigues(rollAngle,localYaw);
     rodriguesQuat = rotm2quat(rodriguesRotMatrix);
     rot = quatmultiply(rodriguesQuat, rot);
     
